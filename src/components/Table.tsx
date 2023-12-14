@@ -1,5 +1,5 @@
 import { Delete, Edit } from '@mui/icons-material'
-import { Button } from '@mui/material'
+import { Box, Button, TextField } from '@mui/material'
 import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -7,59 +7,84 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import * as React from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
+import type { StockProps, Status } from '../Models'
 import useModal from '../hooks/useModals'
 import StockModal from './StockModal'
+import { v4 as uuid } from 'uuid'
+import moment from 'moment'
 
-type status = 'Buy' | 'Sell'
-interface TableProps {
-  code: string
-  date: string
-  quantity: number
-  purchasePrice: number
-  currentPrice: number
-  ratio?: string
-  actualGain?: number
-  status: status
-}
-
-export default function BasicTable(): JSX.Element {
+const BasicTable = (): JSX.Element => {
   const { open, toggle } = useModal()
-  const [data, setData] = React.useState<TableProps[]>([])
+  const [editData, setEditData] = useState<StockProps>()
+  const [data, setData] = useState<StockProps[]>([])
 
-  const ratio = React.useCallback((current: number, init: number) => {
-    return (((current - init) / init) * 100).toFixed(2)
+  useEffect(() => {
+    setData(
+      [
+        {
+          id: uuid(),
+          code: 'DIG',
+          date: '123123',
+          quantity: 100,
+          purchasePrice: 1,
+          currentPrice: 1.05,
+          ratio: 1,
+          actualGain: 1,
+          status: 'Buy' as Status
+        }
+      ].map((item) => ({
+        ...item,
+        ratio: ratio(item.currentPrice, item.purchasePrice),
+        actualGain: item.quantity * item.currentPrice
+      }))
+    )
   }, [])
 
-  const addData = (row: TableProps) => {
-    setData((prev) => [...prev, row])
+  const ratio = useCallback(
+    (current: number, init: number): number => {
+      return Number((((current - init) / init) * 100).toFixed(2))
+    },
+    [data]
+  )
+
+  const addData = (row: StockProps): void => {
+    setData((prev) => [
+      ...prev,
+      {
+        ...row,
+        actualGain: row.quantity * row.currentPrice,
+        ratio: ratio(row.currentPrice, row.purchasePrice)
+      }
+    ])
+    toggle()
   }
 
-  React.useEffect(
-    () =>
-      setData(
-        [
-          {
-            code: 'DIG',
-            date: '123123',
-            quantity: 100,
-            purchasePrice: 1,
-            currentPrice: 1.05,
-            ratio: 1,
-            actualGain: 1,
-            status: 'Buy' as status,
-          },
-        ].map((item) => ({
-          ...item,
-          ratio: ratio(item.currentPrice, item.purchasePrice),
-          actualGain: item.quantity * item.currentPrice,
-        }))
-      ),
-    []
-  )
+  const onEdit = (row: StockProps): void => {
+    setEditData((prev: StockProps | undefined) => {
+      if (prev?.id) {
+        return {
+          id: '',
+          code: '',
+          date: moment(Date.now()).format('DD/MM/YYYY'),
+          quantity: 0,
+          purchasePrice: 0,
+          currentPrice: 0,
+          status: 'Buy',
+          ratio: 0
+        }
+      }
+      return row
+    })
+  }
 
   return (
     <TableContainer component={Paper}>
+      <Box textAlign='right' p={4}>
+        <Button variant='contained' onClick={toggle}>
+          Create
+        </Button>
+      </Box>
       <Table sx={{ minWidth: 650 }} aria-label='simple table'>
         <TableHead>
           <TableRow>
@@ -77,16 +102,34 @@ export default function BasicTable(): JSX.Element {
         <TableBody>
           {data.map((row, index) => (
             <TableRow key={index}>
-              <TableCell>{row.code}</TableCell>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.quantity}</TableCell>
-              <TableCell>{row.purchasePrice}</TableCell>
-              <TableCell>{row.currentPrice}</TableCell>
-              <TableCell>{`${row.ratio}%`}</TableCell>
-              <TableCell>{row.actualGain}</TableCell>
-              <TableCell>{row.status}</TableCell>
               <TableCell>
-                <Button>
+                {editData?.id === row.id ? <TextField /> : row.code}
+              </TableCell>
+              <TableCell>
+                {editData?.id === row.id ? <TextField /> : row.date}
+              </TableCell>
+              <TableCell>
+                {editData?.id === row.id ? <TextField /> : row.quantity}
+              </TableCell>
+              <TableCell>
+                {editData?.id === row.id ? <TextField /> : row.purchasePrice}
+              </TableCell>
+              <TableCell>
+                {editData?.id === row.id ? <TextField /> : row.currentPrice}
+              </TableCell>
+              <TableCell>{`${row.ratio ?? 0}%`}</TableCell>
+              <TableCell>
+                {editData?.id === row.id ? <TextField /> : row.actualGain}
+              </TableCell>
+              <TableCell>
+                {editData?.id === row.id ? <TextField /> : row.status}
+              </TableCell>
+              <TableCell>
+                <Button
+                  onClick={() => {
+                    onEdit(row)
+                  }}
+                >
                   <Edit />
                 </Button>
                 <Button>
@@ -97,7 +140,8 @@ export default function BasicTable(): JSX.Element {
           ))}
         </TableBody>
       </Table>
-      <StockModal open={true} handleClose={toggle} addData={addData} />
+      <StockModal open={open} handleClose={toggle} addData={addData} />
     </TableContainer>
   )
 }
+export default BasicTable
