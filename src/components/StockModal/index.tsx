@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Divider,
-  Modal,
-  TextField,
-  Typography
-} from '@mui/material'
+import { Box, Button, Divider, Modal, TextField, Typography } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import moment from 'moment'
 import React, { useState } from 'react'
@@ -13,7 +6,7 @@ import type { StockProps } from '../../Models'
 import { v4 as uuid } from 'uuid'
 
 const style = {
-  position: 'absolute' as 'absolute',
+  position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
@@ -29,11 +22,7 @@ interface StockModalProps {
   addData: (data: StockProps) => void
 }
 
-const StockModal = ({
-  open,
-  handleClose,
-  addData
-}: StockModalProps): JSX.Element => {
+const StockModal = ({ open, handleClose, addData }: StockModalProps): JSX.Element => {
   const [row, setRow] = useState<StockProps>({
     id: uuid(),
     code: '',
@@ -48,11 +37,11 @@ const StockModal = ({
   const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setRow((prev: StockProps) => ({
       ...prev,
-      [e.target.name]:
-        e.target.name === 'code' ? e.target.value : Number(e.target.value)
+      [e.target.name]: e.target.name === 'code' ? e.target.value : Number(e.target.value)
     }))
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onChangeDate = (date: any): void => {
     setRow((prev) => ({
       ...prev,
@@ -117,12 +106,7 @@ const StockModal = ({
           <Button color='error' variant='contained' onClick={handleClose}>
             Cancel
           </Button>
-          <Button
-            color='success'
-            variant='contained'
-            sx={{ marginLeft: 2 }}
-            onClick={handleSave}
-          >
+          <Button color='success' variant='contained' sx={{ marginLeft: 2 }} onClick={handleSave}>
             Save
           </Button>
         </Box>
