@@ -3,7 +3,6 @@ import { TableHead, TableRow, TableCell, TableBody, TextField, Button, Table } f
 import React from 'react'
 import type { StockProps } from '../../Models'
 import moment from 'moment'
-import { ratio } from '../../utils'
 
 interface TableDetailProps {
   data: StockProps[]
@@ -34,19 +33,11 @@ const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps)
 
   const onChangeRow = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const name = e.target.name
-    const value = name === 'code' ? e.target.value : Number(e.target.value)
+    const value = name === 'code' ? e.target.value.toUpperCase() : Number(e.target.value)
     if (editData?.id) {
       const newEditData: StockProps = {
         ...editData,
-        [name]: value,
-        actualGain:
-          name === 'quantity'
-            ? (value as number) * Number(editData?.currentPrice)
-            : name === 'currentPrice'
-              ? (value as number) * editData.quantity
-              : editData.actualGain,
-        ratio:
-          name === 'currentPrice' ? ratio(value as number, editData.purchasePrice) : editData.ratio
+        [name]: value
       }
       setEditData(newEditData)
       return setData(
@@ -64,16 +55,13 @@ const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps)
   }
 
   return (
-    <Table sx={{ minWidth: 650 }} aria-label='simple table'>
+    <Table sx={{ minWidth: 650 }}>
       <TableHead>
         <TableRow>
           <TableCell>Code</TableCell>
           <TableCell>Date</TableCell>
           <TableCell>Quantity</TableCell>
           <TableCell>Purchase Price</TableCell>
-          <TableCell>Current Price</TableCell>
-          <TableCell>Ratio</TableCell>
-          <TableCell>Actual Gain</TableCell>
           <TableCell>Status</TableCell>
           <TableCell>Actions</TableCell>
         </TableRow>
@@ -113,19 +101,6 @@ const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps)
                 row.purchasePrice
               )}
             </TableCell>
-            <TableCell>
-              {editData?.id === row.id ? (
-                <TextField
-                  name='currentPrice'
-                  value={row.currentPrice}
-                  onChange={(e) => onChangeRow(e)}
-                />
-              ) : (
-                row.currentPrice
-              )}
-            </TableCell>
-            <TableCell>{`${row.ratio ?? 0}%`}</TableCell>
-            <TableCell>{row.actualGain}</TableCell>
             <TableCell>
               {editData?.id === row.id ? (
                 <TextField name='status' value={row.status} onChange={(e) => onChangeRow(e)} />

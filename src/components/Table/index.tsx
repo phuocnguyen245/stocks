@@ -5,9 +5,9 @@ import React, { useEffect, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import type { Status, StockProps } from '../../Models'
 import useModal from '../../hooks/useModals'
-import { ratio } from '../../utils'
 import StockModal from '../StockModal'
 import TableDetail from './TableDetail'
+import TableCurrent from './TableCurrent'
 
 const BasicTable = (): JSX.Element => {
   const { open, toggle } = useModal()
@@ -20,18 +20,15 @@ const BasicTable = (): JSX.Element => {
         {
           id: uuid(),
           code: 'DIG',
-          date: '123123',
+          date: '12/10/2023',
           quantity: 100,
           purchasePrice: 1,
-          currentPrice: 1.05,
           ratio: 1,
           actualGain: 1,
           status: 'Buy' as Status
         }
       ].map((item) => ({
-        ...item,
-        ratio: ratio(item.currentPrice, item.purchasePrice),
-        actualGain: item.quantity * item.currentPrice
+        ...item
       }))
     )
   }, [])
@@ -40,9 +37,7 @@ const BasicTable = (): JSX.Element => {
     setData((prev) => [
       ...prev,
       {
-        ...row,
-        actualGain: row.quantity * row.currentPrice,
-        ratio: ratio(row.currentPrice, row.purchasePrice)
+        ...row
       }
     ])
     toggle()
@@ -52,10 +47,27 @@ const BasicTable = (): JSX.Element => {
     <TableContainer component={Paper}>
       <Box textAlign='right' p={4}>
         <Button variant='contained' onClick={toggle}>
-          Create
+          Created
         </Button>
       </Box>
-      <TableDetail data={data} editData={editData} setEditData={setEditData} setData={setData} />
+      <Box display='flex' gap={2}>
+        <Box flex={1}>
+          <TableDetail
+            data={data}
+            editData={editData}
+            setEditData={setEditData}
+            setData={setData}
+          />
+        </Box>
+        <Box flex={1.5} flexShrink='unset'>
+          <TableCurrent
+            data={data}
+            editData={editData}
+            setEditData={setEditData}
+            setData={setData}
+          />
+        </Box>
+      </Box>
       <StockModal open={open} handleClose={toggle} addData={addData} />
     </TableContainer>
   )

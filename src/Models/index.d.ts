@@ -6,9 +6,9 @@ interface StockProps {
   date: string
   quantity: number
   purchasePrice: number
-  currentPrice: number
+  currentPrice?: number
   ratio?: number
   actualGain?: number
-  status: status
+  status: Status
 }
 export type { StockProps, Status }

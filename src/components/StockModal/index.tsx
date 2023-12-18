@@ -37,7 +37,8 @@ const StockModal = ({ open, handleClose, addData }: StockModalProps): JSX.Elemen
   const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setRow((prev: StockProps) => ({
       ...prev,
-      [e.target.name]: e.target.name === 'code' ? e.target.value : Number(e.target.value)
+      [e.target.name]:
+        e.target.name === 'code' ? e.target.value.toUpperCase() : Number(e.target.value)
     }))
   }
 
