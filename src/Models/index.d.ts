@@ -10,5 +10,6 @@ interface StockProps {
   ratio?: number
   actualGain?: number
   status: Status
+  abc?: boolean
 }
 export type { StockProps, Status }
