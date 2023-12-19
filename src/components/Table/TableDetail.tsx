@@ -1,22 +1,22 @@
 import { Edit, Delete } from '@mui/icons-material'
 import { TableHead, TableRow, TableCell, TableBody, TextField, Button, Table } from '@mui/material'
 import React from 'react'
-import type { StockProps } from '../../Models'
+import type { Stock } from '../../Models'
 import moment from 'moment'
 
 interface TableDetailProps {
-  data: StockProps[]
-  editData?: StockProps
-  setEditData: (data: ((prev: StockProps | undefined) => StockProps) | StockProps) => void
-  setData: (data: StockProps[]) => void
+  data: Stock[]
+  editData?: Stock
+  setEditData: (data: ((prev: Stock | undefined) => Stock) | Stock) => void
+  setData: (data: Stock[]) => void
 }
 
 const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps): JSX.Element => {
-  const onEdit = (row: StockProps): void => {
-    setEditData((prev: StockProps | undefined) => {
-      if (prev?.id) {
+  const onEdit = (row: Stock): void => {
+    setEditData((prev: Stock | undefined) => {
+      if (prev?._id) {
         const data = {
-          id: '',
+          _id: '',
           code: '',
           date: moment(Date.now()).format('DD/MM/YYYY'),
           quantity: 0,
@@ -25,7 +25,7 @@ const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps)
           status: 'Buy',
           ratio: 0
         }
-        return data as StockProps
+        return data as Stock
       }
       return row
     })
@@ -34,15 +34,15 @@ const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps)
   const onChangeRow = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const name = e.target.name
     const value = name === 'code' ? e.target.value.toUpperCase() : Number(e.target.value)
-    if (editData?.id) {
-      const newEditData: StockProps = {
+    if (editData?._id) {
+      const newEditData: Stock = {
         ...editData,
         [name]: value
       }
       setEditData(newEditData)
       return setData(
         data.map((item) => {
-          if (item.id === newEditData.id) {
+          if (item._id === newEditData._id) {
             return { ...newEditData }
           }
           return { ...item }
@@ -51,7 +51,7 @@ const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps)
     }
   }
   const onDelete = (id: string): void => {
-    return setData(data.filter((item) => item.id !== id))
+    return setData(data.filter((item) => item._id !== id))
   }
 
   return (
@@ -70,28 +70,28 @@ const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps)
         {data.map((row, index) => (
           <TableRow key={index}>
             <TableCell>
-              {editData?.id === row.id ? (
+              {editData?._id === row._id ? (
                 <TextField name='code' value={row.code} onChange={(e) => onChangeRow(e)} />
               ) : (
                 row.code
               )}
             </TableCell>
             <TableCell>
-              {editData?.id === row.id ? (
+              {editData?._id === row._id ? (
                 <TextField name='date' value={row.date} onChange={(e) => onChangeRow(e)} />
               ) : (
                 row.date
               )}
             </TableCell>
             <TableCell>
-              {editData?.id === row.id ? (
+              {editData?._id === row._id ? (
                 <TextField name='quantity' value={row.quantity} onChange={(e) => onChangeRow(e)} />
               ) : (
                 row.quantity
               )}
             </TableCell>
             <TableCell>
-              {editData?.id === row.id ? (
+              {editData?._id === row._id ? (
                 <TextField
                   name='purchasePrice'
                   value={row.purchasePrice}
@@ -102,7 +102,7 @@ const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps)
               )}
             </TableCell>
             <TableCell>
-              {editData?.id === row.id ? (
+              {editData?._id === row._id ? (
                 <TextField name='status' value={row.status} onChange={(e) => onChangeRow(e)} />
               ) : (
                 row.status
@@ -120,7 +120,7 @@ const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps)
                 <Delete
                   color='error'
                   onClick={() => {
-                    onDelete(row.id)
+                    onDelete(row._id)
                   }}
                 />
               </Button>

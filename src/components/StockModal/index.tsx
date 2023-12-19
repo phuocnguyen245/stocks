@@ -1,8 +1,17 @@
-import { Box, Button, Divider, Modal, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Container,
+  Dialog,
+  Divider,
+  Modal,
+  TextField,
+  Typography
+} from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import moment from 'moment'
-import React, { useState } from 'react'
-import type { StockProps } from '../../Models'
+import React, { useEffect, useRef, useState } from 'react'
+import type { Stock } from '../../Models'
 import { v4 as uuid } from 'uuid'
 
 const style = {
@@ -19,13 +28,14 @@ const style = {
 interface StockModalProps {
   open: boolean
   handleClose: () => void
-  addData: (data: StockProps) => void
+  addData: (data: Stock) => void
 }
 
 const StockModal = ({ open, handleClose, addData }: StockModalProps): JSX.Element => {
-  const [row, setRow] = useState<StockProps>({
-    id: uuid(),
-    code: '',
+  const textFieldRef = useRef(null)
+  const [row, setRow] = useState<Stock>({
+    _id: uuid(),
+    code: '123',
     date: moment(Date.now()).format('DD/MM/YYYY'),
     quantity: 0,
     purchasePrice: 0,
@@ -35,12 +45,19 @@ const StockModal = ({ open, handleClose, addData }: StockModalProps): JSX.Elemen
   })
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setRow((prev: StockProps) => ({
+    setRow((prev: Stock) => ({
       ...prev,
       [e.target.name]:
         e.target.name === 'code' ? e.target.value.toUpperCase() : Number(e.target.value)
     }))
   }
+
+  useEffect(() => {
+    if (open && textFieldRef.current) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(textFieldRef.current as any).focus()
+    }
+  }, [open])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onChangeDate = (date: any): void => {
@@ -57,62 +74,87 @@ const StockModal = ({ open, handleClose, addData }: StockModalProps): JSX.Elemen
   }
 
   return (
-    <Modal open={open} onClose={handleClose}>
-      <Box sx={style}>
-        <Box paddingBottom={2} paddingX={4}>
-          <Typography>Add Stock</Typography>
+    <Box
+      position='absolute'
+      top='0'
+      width='100%'
+      height='100%'
+      overflow='hidden'
+      bgcolor='rgba(0,0,0,.2)'
+      display={open ? 'block' : 'none'}
+    >
+      <Container
+        maxWidth='sm'
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 100
+        }}
+      >
+        <Box bgcolor='#fff'>
+          <Box py={2} px={1}>
+            <Box paddingBottom={2} paddingX={4}>
+              <Typography>Add Stock</Typography>
+            </Box>
+            <Divider />
+            <Box paddingX={4} paddingY={1} component='form'>
+              <TextField
+                label='Code'
+                name='code'
+                value={row.code}
+                autoFocus
+                inputProps={{ autoFocus: true }}
+                fullWidth
+                onChange={onChange}
+                sx={{ margin: '8px 0' }}
+                inputRef={textFieldRef}
+              />
+              <DatePicker
+                label='Date'
+                sx={{ width: '100%', margin: '8px 0' }}
+                onChange={onChangeDate}
+                defaultValue={moment(Date.now())}
+              />
+              <TextField
+                label='Quantity'
+                name='quantity'
+                fullWidth
+                sx={{ margin: '8px 0' }}
+                onChange={onChange}
+                type='number'
+              />
+              <TextField
+                label='Purchase Price'
+                name='purchasePrice'
+                fullWidth
+                sx={{ margin: '8px 0' }}
+                onChange={onChange}
+                type='number'
+              />
+              <TextField
+                label='Current Price'
+                name='currentPrice'
+                fullWidth
+                sx={{ margin: '8px 0' }}
+                onChange={onChange}
+                type='number'
+              />
+            </Box>
+            <Divider />
+            <Box textAlign='end' paddingX={4} paddingTop={2}>
+              <Button color='warning' variant='contained' onClick={handleClose}>
+                Cancel
+              </Button>
+              <Button variant='contained' sx={{ marginLeft: 2 }} onClick={handleSave}>
+                Save
+              </Button>
+            </Box>
+          </Box>
         </Box>
-        <Divider />
-        <Box paddingX={4} paddingY={1}>
-          <TextField
-            label='Code'
-            name='code'
-            fullWidth
-            onChange={onChange}
-            sx={{ margin: '8px 0' }}
-          />
-          <DatePicker
-            label='Date'
-            sx={{ width: '100%', margin: '8px 0' }}
-            onChange={onChangeDate}
-            defaultValue={moment(Date.now())}
-          />
-          <TextField
-            label='Quantity'
-            name='quantity'
-            fullWidth
-            sx={{ margin: '8px 0' }}
-            onChange={onChange}
-            type='number'
-          />
-          <TextField
-            label='Purchase Price'
-            name='purchasePrice'
-            fullWidth
-            sx={{ margin: '8px 0' }}
-            onChange={onChange}
-            type='number'
-          />
-          <TextField
-            label='Current Price'
-            name='currentPrice'
-            fullWidth
-            sx={{ margin: '8px 0' }}
-            onChange={onChange}
-            type='number'
-          />
-        </Box>
-        <Divider />
-        <Box textAlign='end' paddingX={4} paddingTop={2}>
-          <Button color='error' variant='contained' onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button color='success' variant='contained' sx={{ marginLeft: 2 }} onClick={handleSave}>
-            Save
-          </Button>
-        </Box>
-      </Box>
-    </Modal>
+      </Container>
+    </Box>
   )
 }
 

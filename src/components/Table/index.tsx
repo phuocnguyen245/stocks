@@ -2,38 +2,26 @@ import { Box, Button } from '@mui/material'
 import Paper from '@mui/material/Paper'
 import TableContainer from '@mui/material/TableContainer'
 import React, { useEffect, useState } from 'react'
-import { v4 as uuid } from 'uuid'
-import type { Status, StockProps } from '../../Models'
+import type { Stock } from '../../Models'
 import useModal from '../../hooks/useModals'
+import { useGetStocksQuery } from '../../services/stocks.services'
 import StockModal from '../StockModal'
-import TableDetail from './TableDetail'
 import TableCurrent from './TableCurrent'
+import TableDetail from './TableDetail'
 
 const BasicTable = (): JSX.Element => {
   const { open, toggle } = useModal()
-  const [editData, setEditData] = useState<StockProps>()
-  const [data, setData] = useState<StockProps[]>([])
+  const [editData, setEditData] = useState<Stock>()
+  const [data, setData] = useState<Stock[]>([])
+  const { data: stocksData } = useGetStocksQuery({}, { refetchOnMountOrArgChange: true })
 
   useEffect(() => {
-    setData(
-      [
-        {
-          id: uuid(),
-          code: 'DIG',
-          date: '12/10/2023',
-          quantity: 100,
-          purchasePrice: 1,
-          ratio: 1,
-          actualGain: 1,
-          status: 'Buy' as Status
-        }
-      ].map((item) => ({
-        ...item
-      }))
-    )
-  }, [])
+    if (stocksData?.data?.data?.length) {
+      setData(stocksData.data.data)
+    }
+  }, [stocksData])
 
-  const addData = (row: StockProps): void => {
+  const addData = (row: Stock): void => {
     setData((prev) => [
       ...prev,
       {

@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material'
-import type { StockProps } from '../../Models'
+import type { Stock } from '../../Models'
 import { ratio, removeDuplicatesByKey } from '../../utils'
 import { Edit } from '@mui/icons-material'
 import moment from 'moment'
+import { useGetCurrentStocksQuery } from '../../services/stocks.services'
 
 interface TableDetailProps {
-  data: StockProps[]
-  editData?: StockProps
-  setEditData: (data: ((prev: StockProps | undefined) => StockProps) | StockProps) => void
-  setData: (data: StockProps[]) => void
+  data: Stock[]
+  editData?: Stock
+  setEditData: (data: ((prev: Stock | undefined) => Stock) | Stock) => void
+  setData: (data: Stock[]) => void
 }
 
 const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
-  const [data, setData] = useState<StockProps[]>([])
-  const [editData, setEditData] = useState<StockProps>()
+  const [data, setData] = useState<Stock[]>([])
+  const [editData, setEditData] = useState<Stock>()
+
+  const { data: currentStockData } = useGetCurrentStocksQuery({})
+
+  useEffect(() => {
+    if (currentStockData?.data?.data) {
+      setData(currentStockData.data.data)
+    }
+  }, [currentStockData])
 
   useEffect(() => {
     if (rawData.length) {
@@ -32,7 +41,8 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
             ...item,
             quantity,
             purchasePrice: averagePrice,
-            ratio: ratio(item?.currentPrice ?? 0, averagePrice)
+            ratio: ratio(item?.currentPrice ?? 0, averagePrice),
+            actualGain: quantity * (item.currentPrice ?? 0)
           }
         }
         return { ...item, ratio: ratio(item?.currentPrice ?? 0, item.purchasePrice) }
@@ -43,11 +53,11 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
     }
   }, [rawData])
 
-  const onEdit = (row: StockProps): void => {
-    setEditData((prev: StockProps | undefined) => {
-      if (prev?.id) {
+  const onEdit = (row: Stock): void => {
+    setEditData((prev: Stock | undefined) => {
+      if (prev?.code) {
         const data = {
-          id: '',
+          _id: '',
           code: '',
           date: moment(Date.now()).format('DD/MM/YYYY'),
           quantity: 0,
@@ -56,7 +66,7 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
           status: 'Buy',
           ratio: 0
         }
-        return data as StockProps
+        return data as Stock
       }
       return row
     })
@@ -65,8 +75,9 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
   const onChangeRow = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const name = e.target.name
     const value = name === 'code' ? e.target.value.toUpperCase() : Number(e.target.value)
-    if (editData?.id) {
-      const newEditData: StockProps = {
+
+    if (editData?.code) {
+      const newEditData: Stock = {
         ...editData,
         [name]: value,
         actualGain:
@@ -78,10 +89,11 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
         ratio:
           name === 'currentPrice' ? ratio(value as number, editData.purchasePrice) : editData.ratio
       }
+
       setEditData(newEditData)
-      return setData(
+      setData(
         data.map((item) => {
-          if (item.id === newEditData.id) {
+          if (item.code.toUpperCase() === newEditData.code.toUpperCase()) {
             return { ...newEditData }
           }
           return { ...item }
@@ -95,7 +107,6 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
       <TableHead>
         <TableRow>
           <TableCell>Code</TableCell>
-          <TableCell>Date</TableCell>
           <TableCell>Quantity</TableCell>
           <TableCell>Average Price</TableCell>
           <TableCell>Current Price</TableCell>
@@ -108,21 +119,22 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
         {data.map((row, index) => (
           <TableRow key={index}>
             <TableCell>{row.code}</TableCell>
-            <TableCell>{row.date}</TableCell>
             <TableCell>{row.quantity}</TableCell>
             <TableCell>{row.purchasePrice}</TableCell>
             <TableCell>
-              {editData?.id === row.id ? (
+              {editData?.code.toUpperCase() === row.code.toUpperCase() ? (
                 <TextField
                   name='currentPrice'
-                  value={row.currentPrice}
+                  value={editData.currentPrice ?? 0}
                   onChange={(e) => onChangeRow(e)}
+                  type='number'
+                  autoFocus
                 />
               ) : (
                 row.currentPrice
               )}
             </TableCell>
-            <TableCell>{`${row.ratio ?? 0}%`}</TableCell>
+            <TableCell>{`${row.ratio?.toFixed(2) ?? 0}%`}</TableCell>
             <TableCell>{row.actualGain}</TableCell>
             <TableCell>
               <Button

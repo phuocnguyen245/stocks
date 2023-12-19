@@ -13,7 +13,7 @@ const useModal = (_open?: boolean): UseModalProps => {
   })
 
   const toggle = (): void => {
-    setOpen((prev) => !prev)
+    setOpen((prev: boolean) => !prev)
   }
 
   const show = (): void => {

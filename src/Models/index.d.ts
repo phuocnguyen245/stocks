@@ -1,7 +1,7 @@
 type Status = 'Buy' | 'Sell'
 
-interface StockProps {
-  id: string
+interface Stock {
+  _id: string
   code: string
   date: string
   quantity: number
@@ -12,4 +12,18 @@ interface StockProps {
   status: Status
   abc?: boolean
 }
-export type { StockProps, Status }
+export interface ResponsePagination<T> {
+  data?: T
+  size: number
+  page: number
+  totalItems: number
+}
+export interface ResponseType<T> {
+  data?: T
+  message?: ResponseMessage
+  status?: number
+  error?: string
+  subMessage?: string
+}
+
+export type { Stock, Status, ResponsePagination, ResponseType }
