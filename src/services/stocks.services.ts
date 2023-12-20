@@ -18,8 +18,15 @@ export const StockService = createApi({
         url: '/stocks/current',
         params
       })
+    }),
+    getStockStatistic: builder.query<ResponseType<ResponsePagination<[number[]]>>, any>({
+      query: ({ code, params }) => ({
+        url: `/stocks/statistic/${code}`,
+        params
+      })
     })
   })
 })
 
-export const { useGetStocksQuery, useGetCurrentStocksQuery } = StockService
+export const { useGetStocksQuery, useGetCurrentStocksQuery, useGetStockStatisticQuery } =
+  StockService

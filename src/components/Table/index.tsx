@@ -8,6 +8,7 @@ import { useGetStocksQuery } from '../../services/stocks.services'
 import StockModal from '../StockModal'
 import TableCurrent from './TableCurrent'
 import TableDetail from './TableDetail'
+import StockChart from './Chart'
 
 const BasicTable = (): JSX.Element => {
   const { open, toggle } = useModal()
@@ -56,6 +57,7 @@ const BasicTable = (): JSX.Element => {
           />
         </Box>
       </Box>
+      <StockChart />
       <StockModal open={open} handleClose={toggle} addData={addData} />
     </TableContainer>
   )
