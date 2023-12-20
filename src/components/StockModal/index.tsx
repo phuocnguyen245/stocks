@@ -35,7 +35,7 @@ const StockModal = ({ open, handleClose, addData }: StockModalProps): JSX.Elemen
   const textFieldRef = useRef(null)
   const [row, setRow] = useState<Stock>({
     _id: uuid(),
-    code: '123',
+    code: '',
     date: moment(Date.now()).format('DD/MM/YYYY'),
     quantity: 0,
     purchasePrice: 0,

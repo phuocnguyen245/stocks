@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material'
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material'
 import type { Stock } from '../../Models'
 import { ratio, removeDuplicatesByKey } from '../../utils'
 import { Edit } from '@mui/icons-material'
@@ -11,6 +20,10 @@ interface TableDetailProps {
   editData?: Stock
   setEditData: (data: ((prev: Stock | undefined) => Stock) | Stock) => void
   setData: (data: Stock[]) => void
+}
+
+export const getStatusLabel = (status: string): JSX.Element => {
+  return <Typography>123</Typography>
 }
 
 const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
@@ -50,6 +63,8 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
 
       const removedDuplicateCode = removeDuplicatesByKey(combinedStocks, 'code')
       setData(removedDuplicateCode)
+    } else {
+      setData([])
     }
   }, [rawData])
 

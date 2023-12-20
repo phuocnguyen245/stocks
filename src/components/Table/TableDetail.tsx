@@ -1,8 +1,18 @@
 import { Edit, Delete } from '@mui/icons-material'
-import { TableHead, TableRow, TableCell, TableBody, TextField, Button, Table } from '@mui/material'
+import {
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TextField,
+  Button,
+  Table,
+  Box
+} from '@mui/material'
 import React from 'react'
 import type { Stock } from '../../Models'
 import moment from 'moment'
+import { Label } from '../MUIComponents'
 
 interface TableDetailProps {
   data: Stock[]
@@ -33,7 +43,8 @@ const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps)
 
   const onChangeRow = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const name = e.target.name
-    const value = name === 'code' ? e.target.value.toUpperCase() : Number(e.target.value)
+    const value =
+      name === 'code' || name === 'status' ? e.target.value.toUpperCase() : Number(e.target.value)
     if (editData?._id) {
       const newEditData: Stock = {
         ...editData,
@@ -63,7 +74,7 @@ const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps)
           <TableCell>Quantity</TableCell>
           <TableCell>Purchase Price</TableCell>
           <TableCell>Status</TableCell>
-          <TableCell>Actions</TableCell>
+          <TableCell align='center'>Actions</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -105,25 +116,31 @@ const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps)
               {editData?._id === row._id ? (
                 <TextField name='status' value={row.status} onChange={(e) => onChangeRow(e)} />
               ) : (
-                row.status
+                <Label type={row.status.toUpperCase() === 'BUY' ? 'success' : 'primary'}>
+                  {row.status}
+                </Label>
               )}
             </TableCell>
             <TableCell>
-              <Button
-                onClick={() => {
-                  onEdit(row)
-                }}
-              >
-                <Edit />
-              </Button>
-              <Button>
-                <Delete
-                  color='error'
+              <Box display='flex' justifyContent='space-between' alignItems='center'>
+                <Button
+                  sx={{ width: '40px', minWidth: 'unset' }}
+                  color='info'
                   onClick={() => {
-                    onDelete(row._id)
+                    onEdit(row)
                   }}
-                />
-              </Button>
+                >
+                  <Edit />
+                </Button>
+                <Button sx={{ width: '40px', minWidth: 'unset' }}>
+                  <Delete
+                    color='error'
+                    onClick={() => {
+                      onDelete(row._id)
+                    }}
+                  />
+                </Button>
+              </Box>
             </TableCell>
           </TableRow>
         ))}
