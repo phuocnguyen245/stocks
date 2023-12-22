@@ -1,29 +1,10 @@
-import {
-  Box,
-  Button,
-  Container,
-  Dialog,
-  Divider,
-  Modal,
-  TextField,
-  Typography
-} from '@mui/material'
+import { Box, Button, Container, Divider, TextField, Typography } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import moment from 'moment'
 import React, { useEffect, useRef, useState } from 'react'
-import type { Stock } from '../../Models'
 import { v4 as uuid } from 'uuid'
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  py: 2
-}
+import type { Stock } from '../../Models'
+import { useCreateStockMutation } from '../../services/stocks.services'
 
 interface StockModalProps {
   open: boolean
@@ -33,6 +14,8 @@ interface StockModalProps {
 
 const StockModal = ({ open, handleClose, addData }: StockModalProps): JSX.Element => {
   const textFieldRef = useRef(null)
+  const [createStock] = useCreateStockMutation()
+
   const [row, setRow] = useState<Stock>({
     _id: uuid(),
     code: '',
@@ -67,10 +50,19 @@ const StockModal = ({ open, handleClose, addData }: StockModalProps): JSX.Elemen
     }))
   }
 
-  const handleSave = (): void => {
-    addData({
-      ...row
-    })
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const handleSave = async () => {
+    try {
+      const { _id, ...rest } = row
+      const response = await createStock({ ...rest }).unwrap()
+      if (response.data) {
+        return addData({
+          ...response.data
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (

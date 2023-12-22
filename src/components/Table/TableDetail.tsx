@@ -7,12 +7,14 @@ import {
   TextField,
   Button,
   Table,
-  Box
+  Box,
+  Switch
 } from '@mui/material'
 import React from 'react'
 import type { Stock } from '../../Models'
 import moment from 'moment'
 import { Label } from '../MUIComponents'
+import { useDeleteStockMutation, useUpdateStockMutation } from '../../services/stocks.services'
 
 interface TableDetailProps {
   data: Stock[]
@@ -22,34 +24,50 @@ interface TableDetailProps {
 }
 
 const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps): JSX.Element => {
-  const onEdit = (row: Stock): void => {
-    setEditData((prev: Stock | undefined) => {
-      if (prev?._id) {
-        const data = {
-          _id: '',
-          code: '',
-          date: moment(Date.now()).format('DD/MM/YYYY'),
-          quantity: 0,
-          purchasePrice: 0,
-          currentPrice: 0,
-          status: 'Buy',
-          ratio: 0
-        }
-        return data as Stock
+  const [updateStocks] = useUpdateStockMutation()
+  const [deleteStocks] = useDeleteStockMutation()
+
+  const onEdit = async (row: Stock): Promise<void> => {
+    if (editData?._id) {
+      const defaultRow: Stock = {
+        _id: '',
+        code: '',
+        date: moment(Date.now()).format('DD/MM/YYYY'),
+        quantity: 0,
+        purchasePrice: 0,
+        currentPrice: 0,
+        status: 'Buy',
+        ratio: 0
       }
-      return row
-    })
+      await updateStocks(row).unwrap()
+      return setEditData(defaultRow)
+    }
+
+    return setEditData(row)
   }
 
   const onChangeRow = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const name = e.target.name
-    const value =
-      name === 'code' || name === 'status' ? e.target.value.toUpperCase() : Number(e.target.value)
+    const value = e.target.value
+
+    let convertedValue: string | number = ''
+    switch (name) {
+      case 'code':
+        convertedValue = value.toUpperCase()
+        break
+      case 'status':
+        convertedValue = (e.target as HTMLInputElement).checked ? 'Buy' : 'Sell'
+        break
+      default:
+        convertedValue = Number(value)
+    }
+
     if (editData?._id) {
       const newEditData: Stock = {
         ...editData,
-        [name]: value
+        [name]: convertedValue
       }
+
       setEditData(newEditData)
       return setData(
         data.map((item) => {
@@ -61,7 +79,9 @@ const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps)
       )
     }
   }
-  const onDelete = (id: string): void => {
+
+  const onDelete = async (id: string): Promise<void> => {
+    await deleteStocks({ _id: id })
     return setData(data.filter((item) => item._id !== id))
   }
 
@@ -80,41 +100,61 @@ const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps)
       <TableBody>
         {data.map((row, index) => (
           <TableRow key={index}>
-            <TableCell>
+            <TableCell>{row.code}</TableCell>
+            <TableCell>{row.date}</TableCell>
+            <TableCell width='100px'>
               {editData?._id === row._id ? (
-                <TextField name='code' value={row.code} onChange={(e) => onChangeRow(e)} />
-              ) : (
-                row.code
-              )}
-            </TableCell>
-            <TableCell>
-              {editData?._id === row._id ? (
-                <TextField name='date' value={row.date} onChange={(e) => onChangeRow(e)} />
-              ) : (
-                row.date
-              )}
-            </TableCell>
-            <TableCell>
-              {editData?._id === row._id ? (
-                <TextField name='quantity' value={row.quantity} onChange={(e) => onChangeRow(e)} />
+                <TextField
+                  sx={[
+                    { width: '90px', padding: '0' },
+                    {
+                      '& .MuiInputBase-root': {
+                        height: '32px'
+                      }
+                    }
+                  ]}
+                  name='quantity'
+                  value={row.quantity}
+                  onChange={(e) => onChangeRow(e)}
+                  type='number'
+                  inputProps={{
+                    step: 1
+                  }}
+                />
               ) : (
                 row.quantity
               )}
             </TableCell>
-            <TableCell>
+            <TableCell width='160px'>
               {editData?._id === row._id ? (
                 <TextField
+                  sx={[
+                    { width: '120px', padding: '0' },
+                    {
+                      '& .MuiInputBase-root': {
+                        height: '32px'
+                      }
+                    }
+                  ]}
                   name='purchasePrice'
                   value={row.purchasePrice}
                   onChange={(e) => onChangeRow(e)}
+                  type='number'
+                  inputProps={{ step: '0.1' }}
                 />
               ) : (
                 row.purchasePrice
               )}
             </TableCell>
-            <TableCell>
+            <TableCell width='92px'>
               {editData?._id === row._id ? (
-                <TextField name='status' value={row.status} onChange={(e) => onChangeRow(e)} />
+                <Switch
+                  sx={{ height: '32px' }}
+                  name='status'
+                  color='secondary'
+                  checked={row.status === 'Buy'}
+                  onChange={(e) => onChangeRow(e)}
+                />
               ) : (
                 <Label type={row.status.toUpperCase() === 'BUY' ? 'success' : 'primary'}>
                   {row.status}
@@ -126,17 +166,15 @@ const TableDetail = ({ data, editData, setEditData, setData }: TableDetailProps)
                 <Button
                   sx={{ width: '40px', minWidth: 'unset' }}
                   color='info'
-                  onClick={() => {
-                    onEdit(row)
-                  }}
+                  onClick={async () => await onEdit(row)}
                 >
                   <Edit />
                 </Button>
                 <Button sx={{ width: '40px', minWidth: 'unset' }}>
                   <Delete
                     color='error'
-                    onClick={() => {
-                      onDelete(row._id)
+                    onClick={async () => {
+                      await onDelete(row._id)
                     }}
                   />
                 </Button>

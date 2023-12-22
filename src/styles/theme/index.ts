@@ -7,18 +7,14 @@ const theme = createTheme({
     }
   },
   components: {
-    MuiTextField: {
+    MuiSwitch: {
       styleOverrides: {
-        // root: {
-        //   '& .MuiOutlinedInput-root': {
-        //     '&:hover fieldset': {
-        //       borderColor: 'rgba(0, 0, 0, 0.23)'
-        //     },
-        //     '&.Mui-focused fieldset': {
-        //       borderColor: 'rgba(0, 0, 0, 0.23)'
-        //     }
-        //   }
-        // }
+        root: {
+          '& .MuiSwitch-switchBase': {
+            padding: '5px',
+            marginLeft: '4px'
+          }
+        }
       }
     }
   }

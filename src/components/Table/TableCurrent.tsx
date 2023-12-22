@@ -43,13 +43,14 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
       const filterBuyStocks = rawData.filter((item) => item.status === 'Buy')
       const combinedStocks = filterBuyStocks.map((item) => {
         const filterByCode = filterBuyStocks.filter((filterITem) => item.code === filterITem.code)
-        if (filterByCode.length > 1) {
+        if (filterByCode.length >= 1) {
           const quantity = filterByCode.reduce((acc, cur) => acc + cur.quantity, 0)
           const averagePrice = Number(
             (
               filterByCode.reduce((acc, cur) => acc + cur.purchasePrice, 0) / filterByCode.length
             ).toFixed(2)
           )
+
           return {
             ...item,
             quantity,

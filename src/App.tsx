@@ -15,9 +15,7 @@ const App = (): JSX.Element => {
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale='vi'>
-          {routes}
-        </LocalizationProvider>
+        <LocalizationProvider dateAdapter={AdapterMoment}>{routes}</LocalizationProvider>
       </Provider>
     </ThemeProvider>
   )

@@ -24,11 +24,11 @@ const routes: RouteObject[] = [
       {
         path: '/',
         element: <Stocks />
+      },
+      {
+        path: '/abc',
+        element: <Stocks />
       }
-      // {
-      //   path: '*',
-      //   element: <Status404 />
-      // }
     ]
   }
 ]

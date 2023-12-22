@@ -6,7 +6,7 @@ import AnnotationsAdvanced from 'highcharts/modules/annotations-advanced.js'
 import PriceIndicator from 'highcharts/modules/price-indicator.js'
 import FullScreen from 'highcharts/modules/full-screen.js'
 import StockTools from 'highcharts/modules/stock-tools.js'
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 
 import { useGetStockStatisticQuery } from '../../services/stocks.services'
 
@@ -20,7 +20,7 @@ StockTools(Highcharts)
 const StockChart = (): JSX.Element => {
   const [data, setData] = useState<[number[]]>([[]])
   const { data: stockStatistic } = useGetStockStatisticQuery(
-    { code: 'DIG' },
+    { code: 'PDR' },
     { refetchOnMountOrArgChange: true }
   )
 
@@ -85,8 +85,8 @@ const StockChart = (): JSX.Element => {
     },
     series: [
       {
-        name: 'DIG',
-        id: 'DIG',
+        name: 'PDR',
+        id: 'PDR',
         type: 'candlestick',
         color: '#FF6F6F',
         upColor: '#50e51a',
@@ -94,14 +94,14 @@ const StockChart = (): JSX.Element => {
       },
       {
         type: 'column',
-        id: 'DIG-volume',
-        name: 'DIG Volume',
+        id: 'PDR-volume',
+        name: 'PDR Volume',
         data: volume,
         yAxis: 1
       },
       {
         type: 'sma',
-        linkedTo: 'DIG',
+        linkedTo: 'PDR',
         zIndex: 1,
         index: 20,
         params: {
@@ -110,7 +110,7 @@ const StockChart = (): JSX.Element => {
       },
       {
         type: 'sma',
-        linkedTo: 'DIG',
+        linkedTo: 'PDR',
         zIndex: 1,
         index: 20,
         params: {
@@ -119,7 +119,7 @@ const StockChart = (): JSX.Element => {
       },
       {
         type: 'sma',
-        linkedTo: 'DIG',
+        linkedTo: 'PDR',
         zIndex: 1,
         index: 20,
         params: {
@@ -148,4 +148,4 @@ const StockChart = (): JSX.Element => {
   )
 }
 
-export default StockChart
+export default memo(StockChart)

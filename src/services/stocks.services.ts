@@ -24,9 +24,35 @@ export const StockService = createApi({
         url: `/stocks/statistic/${code}`,
         params
       })
+    }),
+    createStock: builder.mutation<ResponseType<Stock>, any>({
+      query: (body) => ({
+        url: '/stocks',
+        body,
+        method: 'POST'
+      })
+    }),
+    updateStock: builder.mutation<ResponseType<ResponsePagination<[number[]]>>, any>({
+      query: ({ _id, ...rest }) => ({
+        url: `/stocks/${_id}`,
+        body: rest,
+        method: 'PATCH'
+      })
+    }),
+    deleteStock: builder.mutation<ResponseType<ResponsePagination<[number[]]>>, any>({
+      query: ({ _id }) => ({
+        url: `/stocks/${_id}`,
+        method: 'Delete'
+      })
     })
   })
 })
 
-export const { useGetStocksQuery, useGetCurrentStocksQuery, useGetStockStatisticQuery } =
-  StockService
+export const {
+  useGetStocksQuery,
+  useGetCurrentStocksQuery,
+  useGetStockStatisticQuery,
+  useCreateStockMutation,
+  useUpdateStockMutation,
+  useDeleteStockMutation
+} = StockService
