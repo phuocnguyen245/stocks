@@ -107,6 +107,24 @@ const StockChart = (): JSX.Element => {
         params: {
           period: 20
         }
+      },
+      {
+        type: 'sma',
+        linkedTo: 'DIG',
+        zIndex: 1,
+        index: 20,
+        params: {
+          period: 50
+        }
+      },
+      {
+        type: 'sma',
+        linkedTo: 'DIG',
+        zIndex: 1,
+        index: 20,
+        params: {
+          period: 100
+        }
       }
     ],
     responsive: {
