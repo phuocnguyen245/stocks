@@ -15,8 +15,14 @@ export const StockService = createApi({
     }),
     getCurrentStocks: builder.query<ResponseType<ResponsePagination<Stock[]>>, any>({
       query: (params) => ({
-        url: '/stocks/current',
+        url: '/current-stocks',
         params
+      })
+    }),
+    deleteCurrentStock: builder.mutation<ResponseType<{ message: string }>, any>({
+      query: ({ code }) => ({
+        url: `/current-stocks/${code}`,
+        method: 'Delete'
       })
     }),
     getStockStatistic: builder.query<ResponseType<ResponsePagination<[number[]]>>, any>({
@@ -54,5 +60,6 @@ export const {
   useGetStockStatisticQuery,
   useCreateStockMutation,
   useUpdateStockMutation,
-  useDeleteStockMutation
+  useDeleteStockMutation,
+  useDeleteCurrentStockMutation
 } = StockService

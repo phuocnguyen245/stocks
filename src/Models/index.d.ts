@@ -1,4 +1,5 @@
 type Status = 'Buy' | 'Sell'
+type LabelType = 'success' | 'error' | 'warning' | 'primary' | 'secondary' | 'info'
 
 interface Stock {
   _id: string
@@ -7,10 +8,11 @@ interface Stock {
   quantity: number
   purchasePrice: number
   currentPrice?: number
+  sellPrice: number
   ratio?: number
   actualGain?: number
   status: Status
-  abc?: boolean
+  average?: number
 }
 export interface ResponsePagination<T> {
   data?: T
@@ -26,4 +28,4 @@ export interface ResponseType<T> {
   subMessage?: string
 }
 
-export type { Stock, Status, ResponsePagination, ResponseType }
+export type { Stock, Status, ResponsePagination, ResponseType, LabelType }

@@ -15,7 +15,7 @@ const Loader = (Component: any) => (props: any) => (
   </Suspense>
 )
 
-const Stocks = Loader(lazy(async () => await import('./components/Table/')))
+const Stocks = Loader(lazy(async () => await import('../src/modules/TablePage/Table')))
 
 const routes: RouteObject[] = [
   {

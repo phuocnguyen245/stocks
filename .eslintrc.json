@@ -14,7 +14,7 @@
     "sourceType": "module"
   },
   "plugins": ["react"],
-  "ignorePatterns": ["highcharts.d.ts"],
+  "ignorePatterns": ["highcharts.d.ts", "config-overrides.ts"],
   "rules": {
     "@typescript-eslint/restrict-plus-operands": "off",
     "@typescript-eslint/strict-boolean-expressions": "off",

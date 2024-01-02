@@ -1,8 +1,8 @@
-export const ratio = (current: number, init: number): number => {
+const ratio = (current: number, init: number): number => {
   return Number((((current - init) / init) * 100).toFixed(2))
 }
 
-export const removeDuplicatesByKey = <T>(arr: T[], key: string): T[] => {
+const removeDuplicatesByKey = <T>(arr: T[], key: string): T[] => {
   const unique: Record<string, boolean> = {}
   return arr.reduce((result: T[], obj: T) => {
     const keyValue = obj[key as keyof T] as string
@@ -13,3 +13,9 @@ export const removeDuplicatesByKey = <T>(arr: T[], key: string): T[] => {
     return result
   }, [])
 }
+
+const formatVND = (number: number): string => {
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number)
+}
+
+export { formatVND, removeDuplicatesByKey, ratio }

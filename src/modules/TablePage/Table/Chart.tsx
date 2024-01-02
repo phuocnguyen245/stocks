@@ -8,7 +8,7 @@ import FullScreen from 'highcharts/modules/full-screen.js'
 import StockTools from 'highcharts/modules/stock-tools.js'
 import React, { memo, useEffect, useState } from 'react'
 
-import { useGetStockStatisticQuery } from '../../services/stocks.services'
+import { useGetStockStatisticQuery } from 'src/services/stocks.services'
 
 Indicators(Highcharts)
 DragPanes(Highcharts)

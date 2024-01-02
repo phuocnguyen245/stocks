@@ -1,23 +1,42 @@
-import { createTheme } from '@mui/material'
+import { type Theme, createTheme, colors } from '@mui/material'
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#A020F0'
-    }
-  },
-  components: {
-    MuiSwitch: {
-      styleOverrides: {
-        root: {
-          '& .MuiSwitch-switchBase': {
-            padding: '5px',
-            marginLeft: '4px'
+const onDarkTheme = (mode: 'dark' | 'light'): Theme => {
+  const theme = createTheme({
+    palette: {
+      mode,
+      primary: {
+        main: '#A020F0'
+      },
+      secondary: {
+        main: '#31e631'
+      },
+      text: {
+        primary: mode === 'dark' ? '#fff' : '#000',
+        secondary: mode === 'dark' ? '#000' : '#fff'
+      }
+    },
+    components: {
+      MuiSwitch: {
+        styleOverrides: {
+          root: {
+            '& .MuiSwitch-switchBase': {
+              padding: '8px'
+            }
+          }
+        }
+      },
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            '& label': {
+              color: mode === 'dark' ? '#fff' : '#000'
+            }
           }
         }
       }
     }
-  }
-})
+  })
+  return theme
+}
 
-export default theme
+export default onDarkTheme('dark')
