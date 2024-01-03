@@ -43,9 +43,9 @@ const TableDetail = ({
         _id: '',
         code: '',
         date: moment(Date.now()).format('DD/MM/YYYY'),
-        quantity: 0,
-        purchasePrice: 0,
-        currentPrice: 0,
+        volume: 0,
+        orderPrice: 0,
+        marketPrice: 0,
         status: 'Buy',
         ratio: 0,
         sellPrice: 0
@@ -108,8 +108,8 @@ const TableDetail = ({
         <TableRow>
           <TableCell>Code</TableCell>
           <TableCell>Date</TableCell>
-          <TableCell>Quantity</TableCell>
-          <TableCell>Purchase</TableCell>
+          <TableCell>Volume</TableCell>
+          <TableCell>Order</TableCell>
           <TableCell>Selling</TableCell>
           <TableCell align='center'>Status</TableCell>
           <TableCell align='center'>Actions</TableCell>
@@ -130,8 +130,8 @@ const TableDetail = ({
                       }
                     }
                   ]}
-                  name='quantity'
-                  value={row.quantity}
+                  name='volume'
+                  value={row.volume}
                   onChange={(e) => onChangeRow(e)}
                   type='number'
                   inputProps={{
@@ -139,7 +139,7 @@ const TableDetail = ({
                   }}
                 />
               ) : (
-                row.quantity
+                row.volume
               )}
             </TableCell>
             <TableCell width='25%'>
@@ -153,15 +153,15 @@ const TableDetail = ({
                       }
                     }
                   ]}
-                  name='purchasePrice'
-                  value={row.purchasePrice}
+                  name='orderPrice'
+                  value={row.orderPrice}
                   onChange={(e) => onChangeRow(e)}
                   type='number'
                   inputProps={{ step: '0.1' }}
                   autoFocus
                 />
               ) : (
-                row.purchasePrice
+                row.orderPrice
               )}
             </TableCell>
             <TableCell width='25%'>{row.sellPrice}</TableCell>

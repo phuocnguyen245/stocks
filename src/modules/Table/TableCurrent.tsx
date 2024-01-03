@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { Delete, Edit, RemoveRedEyeSharp } from '@mui/icons-material'
 import {
   Box,
   Button,
@@ -10,18 +10,18 @@ import {
   TextField,
   Typography
 } from '@mui/material'
-import type { LabelType, Stock } from 'src/Models'
-import { formatVND, ratio, removeDuplicatesByKey } from 'src/utils'
-import { Delete, Edit, RemoveRedEyeSharp } from '@mui/icons-material'
 import moment from 'moment'
+import React, { useCallback, useEffect, useState } from 'react'
+import type { LabelType, Stock } from 'src/Models'
+import { getBgColor } from 'src/Models/constants'
+import { Label } from 'src/components/MUIComponents'
 import {
   useDeleteCurrentStockMutation,
   useGetCurrentStocksQuery
 } from 'src/services/stocks.services'
-import { Label } from 'src/components/MUIComponents'
-import { getBgColor } from 'src/Models/constants'
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { refetchCurrentStocks } from 'src/store/slices/stockSlice'
+import { formatVND, ratio } from 'src/utils'
 
 interface TableDetailProps {
   data: Stock[]
@@ -51,8 +51,8 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
       setData(
         currentStockData.data.data.map((item: Stock) => ({
           ...item,
-          purchasePrice: Number(item.purchasePrice?.toFixed(2)),
-          actualGain: Number((item?.actualGain ?? 0).toFixed(2))
+          orderPrice: Number(item.orderPrice?.toFixed(2)),
+          investedValue: Number((item?.investedValue ?? 0).toFixed(2))
         }))
       )
     }
@@ -67,36 +67,6 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
     }
   }, [isRefetchCurrentStock])
 
-  // useEffect(() => {
-  //   if (rawData.length) {
-  //     const filterBuyStocks = rawData.filter((item) => item.status === 'Buy')
-  //     const combinedStocks = filterBuyStocks.map((item) => {
-  //       const filterByCode = filterBuyStocks.filter((filterITem) => item.code === filterITem.code)
-  //       if (filterByCode.length >= 1) {
-  //         const quantity = filterByCode.reduce((acc, cur) => acc + cur.quantity, 0)
-  //         const averagePrice =
-  //           filterByCode.reduce((acc, cur) => acc + cur.purchasePrice * cur.quantity, 0) / quantity
-
-  //         return {
-  //           ...item,
-  //           quantity,
-  //           purchasePrice: Number(averagePrice.toFixed(2)),
-  //           ratio: ratio(item?.currentPrice ?? 0, averagePrice),
-  //           actualGain: Number(
-  //             (quantity * ((item?.currentPrice ?? 0) - item.purchasePrice)).toFixed(2)
-  //           )
-  //         }
-  //       }
-  //       return { ...item, ratio: ratio(item?.currentPrice ?? 0, item.purchasePrice) }
-  //     })
-
-  //     const removedDuplicateCode = removeDuplicatesByKey(combinedStocks, 'code')
-  //     setData(removedDuplicateCode)
-  //   } else {
-  //     setData([])
-  //   }
-  // }, [rawData])
-
   const onEdit = (row: Stock): void => {
     setEditData((prev: Stock | undefined) => {
       if (prev?.code) {
@@ -104,9 +74,9 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
           _id: '',
           code: '',
           date: moment(Date.now()).format('DD/MM/YYYY'),
-          quantity: 0,
-          purchasePrice: 0,
-          currentPrice: 0,
+          volume: 0,
+          orderPrice: 0,
+          marketPrice: 0,
           status: 'Buy',
           ratio: 0
         }
@@ -124,14 +94,13 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
       const newEditData: Stock = {
         ...editData,
         [name]: value,
-        actualGain:
-          name === 'quantity'
-            ? (value as number) * Number(editData?.currentPrice)
-            : name === 'currentPrice'
-              ? (value as number) * editData.quantity
-              : editData.actualGain,
-        ratio:
-          name === 'currentPrice' ? ratio(value as number, editData.purchasePrice) : editData.ratio
+        investedValue:
+          name === 'volume'
+            ? (value as number) * Number(editData?.marketPrice)
+            : name === 'marketPrice'
+              ? (value as number) * editData.volume
+              : editData.investedValue,
+        ratio: name === 'marketPrice' ? ratio(value as number, editData.orderPrice) : editData.ratio
       }
 
       setEditData(newEditData)
@@ -172,11 +141,11 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
       <TableHead>
         <TableRow>
           <TableCell>Code</TableCell>
-          <TableCell>Quantity</TableCell>
-          <TableCell>Average </TableCell>
-          <TableCell>Current Price</TableCell>
-          <TableCell align='center'>Ratio</TableCell>
-          <TableCell align='center'>Earn</TableCell>
+          <TableCell>Volume</TableCell>
+          <TableCell>Average</TableCell>
+          <TableCell>Market Price</TableCell>
+          <TableCell align='center'>Profit/Loss</TableCell>
+          <TableCell align='center'>Invested Value</TableCell>
           <TableCell align='center'>Actions</TableCell>
         </TableRow>
       </TableHead>
@@ -184,8 +153,8 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
         {data.map((row, index) => (
           <TableRow key={index}>
             <TableCell width='10%'>{row.code}</TableCell>
-            <TableCell width='10%'>{row.quantity}</TableCell>
-            <TableCell width='10%'>{row.average}</TableCell>
+            <TableCell width='10%'>{row.volume}</TableCell>
+            <TableCell width='10%'>{row.averagePrice}</TableCell>
             <TableCell width='15%'>
               {editData?.code?.toUpperCase() === row?.code?.toUpperCase() ? (
                 <TextField
@@ -196,8 +165,8 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
                       }
                     }
                   ]}
-                  name='currentPrice'
-                  value={editData?.currentPrice ?? 0}
+                  name='marketPrice'
+                  value={editData?.marketPrice ?? 0}
                   onChange={(e) => onChangeRow(e)}
                   type='number'
                   autoFocus
@@ -206,12 +175,12 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
                   }}
                 />
               ) : (
-                row?.currentPrice
+                row?.marketPrice
               )}
             </TableCell>
             <TableCell width='10%'>{renderLabel(Number(row?.ratio) * 100)}</TableCell>
             <TableCell width='15%'>
-              {renderLabel(Number(row.actualGain?.toFixed(2)), 'gain')}
+              {renderLabel(Number(row.investedValue?.toFixed(2)), 'gain')}
             </TableCell>
             <TableCell width='10%'>
               <Box display='flex' alignItems='center' justifyContent='center' gap={0.5}>

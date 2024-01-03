@@ -5,14 +5,14 @@ interface Stock {
   _id: string
   code: string
   date: string
-  quantity: number
-  purchasePrice: number
-  currentPrice?: number
+  volume: number
+  orderPrice: number
+  marketPrice?: number
   sellPrice: number
   ratio?: number
-  actualGain?: number
+  investedValue?: number
   status: Status
-  average?: number
+  averagePrice?: number
 }
 export interface ResponsePagination<T> {
   data?: T

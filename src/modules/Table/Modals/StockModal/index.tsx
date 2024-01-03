@@ -7,13 +7,13 @@ import { useForm } from 'react-hook-form'
 import type { Stock } from 'src/Models'
 import { StockService, useCreateStockMutation } from 'src/services/stocks.services'
 import schema from './schema'
-import { useAppDispatch, useAppSelector } from 'src/store'
+import { useAppDispatch } from 'src/store'
 import { refetchCurrentStocks } from 'src/store/slices/stockSlice'
 
 interface FormBody {
   code: string
-  quantity: number
-  purchasePrice?: number | null
+  volume: number
+  orderPrice?: number | null
   sellPrice?: number | null
   date: string
 }
@@ -56,12 +56,12 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
 
   const handleSave = async (value: FormBody): Promise<void> => {
     try {
-      const { code, quantity, purchasePrice, sellPrice } = value
+      const { code, volume, orderPrice, sellPrice } = value
       const response = await createStock({
         code: code.toUpperCase(),
-        quantity,
+        volume,
         date: getValues('date'),
-        ...(status === 1 ? { purchasePrice } : { sellPrice }),
+        ...(status === 1 ? { orderPrice } : { sellPrice }),
         status: status === 1 ? 'Buy' : 'Sell'
       }).unwrap()
       if (response.data) {
@@ -103,27 +103,27 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
             />
             <TextField
               fullWidth
-              label='Quantity'
+              label='Volume'
               type='number'
               defaultValue={0}
               inputProps={{ min: 0 }}
               required
               sx={{ margin: '8px 0' }}
-              {...register('quantity')}
-              error={!!errors.quantity}
-              helperText={errors.quantity?.message}
+              {...register('volume')}
+              error={!!errors.volume}
+              helperText={errors.volume?.message}
             />
             {status === 1 ? (
               <TextField
                 fullWidth
-                label='Purchase Price'
+                label='Order Price'
                 type='number'
                 defaultValue={0}
                 required
                 sx={{ margin: '8px 0' }}
-                {...register('purchasePrice')}
-                error={!!errors?.purchasePrice}
-                helperText={errors.purchasePrice?.message}
+                {...register('orderPrice')}
+                error={!!errors?.orderPrice}
+                helperText={errors.orderPrice?.message}
               />
             ) : (
               <TextField

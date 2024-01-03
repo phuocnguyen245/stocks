@@ -7,7 +7,7 @@ import useModal from 'src/hooks/useModals'
 import { useGetStocksQuery } from 'src/services/stocks.services'
 import StockModal from './Modals/StockModal'
 import TableCurrent from './TableCurrent'
-import TableDetail from './TableDetail'
+import TableDetail from './Modals/TableDetail'
 import ConfirmModal from './Modals/ConfirmModal'
 import type { ConfirmModal as ConfirmModalType } from './Modals/index'
 
