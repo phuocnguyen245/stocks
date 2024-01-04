@@ -33,7 +33,7 @@ const CustomTabPanel = (props: TabPanelProps): JSX.Element => {
 }
 
 const Charts = (): JSX.Element => {
-  const [value, setValue] = useState(0)
+  const [value, setValue] = useState(1)
   const { code: paramsCode } = useParams()
   const [code, setCode] = useState<string>('')
   const [data, setData] = useState<[number[]]>([[]])

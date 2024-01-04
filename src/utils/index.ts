@@ -18,4 +18,8 @@ const formatVND = (number: number): string => {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number)
 }
 
-export { formatVND, removeDuplicatesByKey, ratio }
+const convertToDecimal = (value: string | number, decimal = 2): number => {
+  return Number(Number(value).toFixed(2))
+}
+
+export { formatVND, removeDuplicatesByKey, ratio, convertToDecimal }

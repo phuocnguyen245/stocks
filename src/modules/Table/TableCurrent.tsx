@@ -12,6 +12,7 @@ import {
 } from '@mui/material'
 import moment from 'moment'
 import React, { useCallback, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import type { LabelType, Stock } from 'src/Models'
 import { getBgColor } from 'src/Models/constants'
 import { Label } from 'src/components/MUIComponents'
@@ -185,6 +186,16 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
             <TableCell width='10%'>
               <Box display='flex' alignItems='center' justifyContent='center' gap={0.5}>
                 <Button
+                  sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
+                  onClick={() => {
+                    onView(row)
+                  }}
+                >
+                  <Link to={`/stock/${row.code}`} style={{ display: 'flex', alignItems: 'center' }}>
+                    <RemoveRedEyeSharp color='primary' />
+                  </Link>
+                </Button>
+                <Button
                   color='info'
                   sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
                   onClick={() => {
@@ -195,19 +206,11 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
                 </Button>
                 <Button
                   sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                  onClick={() => {
-                    onView(row)
-                  }}
-                >
-                  <RemoveRedEyeSharp />
-                </Button>
-                <Button
-                  sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
                   onClick={async () => {
                     await onDelete(row)
                   }}
                 >
-                  <Delete />
+                  <Delete color='error' />
                 </Button>
               </Box>
             </TableCell>

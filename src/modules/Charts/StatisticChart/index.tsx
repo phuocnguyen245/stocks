@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import MACD from './MACD'
+import RSI from './RSI'
 
 interface StatisticChartsProps {
   data: [number[]]
@@ -12,11 +13,11 @@ const StatisticCharts = ({ data }: StatisticChartsProps): JSX.Element => {
     }
     return []
   }, [data])
-  console.log(closePrices)
 
   return (
     <div>
       <MACD data={closePrices} />
+      <RSI data={closePrices} />
     </div>
   )
 }
