@@ -1,9 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import { Box, Typography } from '@mui/material'
-import React, { useCallback, useEffect, useMemo, useState, memo } from 'react'
+import React, { useEffect, useMemo, useState, memo } from 'react'
 import { Label } from 'src/components/MUIComponents'
 import { chartLabelOptions } from 'src/modules/Charts/StatisticChart/utils'
+import Highcharts from 'highcharts'
+import HighchartsReact from 'highcharts-react-official'
+
 interface MACDProps {
   data: number[]
 }
@@ -87,24 +90,67 @@ const decideAction = (macdLine: number[], signalLine: number[]): Signals[] => {
 
 const MACD = ({ data }: MACDProps): JSX.Element => {
   const [signals, setSignals] = useState<Signals[]>([])
+  const [lines, setLines] = useState({ macd: [], signal: [] })
 
   useEffect(() => {
     const macdLine = calculateMACD1(data)
     const signalLine = calculateSignalLine(macdLine, 9)
     const action = decideAction(macdLine, signalLine)
     setSignals(action)
+    setLines({ macd: macdLine.slice(40), signal: signalLine.slice(40) })
   }, [data])
 
-  const actionsDaysBefore = useCallback(
-    (days = 10) => {
-      if (signals.length) {
-        const actions = [...signals].slice(days * -1)
-        return actions
-      }
-      return []
+  const options: Highcharts.Options = {
+    title: {
+      text: ''
     },
-    [signals]
-  )
+    legend: {
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'top'
+    },
+
+    plotOptions: {
+      series: {
+        label: {
+          connectorAllowed: false
+        }
+      }
+    },
+    yAxis: {
+      title: {
+        text: ''
+      }
+    },
+
+    series: [
+      {
+        name: 'MACD',
+        data: lines.macd
+      },
+      {
+        name: 'Signal',
+        data: lines.signal
+      }
+    ],
+
+    responsive: {
+      rules: [
+        {
+          condition: {
+            maxWidth: 500
+          },
+          chartOptions: {
+            legend: {
+              layout: 'vertical',
+              align: 'center',
+              verticalAlign: 'bottom'
+            }
+          }
+        }
+      ]
+    }
+  }
 
   const renderLabel = useMemo(() => {
     if (signals.length) {
@@ -148,14 +194,7 @@ const MACD = ({ data }: MACDProps): JSX.Element => {
         <Typography component={'span'}>Action today:</Typography>&nbsp;
         <Typography component={'span'}>{renderLabel}</Typography>
       </Box>
-      {/* <Box display='flex'>
-        <Typography>Action 10 days:</Typography>&nbsp;
-        {actionsDaysBefore()?.map((item: Signals, index) => (
-          <Typography component={'span'} key={index}>
-            {item.action}&nbsp;
-          </Typography>
-        ))}
-      </Box> */}
+      <HighchartsReact highcharts={Highcharts} options={options} />
     </Box>
   )
 }

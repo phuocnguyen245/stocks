@@ -8,9 +8,6 @@ import FullScreen from 'highcharts/modules/full-screen.js'
 import StockTools from 'highcharts/modules/stock-tools.js'
 import React, { memo, useEffect, useMemo, useState } from 'react'
 
-import { useGetStockStatisticQuery } from 'src/services/stocks.services'
-import { useParams } from 'react-router'
-
 Indicators(Highcharts)
 DragPanes(Highcharts)
 AnnotationsAdvanced(Highcharts)
@@ -44,6 +41,10 @@ const StockChart = ({ data, code }: StockChartProps): JSX.Element => {
   )
 
   const options: Highcharts.Options = {
+    title: {
+      text: `${code}`,
+      align: 'center'
+    },
     yAxis: [
       {
         labels: {
@@ -168,15 +169,6 @@ const StockChart = ({ data, code }: StockChartProps): JSX.Element => {
         params: {
           period: 18
         }
-      },
-      {
-        type: 'rsi',
-        linkedTo: code,
-        zIndex: 1,
-        index: 20,
-        params: {
-          period: 18
-        }
       }
     ],
     responsive: {
@@ -196,6 +188,18 @@ const StockChart = ({ data, code }: StockChartProps): JSX.Element => {
     chart: {
       width: windowSize.width,
       height: windowSize.height
+    },
+    plotOptions: {
+      series: {
+        marker: {
+          enabled: false,
+          states: {
+            hover: {
+              enabled: false
+            }
+          }
+        }
+      }
     }
   }
 
