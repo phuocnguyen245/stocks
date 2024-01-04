@@ -35,6 +35,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
     setValue,
     getValues,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm({
     resolver: yupResolver(schema)
@@ -47,12 +48,18 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
       const textField = textFieldRef.current as HTMLInputElement
       textField.focus()
     }
+    if (status === 1) {
+      setValue('sellPrice', null)
+    } else {
+      setValue('orderPrice', null)
+    }
     setValue('date', moment(Date.now()).format('DD/MM/YYYY'))
-  }, [open])
+  }, [open, status])
 
   const onChangeDate = (date: MomentInput): void => {
     setValue('date', moment(date).format('DD/MM/YYYY'))
   }
+  console.log(getValues('orderPrice'), getValues('sellPrice'))
 
   const handleSave = async (value: FormBody): Promise<void> => {
     try {
@@ -65,6 +72,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
         status: status === 1 ? 'Buy' : 'Sell'
       }).unwrap()
       if (response.data) {
+        reset()
         dispatch(refetchCurrentStocks(true))
         return addData({ ...response.data })
       }
