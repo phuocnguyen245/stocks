@@ -1,29 +1,27 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 import { Box, Typography } from '@mui/material'
-import React, { useEffect, useMemo, useState, memo } from 'react'
-import { Label } from 'src/components/MUIComponents'
-import { chartLabelOptions } from 'src/modules/Charts/StatisticChart/utils'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
+import { memo, useEffect, useMemo, useState } from 'react'
+import { Label } from 'src/components/MUIComponents'
+import { chartLabelOptions, type ChartLabelType } from 'src/modules/Charts/StatisticChart/utils'
 
 interface MACDProps {
   data: number[]
 }
 interface Signals {
-  rate: number
   index: number
   action: string
+  point: number
 }
 
-const calculateEMA1 = (data: number[], period: number): number[] => {
+const calculateEMA = (data: number[], period: number): number[] => {
   const k = 2 / (period + 1)
   const ema: number[] = []
   let sum = 0
 
   for (let i = 0; i < period; i++) {
     sum += data[i]
-    ema.push(null)
+    ema.push(null as unknown as number)
   }
 
   ema.push(sum / period)
@@ -38,9 +36,9 @@ const calculateEMA1 = (data: number[], period: number): number[] => {
   return ema
 }
 
-const calculateMACD1 = (data: number[]): number[] => {
-  const ema12 = calculateEMA1(data, 12)
-  const ema26 = calculateEMA1(data, 26)
+const calculateMACD = (data: number[]): number[] => {
+  const ema12 = calculateEMA(data, 12)
+  const ema26 = calculateEMA(data, 26)
   const macdLine: number[] = []
 
   for (let i = 0; i < data.length; i++) {
@@ -52,7 +50,7 @@ const calculateMACD1 = (data: number[]): number[] => {
 }
 
 const calculateSignalLine = (macdLine: number[], signalPeriod: number): number[] => {
-  const signalLine = calculateEMA1(macdLine, signalPeriod)
+  const signalLine = calculateEMA(macdLine, signalPeriod)
   return signalLine
 }
 
@@ -66,34 +64,34 @@ const decideAction = (macdLine: number[], signalLine: number[]): Signals[] => {
       actions.push({
         index: i,
         point: macd - signal,
-        action: 'BUY',
-        rate: `${macd / signal}`
+        action: 'BUY'
       })
     } else if (macd < signal) {
       actions.push({
         index: i,
         point: macd - signal,
-        action: 'SELL',
-        rate: `${macd / signal}`
+        action: 'SELL'
       })
     } else {
       actions.push({
         index: i,
         point: macd - signal,
-        action: 'HOLD',
-        rate: `${macd / signal}`
+        action: 'HOLD'
       })
     }
   }
   return actions
 }
-
+interface Lines {
+  macd: number[]
+  signal: number[]
+}
 const MACD = ({ data }: MACDProps): JSX.Element => {
   const [signals, setSignals] = useState<Signals[]>([])
-  const [lines, setLines] = useState({ macd: [], signal: [] })
+  const [lines, setLines] = useState<Lines>({ macd: [], signal: [] })
 
   useEffect(() => {
-    const macdLine = calculateMACD1(data)
+    const macdLine = calculateMACD(data)
     const signalLine = calculateSignalLine(macdLine, 9)
     const action = decideAction(macdLine, signalLine)
     setSignals(action)
@@ -104,10 +102,11 @@ const MACD = ({ data }: MACDProps): JSX.Element => {
     title: {
       text: ''
     },
+
     legend: {
-      layout: 'vertical',
-      align: 'right',
-      verticalAlign: 'top'
+      layout: 'horizontal',
+      align: 'center',
+      verticalAlign: 'bottom'
     },
 
     plotOptions: {
@@ -125,37 +124,22 @@ const MACD = ({ data }: MACDProps): JSX.Element => {
 
     series: [
       {
+        type: 'line',
         name: 'MACD',
         data: lines.macd
       },
       {
+        type: 'line',
         name: 'Signal',
         data: lines.signal
       }
-    ],
-
-    responsive: {
-      rules: [
-        {
-          condition: {
-            maxWidth: 500
-          },
-          chartOptions: {
-            legend: {
-              layout: 'vertical',
-              align: 'center',
-              verticalAlign: 'bottom'
-            }
-          }
-        }
-      ]
-    }
+    ]
   }
 
   const renderLabel = useMemo(() => {
     if (signals.length) {
       const lastSignal = signals[signals.length - 1].point
-      let actionCase: string
+      let actionCase: ChartLabelType
 
       if (lastSignal <= -50) {
         actionCase = 'force'
@@ -170,7 +154,7 @@ const MACD = ({ data }: MACDProps): JSX.Element => {
       }
 
       return (
-        <Label type={chartLabelOptions[actionCase].type}>
+        <Label type={chartLabelOptions[actionCase].type} fontSize={14}>
           {chartLabelOptions[actionCase].message}
         </Label>
       )

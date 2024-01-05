@@ -1,18 +1,18 @@
-import { Edit, Delete } from '@mui/icons-material'
+import { Delete, Edit } from '@mui/icons-material'
 import {
+  Box,
+  Button,
+  Switch,
+  Table,
+  TableBody,
+  TableCell,
   TableHead,
   TableRow,
-  TableCell,
-  TableBody,
-  TextField,
-  Button,
-  Table,
-  Box,
-  Switch
+  TextField
 } from '@mui/material'
+import moment from 'moment'
 import React from 'react'
 import type { Stock } from 'src/Models'
-import moment from 'moment'
 import { Label } from 'src/components/MUIComponents'
 import { useDeleteStockMutation, useUpdateStockMutation } from 'src/services/stocks.services'
 import { useAppDispatch } from 'src/store'

@@ -1,5 +1,5 @@
-import { Dialog, Container, Box, Typography, Button } from '@mui/material'
-import React, { memo } from 'react'
+import { Box, Button, Container, Dialog, Typography } from '@mui/material'
+import { memo } from 'react'
 import type { ConfirmModal as ConfirmModalType } from '..'
 
 interface ConfirmModalProps {

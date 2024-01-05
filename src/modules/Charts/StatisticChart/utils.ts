@@ -10,23 +10,23 @@ type ChartLabelOptions = Record<ChartLabelType, ChartLabel>
 const chartLabelOptions: ChartLabelOptions = {
   strong: {
     type: 'success',
-    message: 'Strong Buy Recommendation'
+    message: 'Strong Buy '
   },
   recommended: {
     type: 'success',
-    message: 'Buy Recommended'
+    message: 'Buy '
   },
   hold: {
     type: 'info',
-    message: 'Hold Recommended'
+    message: 'Hold '
   },
   sell: {
     type: 'error',
-    message: 'Sell Recommendation'
+    message: 'Sell '
   },
   force: {
     type: 'error',
-    message: 'Strong Sell Recommendation'
+    message: 'Strong Sell '
   }
 }
 

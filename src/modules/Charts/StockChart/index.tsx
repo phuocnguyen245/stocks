@@ -1,12 +1,13 @@
-import Highcharts from 'highcharts/highstock'
+import { Box } from '@mui/material'
 import HighchartsReact from 'highcharts-react-official'
+import Highcharts from 'highcharts/highstock'
 import Indicators from 'highcharts/indicators/indicators-all.js'
-import DragPanes from 'highcharts/modules/drag-panes.js'
 import AnnotationsAdvanced from 'highcharts/modules/annotations-advanced.js'
-import PriceIndicator from 'highcharts/modules/price-indicator.js'
+import DragPanes from 'highcharts/modules/drag-panes.js'
 import FullScreen from 'highcharts/modules/full-screen.js'
+import PriceIndicator from 'highcharts/modules/price-indicator.js'
 import StockTools from 'highcharts/modules/stock-tools.js'
-import React, { memo, useEffect, useMemo, useState } from 'react'
+import { memo, useEffect, useMemo, useState } from 'react'
 
 Indicators(Highcharts)
 DragPanes(Highcharts)
@@ -24,7 +25,7 @@ const StockChart = ({ data, code }: StockChartProps): JSX.Element => {
 
   useEffect(() => {
     const width = window.innerWidth
-    const height = window.innerHeight - 98
+    const height = window.innerHeight - 50
     if (width && height) {
       setWindowSize({ width, height })
     }
@@ -204,7 +205,9 @@ const StockChart = ({ data, code }: StockChartProps): JSX.Element => {
   }
 
   return (
-    <HighchartsReact highcharts={Highcharts} options={options} constructorType={'stockChart'} />
+    <Box mt='50px' p={0}>
+      <HighchartsReact highcharts={Highcharts} options={options} constructorType={'stockChart'} />
+    </Box>
   )
 }
 

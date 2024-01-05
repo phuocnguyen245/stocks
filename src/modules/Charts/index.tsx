@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { Box, Tabs, Tab, Typography } from '@mui/material'
-import React, { memo, useEffect, useMemo, useState } from 'react'
-import StockChart from './StockChart'
-import StatisticCharts from './StatisticChart'
+import { Box, Tab, Tabs, Typography } from '@mui/material'
+import React, { memo, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { useGetStockStatisticQuery } from 'src/services/stocks.services'
+import StatisticCharts from './StatisticChart'
+import StockChart from './StockChart'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -24,7 +24,7 @@ const CustomTabPanel = (props: TabPanelProps): JSX.Element => {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 0 }}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -57,8 +57,14 @@ const Charts = (): JSX.Element => {
     setValue(newValue)
   }
   return (
-    <>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+    <Box>
+      <Box
+        sx={{ borderBottom: 1, borderColor: 'divider' }}
+        position='fixed'
+        zIndex={10}
+        width='100%'
+        top={0}
+      >
         <Tabs value={value} onChange={handleChange} centered>
           <Tab label='Stock Chart' />
           <Tab label='Statistic Charts' />
@@ -70,7 +76,7 @@ const Charts = (): JSX.Element => {
       <CustomTabPanel value={value} index={1}>
         <StatisticCharts data={data} />
       </CustomTabPanel>
-    </>
+    </Box>
   )
 }
 

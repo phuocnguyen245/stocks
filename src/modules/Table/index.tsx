@@ -1,15 +1,15 @@
 import { Box, Button } from '@mui/material'
 import Paper from '@mui/material/Paper'
 import TableContainer from '@mui/material/TableContainer'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Stock } from 'src/Models'
 import useModal from 'src/hooks/useModals'
 import { useGetStocksQuery } from 'src/services/stocks.services'
-import StockModal from './Modals/StockModal'
-import TableCurrent from './TableCurrent'
-import TableDetail from './Modals/TableDetail'
 import ConfirmModal from './Modals/ConfirmModal'
+import StockModal from './Modals/StockModal'
+import TableDetail from './Modals/TableDetail'
 import type { ConfirmModal as ConfirmModalType } from './Modals/index'
+import TableCurrent from './TableCurrent'
 
 const BasicTable = (): JSX.Element => {
   const onStockModal = useModal()
