@@ -12,6 +12,8 @@ interface Signals {
   index: number
   action: string
   point: number
+  macd: number
+  signal: number
 }
 
 const calculateEMA = (data: number[], period: number): number[] => {
@@ -64,19 +66,25 @@ const decideAction = (macdLine: number[], signalLine: number[]): Signals[] => {
       actions.push({
         index: i,
         point: macd - signal,
-        action: 'BUY'
+        action: 'BUY',
+        macd,
+        signal
       })
     } else if (macd < signal) {
       actions.push({
         index: i,
         point: macd - signal,
-        action: 'SELL'
+        action: 'SELL',
+        macd,
+        signal
       })
     } else {
       actions.push({
         index: i,
         point: macd - signal,
-        action: 'HOLD'
+        action: 'HOLD',
+        macd,
+        signal
       })
     }
   }
@@ -121,17 +129,24 @@ const MACD = ({ data }: MACDProps): JSX.Element => {
         text: ''
       }
     },
+    xAxis: {
+      visible: false
+    },
 
     series: [
       {
         type: 'line',
         name: 'MACD',
-        data: lines.macd
+        data: lines.macd,
+        color: '#48c8f3',
+        lineWidth: 4
       },
       {
         type: 'line',
         name: 'Signal',
-        data: lines.signal
+        data: lines.signal,
+        color: '#ee6666',
+        lineWidth: 4
       }
     ]
   }
@@ -141,13 +156,13 @@ const MACD = ({ data }: MACDProps): JSX.Element => {
       const lastSignal = signals[signals.length - 1].point
       let actionCase: ChartLabelType
 
-      if (lastSignal <= -50) {
+      if (lastSignal <= -0.5) {
         actionCase = 'force'
-      } else if (lastSignal <= -30) {
+      } else if (lastSignal < -0.1) {
         actionCase = 'sell'
-      } else if (lastSignal <= 20) {
+      } else if (lastSignal >= -0.1 && lastSignal <= 0.1) {
         actionCase = 'hold'
-      } else if (lastSignal <= 40) {
+      } else if (lastSignal > 0.1 && lastSignal <= 0.5) {
         actionCase = 'recommended'
       } else {
         actionCase = 'strong'
@@ -167,11 +182,19 @@ const MACD = ({ data }: MACDProps): JSX.Element => {
         <Typography variant='h5' component={'span'}>
           MACD:&nbsp;
         </Typography>
+        <Label component={'span'} type={'success'}>
+          {signals[signals.length - 1]?.macd?.toFixed(2)}
+        </Label>
+        &nbsp;
+        <Label component={'span'} type={'info'}>
+          {signals[signals.length - 1]?.signal?.toFixed(2)}
+        </Label>
+        &nbsp;
         <Label
           component={'span'}
           type={signals[signals.length - 1]?.point > 0 ? 'success' : 'error'}
         >
-          {signals[signals.length - 1]?.point.toFixed(2)}
+          {signals[signals.length - 1]?.point?.toFixed(2)}
         </Label>
       </Box>
       <Box display='flex' alignItems='center'>

@@ -38,10 +38,7 @@ const Charts = (): JSX.Element => {
   const [code, setCode] = useState<string>('')
   const [data, setData] = useState<[number[]]>([[]])
 
-  const { data: stockStatistic } = useGetStockStatisticQuery(
-    { code },
-    { skip: !code, refetchOnMountOrArgChange: true }
-  )
+  const { data: stockStatistic } = useGetStockStatisticQuery({ code }, { skip: !code })
 
   useEffect(() => {
     !!paramsCode && setCode(paramsCode.toUpperCase())
@@ -53,7 +50,7 @@ const Charts = (): JSX.Element => {
     }
   }, [stockStatistic])
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
   return (

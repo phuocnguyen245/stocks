@@ -165,6 +165,9 @@ const RSI = ({ data }: RSIProps): JSX.Element => {
         }
       ]
     },
+    xAxis: {
+      visible: false
+    },
     responsive: {
       rules: [
         {

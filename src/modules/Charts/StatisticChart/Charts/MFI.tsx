@@ -4,7 +4,7 @@ import HighchartsReact from 'highcharts-react-official'
 import { memo, useEffect, useMemo, useState } from 'react'
 import { Label } from 'src/components/MUIComponents'
 import { chartLabelOptions, type ChartLabelType } from '../utils'
-interface RSIProps {
+interface MFIProps {
   data: number[][]
 }
 
@@ -22,48 +22,38 @@ const calculateMFI = (data: number[][], period: number): number[] => {
     volumes.push(item[5])
   })
 
-  const typicalPrices = []
-  const moneyFlows = []
-  const positiveMoneyFlows = []
-  const negativeMoneyFlows = []
+  for (let i = 0; i < closePrices.length; i++) {
+    let positiveFlow = 0
+    let negativeFlow = 0
 
-  for (let i = 0; i < data.length; i++) {
-    const typicalPrice = (highPrices[i] + lowPrices[i] + closePrices[i]) / 3
-    typicalPrices.push(typicalPrice)
+    // Tính toán dòng tiền cho mỗi phiên giao dịch
+    for (let j = i - period + 1; j <= i; j++) {
+      const typicalPrice = (highPrices[j] + lowPrices[j] + closePrices[j]) / 3
+      const moneyFlow = typicalPrice * volumes[j]
 
-    const moneyFlow = typicalPrice * volumes[i]
-    moneyFlows.push(moneyFlow)
-
-    if (typicalPrices[i] > typicalPrices[i - 1]) {
-      positiveMoneyFlows.push(moneyFlow)
-      negativeMoneyFlows.push(0)
-    } else if (typicalPrices[i] < typicalPrices[i - 1]) {
-      positiveMoneyFlows.push(0)
-      negativeMoneyFlows.push(moneyFlow)
-    } else {
-      positiveMoneyFlows.push(0)
-      negativeMoneyFlows.push(0)
+      if (typicalPrice > (highPrices[j - 1] + lowPrices[j - 1] + closePrices[j - 1]) / 3) {
+        positiveFlow += moneyFlow
+      } else if (typicalPrice < (highPrices[j - 1] + lowPrices[j - 1] + closePrices[j - 1]) / 3) {
+        negativeFlow += moneyFlow
+      }
     }
 
-    if (i >= period) {
-      const positiveMF = positiveMoneyFlows.slice(i - period, i).reduce((a, b) => a + b, 0)
-      const negativeMF = negativeMoneyFlows.slice(i - period, i).reduce((a, b) => a + b, 0)
-      const moneyRatio = positiveMF / negativeMF
-      const mfi = 100 - 100 / (1 + moneyRatio)
-      mfiValues.push(mfi)
-    }
+    const moneyRatio = positiveFlow / negativeFlow
+    const mfi = 100 - 100 / (1 + moneyRatio)
+
+    mfiValues.push(mfi)
   }
 
   return mfiValues
 }
 const period = 14
 
-const MFI = ({ data }: RSIProps): JSX.Element => {
+const MFI = ({ data }: MFIProps): JSX.Element => {
   const [mfiValues, setMfiValues] = useState<number[]>([])
 
   useEffect(() => {
     if (data.length) {
-      const mfi = calculateMFI(data, period)
+      const mfi = calculateMFI(data.slice(100), period)
       setMfiValues(mfi)
     }
   }, [data])
@@ -97,7 +87,11 @@ const MFI = ({ data }: RSIProps): JSX.Element => {
       text: ''
     },
 
-    series: [{ data: mfiValues, type: 'line', name: 'RSI' }],
+    xAxis: {
+      visible: false
+    },
+
+    series: [{ data: mfiValues, type: 'line', name: 'MFI' }],
     yAxis: {
       title: {
         text: ''

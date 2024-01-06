@@ -80,6 +80,9 @@ const MA = ({ data }: MaProps): JSX.Element => {
         }
       }
     },
+    xAxis: {
+      visible: false
+    },
     yAxis: {
       title: {
         text: ''
@@ -88,27 +91,33 @@ const MA = ({ data }: MaProps): JSX.Element => {
     series: [
       {
         name: 'MA10',
-        data: lines?.ma10
+        data: lines?.ma10,
+        type: 'line'
       },
       {
         name: 'MA20',
-        data: lines?.ma20
+        data: lines?.ma20,
+        type: 'line'
       },
       {
         name: 'MA50',
-        data: lines?.ma50
+        data: lines?.ma50,
+        type: 'line'
       },
       {
         name: 'MA100',
-        data: lines?.ma100
+        data: lines?.ma100,
+        type: 'line'
       },
       {
         name: 'MA150',
-        data: lines?.ma150
+        data: lines?.ma150,
+        type: 'line'
       },
       {
         name: 'MA200',
-        data: lines?.ma200
+        data: lines?.ma200,
+        type: 'line'
       }
     ],
     responsive: {
@@ -126,7 +135,7 @@ const MA = ({ data }: MaProps): JSX.Element => {
     <Box>
       <Box display='flex' mb={1}>
         <Typography variant='h5' component={'span'}>
-          MA:&nbsp;
+          MA&nbsp;
         </Typography>
       </Box>
       <Box display='flex' alignItems='center' flexWrap='wrap' gap={0.75}>

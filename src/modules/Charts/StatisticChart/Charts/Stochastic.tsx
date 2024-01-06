@@ -119,6 +119,10 @@ const Stochastic = ({ data }: StochasticProps): JSX.Element => {
       ]
     },
 
+    xAxis: {
+      visible: false
+    },
+
     series: [
       {
         type: 'line',

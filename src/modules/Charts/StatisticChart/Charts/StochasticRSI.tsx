@@ -27,7 +27,7 @@ const calculateStochasticRSI = (rsiValues: number[], period: number): number[] =
     const highestRSI = Math.max(...recentRSI)
 
     const currentRSI = rsiValues[i]
-    const stochasticRSI = (currentRSI - lowestRSI) / (highestRSI - lowestRSI)
+    const stochasticRSI = ((currentRSI - lowestRSI) / (highestRSI - lowestRSI)) * 100
 
     kValues.push(stochasticRSI)
   }
@@ -48,7 +48,6 @@ const calculateStochasticD = (stochasticKValues: number[], smaPeriod: number): n
 
 const StochasticRSI = (): JSX.Element => {
   const { rsi: RSI } = useAppSelector((state) => state.Stocks)
-  const state = useAppSelector((state) => state.Stocks)
 
   const [lines, setLines] = useState<Lines>({ dValues: [], kValues: [] })
 
@@ -74,7 +73,7 @@ const StochasticRSI = (): JSX.Element => {
         {
           // Light air
           from: 0,
-          to: 0.2,
+          to: 20,
           color: 'rgba(0, 255, 26, 0.1)',
           label: {
             text: 'Strong Buy recommended',
@@ -86,8 +85,8 @@ const StochasticRSI = (): JSX.Element => {
         },
         {
           // Light air
-          from: 0.2,
-          to: 0.8,
+          from: 20,
+          to: 80,
           color: 'rgba(137, 198, 223, 0.1)',
           label: {
             text: 'Hold recommended',
@@ -99,8 +98,8 @@ const StochasticRSI = (): JSX.Element => {
         },
         {
           // Light air
-          from: 0.8,
-          to: 1,
+          from: 80,
+          to: 100,
           color: 'rgba(22, 1, 253, 0.1)',
           label: {
             text: 'Strong Sell recommended',
@@ -108,6 +107,10 @@ const StochasticRSI = (): JSX.Element => {
           }
         }
       ]
+    },
+
+    xAxis: {
+      visible: false
     },
 
     series: [
