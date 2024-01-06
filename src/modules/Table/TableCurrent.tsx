@@ -12,40 +12,34 @@ import {
 } from '@mui/material'
 import moment from 'moment'
 import React, { useCallback, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { type ErrorResponse, Link } from 'react-router-dom'
 import type { LabelType, Stock } from 'src/Models'
 import { getBgColor } from 'src/Models/constants'
-import { Label } from 'src/components/MUIComponents'
+import { Label, Loader } from 'src/components/MUIComponents'
 import {
   useDeleteCurrentStockMutation,
   useGetCurrentStocksQuery
 } from 'src/services/stocks.services'
 import { useAppDispatch, useAppSelector } from 'src/store'
-import { refetchCurrentStocks } from 'src/store/slices/stockSlice'
+import { refetchStocks } from 'src/store/slices/stockSlice'
 import { formatVND, ratio } from 'src/utils'
-
-interface TableDetailProps {
-  data: Stock[]
-  editData?: Stock
-  setEditData: (data: ((prev: Stock | undefined) => Stock) | Stock) => void
-  setData: (data: Stock[]) => void
-}
 
 export const getStatusLabel = (status: string): JSX.Element => {
   return <Typography>123</Typography>
 }
 
-const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
+const TableCurrent = (): JSX.Element => {
   const [deleteCurrentStock] = useDeleteCurrentStockMutation()
   const dispatch = useAppDispatch()
-  const { isRefetchCurrentStock } = useAppSelector((state) => state.Stocks)
+  const { isRefetchStock } = useAppSelector((state) => state.Stocks)
   const [data, setData] = useState<Stock[]>([])
   const [editData, setEditData] = useState<Stock>()
 
-  const { data: currentStockData, refetch } = useGetCurrentStocksQuery(
-    {},
-    { refetchOnMountOrArgChange: true }
-  )
+  const {
+    data: currentStockData,
+    isLoading,
+    refetch
+  } = useGetCurrentStocksQuery({}, { refetchOnMountOrArgChange: true })
 
   useEffect(() => {
     if (currentStockData?.data?.data) {
@@ -60,13 +54,13 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
   }, [currentStockData])
 
   useEffect(() => {
-    if (isRefetchCurrentStock) {
+    if (isRefetchStock) {
       refetch()
         .unwrap()
-        .then(() => dispatch(refetchCurrentStocks(false)))
-        .catch((error) => console.log(error))
+        .then(() => dispatch(refetchStocks(false)))
+        .catch((error: ErrorResponse) => console.log(error))
     }
-  }, [isRefetchCurrentStock])
+  }, [isRefetchStock])
 
   const onEdit = (row: Stock): void => {
     setEditData((prev: Stock | undefined) => {
@@ -151,71 +145,81 @@ const TableCurrent = ({ data: rawData }: TableDetailProps): JSX.Element => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {data.map((row, index) => (
-          <TableRow key={index}>
-            <TableCell width='10%'>{row.code}</TableCell>
-            <TableCell width='10%'>{row.volume}</TableCell>
-            <TableCell width='10%'>{row.averagePrice}</TableCell>
-            <TableCell width='15%'>
-              {editData?.code?.toUpperCase() === row?.code?.toUpperCase() ? (
-                <TextField
-                  sx={[
-                    {
-                      '& .MuiInputBase-root': {
-                        height: '36px'
-                      }
-                    }
-                  ]}
-                  name='marketPrice'
-                  value={editData?.marketPrice ?? 0}
-                  onChange={(e) => onChangeRow(e)}
-                  type='number'
-                  autoFocus
-                  inputProps={{
-                    step: 1
-                  }}
-                />
-              ) : (
-                row?.marketPrice
-              )}
-            </TableCell>
-            <TableCell width='10%'>{renderLabel(Number(row?.ratio) * 100)}</TableCell>
-            <TableCell width='15%'>
-              {renderLabel(Number(row.investedValue?.toFixed(2)), 'gain')}
-            </TableCell>
-            <TableCell width='10%'>
-              <Box display='flex' alignItems='center' justifyContent='center' gap={0.5}>
-                <Button
-                  sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                  onClick={() => {
-                    onView(row)
-                  }}
-                >
-                  <Link to={`/stock/${row.code}`} style={{ display: 'flex', alignItems: 'center' }}>
-                    <RemoveRedEyeSharp color='primary' />
-                  </Link>
-                </Button>
-                <Button
-                  color='info'
-                  sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                  onClick={() => {
-                    onEdit(row)
-                  }}
-                >
-                  <Edit />
-                </Button>
-                <Button
-                  sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                  onClick={async () => {
-                    await onDelete(row)
-                  }}
-                >
-                  <Delete color='error' />
-                </Button>
-              </Box>
-            </TableCell>
-          </TableRow>
-        ))}
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <>
+            {data.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell width='10%'>{row.code}</TableCell>
+                <TableCell width='10%'>{row.volume}</TableCell>
+                <TableCell width='10%'>{row.averagePrice}</TableCell>
+                <TableCell width='15%'>
+                  {editData?.code?.toUpperCase() === row?.code?.toUpperCase() ? (
+                    <TextField
+                      sx={[
+                        {
+                          '& .MuiInputBase-root': {
+                            height: '36px'
+                          }
+                        }
+                      ]}
+                      name='marketPrice'
+                      value={editData?.marketPrice ?? 0}
+                      onChange={(e) => onChangeRow(e)}
+                      type='number'
+                      autoFocus
+                      inputProps={{
+                        step: 1
+                      }}
+                    />
+                  ) : (
+                    row?.marketPrice
+                  )}
+                </TableCell>
+                <TableCell width='10%'>{renderLabel(Number(row?.ratio) * 100)}</TableCell>
+                <TableCell width='15%'>
+                  {renderLabel(Number(row.investedValue?.toFixed(2)), 'gain')}
+                </TableCell>
+                <TableCell width='10%'>
+                  <Box display='flex' alignItems='center' justifyContent='center' gap={0.5}>
+                    <Button
+                      sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
+                      onClick={() => {
+                        onView(row)
+                      }}
+                    >
+                      <Link
+                        to={`/stock/${row.code}`}
+                        style={{ display: 'flex', alignItems: 'center' }}
+                        target='_blank'
+                      >
+                        <RemoveRedEyeSharp color='primary' />
+                      </Link>
+                    </Button>
+                    <Button
+                      color='info'
+                      sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
+                      onClick={() => {
+                        onEdit(row)
+                      }}
+                    >
+                      <Edit />
+                    </Button>
+                    <Button
+                      sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
+                      onClick={async () => {
+                        await onDelete(row)
+                      }}
+                    >
+                      <Delete color='error' />
+                    </Button>
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ))}
+          </>
+        )}
       </TableBody>
     </Table>
   )

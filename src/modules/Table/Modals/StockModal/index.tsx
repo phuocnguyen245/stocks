@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form'
 import type { Stock } from 'src/Models'
 import { StockService, useCreateStockMutation } from 'src/services/stocks.services'
 import { useAppDispatch } from 'src/store'
-import { refetchCurrentStocks } from 'src/store/slices/stockSlice'
+import { refetchStocks } from 'src/store/slices/stockSlice'
 import schema from './schema'
 
 interface FormBody {
@@ -59,7 +59,6 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
   const onChangeDate = (date: MomentInput): void => {
     setValue('date', moment(date).format('DD/MM/YYYY'))
   }
-  console.log(getValues('orderPrice'), getValues('sellPrice'))
 
   const handleSave = async (value: FormBody): Promise<void> => {
     try {
@@ -73,7 +72,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
       }).unwrap()
       if (response.data) {
         reset()
-        dispatch(refetchCurrentStocks(true))
+        dispatch(refetchStocks(true))
         return addData({ ...response.data })
       }
     } catch (error) {

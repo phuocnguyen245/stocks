@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from 'react'
 import { Navigate, type RouteObject } from 'react-router-dom'
-import SuppedLoader from './components/Loader'
+import SuppedLoader from './components/SuspendLoader'
 
 const PrivateRoute = ({ element: Element }: { element: React.ComponentType }): JSX.Element => {
   const tokens = localStorage.getItem('tokens') ?? ''

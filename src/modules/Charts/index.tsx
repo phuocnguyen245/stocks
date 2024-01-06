@@ -56,11 +56,16 @@ const Charts = (): JSX.Element => {
   return (
     <Box>
       <Box
-        sx={{ borderBottom: 1, borderColor: 'divider' }}
+        sx={{
+          borderBottom: 1,
+          borderColor: 'divider',
+          boxShadow: ' rgba(0, 0, 0, 0.24) 0px 3px 8px'
+        }}
         position='fixed'
-        zIndex={10}
+        zIndex={1000}
         width='100%'
         top={0}
+        bgcolor='text.primary'
       >
         <Tabs value={value} onChange={handleChange} centered>
           <Tab label='Stock Chart' />

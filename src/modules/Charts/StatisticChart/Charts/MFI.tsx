@@ -91,7 +91,7 @@ const MFI = ({ data }: MFIProps): JSX.Element => {
       visible: false
     },
 
-    series: [{ data: mfiValues, type: 'line', name: 'MFI' }],
+    series: [{ data: mfiValues, type: 'line', name: 'MFI', color: '#48c8f3', lineWidth: 4 }],
     yAxis: {
       title: {
         text: ''
@@ -104,7 +104,7 @@ const MFI = ({ data }: MFIProps): JSX.Element => {
           to: 20,
           color: 'rgba(0, 255, 26, 0.1)',
           label: {
-            text: 'Strong Buy recommended',
+            text: 'Strong Buy',
             align: 'center',
             style: {
               color: '#606060'
@@ -117,7 +117,7 @@ const MFI = ({ data }: MFIProps): JSX.Element => {
           to: 30,
           color: 'rgba(12, 187, 161, 0.1)',
           label: {
-            text: 'Buy recommended',
+            text: 'Buy',
             align: 'center',
             style: {
               color: '#606060'
@@ -130,7 +130,7 @@ const MFI = ({ data }: MFIProps): JSX.Element => {
           to: 70,
           color: 'rgba(137, 198, 223, 0.1)',
           label: {
-            text: 'Hold recommended',
+            text: 'Hold',
             align: 'center',
             style: {
               color: '#606060'
@@ -143,7 +143,7 @@ const MFI = ({ data }: MFIProps): JSX.Element => {
           to: 80,
           color: 'rgba(84, 70, 228, 0.1)',
           label: {
-            text: 'Sell recommended',
+            text: 'Sell',
             align: 'center',
             style: {
               color: '#606060'
@@ -156,7 +156,7 @@ const MFI = ({ data }: MFIProps): JSX.Element => {
           to: 100,
           color: 'rgba(22, 1, 253, 0.1)',
           label: {
-            text: 'Strong Sell recommended',
+            text: 'Strong Sell',
             align: 'center'
           }
         }

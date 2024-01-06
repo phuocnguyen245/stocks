@@ -1,9 +1,9 @@
-import React, { memo, useEffect, useMemo, useState } from 'react'
+import { Box, Typography } from '@mui/material'
 import * as Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-import { Box, Typography } from '@mui/material'
+import { memo, useEffect, useMemo, useState } from 'react'
 import { Label } from 'src/components/MUIComponents'
-import { type ChartLabelType, chartLabelOptions } from '../utils'
+import { chartLabelOptions, type ChartLabelType } from '../utils'
 
 interface Signal {
   signal: ChartLabelType
@@ -86,7 +86,7 @@ const Stochastic = ({ data }: StochasticProps): JSX.Element => {
           to: 20,
           color: 'rgba(0, 255, 26, 0.1)',
           label: {
-            text: 'Strong Buy recommended',
+            text: 'Strong Buy',
             align: 'center',
             style: {
               color: '#606060'
@@ -99,7 +99,7 @@ const Stochastic = ({ data }: StochasticProps): JSX.Element => {
           to: 80,
           color: 'rgba(137, 198, 223, 0.1)',
           label: {
-            text: 'Hold recommended',
+            text: 'Hold',
             align: 'center',
             style: {
               color: '#606060'
@@ -112,7 +112,7 @@ const Stochastic = ({ data }: StochasticProps): JSX.Element => {
           to: 100,
           color: 'rgba(22, 1, 253, 0.1)',
           label: {
-            text: 'Strong Sell recommended',
+            text: 'Strong Sell',
             align: 'center'
           }
         }
@@ -126,13 +126,17 @@ const Stochastic = ({ data }: StochasticProps): JSX.Element => {
     series: [
       {
         type: 'line',
-        name: '%D',
-        data: lines.dValues
+        name: '%K',
+        data: lines.kValues.slice(2),
+        color: '#48c8f3',
+        lineWidth: 4
       },
       {
         type: 'line',
-        name: '%K',
-        data: lines.kValues.slice(2)
+        name: '%D',
+        data: lines.dValues,
+        color: '#ee6666',
+        lineWidth: 4
       }
     ]
   }
