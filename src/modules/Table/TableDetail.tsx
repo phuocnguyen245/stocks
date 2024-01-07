@@ -1,20 +1,11 @@
-import { Delete, Edit } from '@mui/icons-material'
-import {
-  Box,
-  Button,
-  Switch,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TextField
-} from '@mui/material'
+import { Box, Switch, TableCell, TableHead, TableRow, TextField } from '@mui/material'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { type ErrorResponse } from 'react-router-dom'
 import type { Stock } from 'src/Models'
-import { Label, Loader } from 'src/components/MUIComponents'
+import { Label } from 'src/components/MUIComponents'
+import Table from 'src/components/Table'
+import type { TableHeaderBody } from 'src/components/Table/type'
 import {
   useDeleteStockMutation,
   useGetStocksQuery,
@@ -118,113 +109,116 @@ const TableDetail = (): JSX.Element => {
     return setData(data.filter((item) => item._id !== _id))
   }
 
-  return (
-    <Table sx={{ minWidth: 650 }}>
-      <TableHead>
-        <TableRow>
-          <TableCell>Code</TableCell>
-          <TableCell>Date</TableCell>
-          <TableCell>Volume</TableCell>
-          <TableCell>Order</TableCell>
-          <TableCell>Selling</TableCell>
-          <TableCell align='center'>Status</TableCell>
-          <TableCell align='center'>Actions</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {isLoading ? (
-          <Loader />
-        ) : (
+  const table: Array<TableHeaderBody<Stock>> = [
+    {
+      name: 'code',
+      title: 'Code',
+      width: '10%'
+    },
+    {
+      name: 'date',
+      title: 'Date',
+      width: '10%'
+    },
+    {
+      name: 'volume',
+      title: 'Volume',
+      width: '20%',
+      render: (row) => {
+        return (
           <>
-            {data.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell width='10%'>{row.code}</TableCell>
-                <TableCell width='10%'>{row.date}</TableCell>
-                <TableCell width='20%'>
-                  {editData?._id === row._id ? (
-                    <TextField
-                      sx={[
-                        {
-                          '& .MuiInputBase-root': {
-                            height: '36px'
-                          }
-                        }
-                      ]}
-                      name='volume'
-                      value={row.volume}
-                      onChange={(e) => onChangeRow(e)}
-                      type='number'
-                      inputProps={{
-                        step: 1
-                      }}
-                    />
-                  ) : (
-                    row.volume
-                  )}
-                </TableCell>
-                <TableCell width='25%'>
-                  {editData?._id === row._id ? (
-                    <TextField
-                      sx={[
-                        { width: '120px', padding: '0' },
-                        {
-                          '& .MuiInputBase-root': {
-                            height: '36px'
-                          }
-                        }
-                      ]}
-                      name='orderPrice'
-                      value={row.orderPrice}
-                      onChange={(e) => onChangeRow(e)}
-                      type='number'
-                      inputProps={{ step: '0.1' }}
-                      autoFocus
-                    />
-                  ) : (
-                    row.orderPrice
-                  )}
-                </TableCell>
-                <TableCell width='25%'>{row.sellPrice}</TableCell>
-                <TableCell width='15%'>
-                  {editData?._id === row._id ? (
-                    <Switch
-                      sx={{ height: '36px' }}
-                      name='status'
-                      color='secondary'
-                      checked={row.status === 'Buy'}
-                      onChange={(e) => onChangeRow(e)}
-                    />
-                  ) : (
-                    <Label type={row.status.toUpperCase() === 'BUY' ? 'success' : 'primary'}>
-                      {row.status}
-                    </Label>
-                  )}
-                </TableCell>
-                <TableCell width='15%'>
-                  <Box display='flex' justifyContent='space-between' alignItems='center'>
-                    <Button
-                      sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                      color='info'
-                      onClick={async () => await onEdit(row)}
-                    >
-                      <Edit />
-                    </Button>
-                    <Button sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}>
-                      <Delete
-                        color='error'
-                        onClick={async () => {
-                          await onDelete(row._id)
-                        }}
-                      />
-                    </Button>
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ))}
+            {editData?._id === row._id ? (
+              <TextField
+                sx={[
+                  {
+                    '& .MuiInputBase-root': {
+                      height: '36px'
+                    }
+                  }
+                ]}
+                name='volume'
+                value={row.volume}
+                onChange={(e) => onChangeRow(e)}
+                type='number'
+                inputProps={{
+                  step: 1
+                }}
+              />
+            ) : (
+              row.volume
+            )}
           </>
-        )}
-      </TableBody>
-    </Table>
+        )
+      }
+    },
+    {
+      name: 'orderPrice',
+      title: 'Order',
+      width: '25%',
+      render: (row) => (
+        <>
+          {editData?._id === row._id ? (
+            <TextField
+              sx={[
+                { width: '120px', padding: '0' },
+                {
+                  '& .MuiInputBase-root': {
+                    height: '36px'
+                  }
+                }
+              ]}
+              name='orderPrice'
+              value={row.orderPrice}
+              onChange={(e) => onChangeRow(e)}
+              type='number'
+              inputProps={{ step: '0.1' }}
+              autoFocus
+            />
+          ) : (
+            row.orderPrice
+          )}
+        </>
+      )
+    },
+    {
+      name: 'sellPrice',
+      title: 'Sell',
+      width: '10%'
+    },
+    {
+      name: 'status',
+      title: 'Status',
+      width: '15%',
+      render: (row) => {
+        return (
+          <>
+            {editData?._id === row._id ? (
+              <Switch
+                sx={{ height: '36px' }}
+                name='status'
+                color='secondary'
+                checked={row.status === 'Buy'}
+                onChange={(e) => onChangeRow(e)}
+              />
+            ) : (
+              <Label type={row.status.toUpperCase() === 'BUY' ? 'success' : 'primary'}>
+                {row.status}
+              </Label>
+            )}
+          </>
+        )
+      }
+    }
+  ]
+  return (
+    <Table
+      data={data}
+      table={table}
+      isLoading={isLoading}
+      totalItems={stocksData?.data?.totalItems ?? 0}
+      onDelete={onDelete}
+      onEdit={onEdit}
+    />
   )
 }
 
