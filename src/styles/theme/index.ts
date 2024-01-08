@@ -13,6 +13,9 @@ const onDarkTheme = (mode: 'dark' | 'light'): Theme => {
       text: {
         primary: mode === 'dark' ? '#fff' : '#000',
         secondary: mode === 'dark' ? '#000' : '#fff'
+      },
+      background: {
+        default: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.5)'
       }
     },
     components: {

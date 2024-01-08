@@ -1,21 +1,12 @@
-import { Delete, Edit, RemoveRedEyeSharp } from '@mui/icons-material'
-import {
-  Box,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography
-} from '@mui/material'
+import { TextField, Typography } from '@mui/material'
 import moment from 'moment'
 import React, { useCallback, useEffect, useState } from 'react'
-import { type ErrorResponse, Link } from 'react-router-dom'
+import { type ErrorResponse } from 'react-router-dom'
 import type { LabelType, Stock } from 'src/Models'
 import { getBgColor } from 'src/Models/constants'
-import { Label, Loader } from 'src/components/MUIComponents'
+import { Label } from 'src/components/MUIComponents'
+import Table from 'src/components/Table'
+import type { DefaultPagination, TableHeaderBody } from 'src/components/Table/type'
 import {
   useDeleteCurrentStockMutation,
   useGetCurrentStocksQuery
@@ -34,6 +25,10 @@ const TableCurrent = (): JSX.Element => {
   const { isRefetchStock } = useAppSelector((state) => state.Stocks)
   const [data, setData] = useState<Stock[]>([])
   const [editData, setEditData] = useState<Stock>()
+  const [pagination, setPagination] = useState<DefaultPagination>({
+    page: 0,
+    size: 10
+  })
 
   const {
     data: currentStockData,
@@ -122,7 +117,7 @@ const TableCurrent = (): JSX.Element => {
     const labelType: LabelType = number === 0 ? 'warning' : number > 0 ? 'success' : 'error'
     const symbol = number > 0 ? '+' : ''
     return type ? (
-      <Typography color={getBgColor(labelType)} textAlign='center' fontWeight={600}>
+      <Typography color={getBgColor(labelType)} fontWeight={600}>
         {symbol}
         {formatVND(number * 1000)}
       </Typography>
@@ -131,97 +126,79 @@ const TableCurrent = (): JSX.Element => {
     )
   }, [])
 
+  const table: Array<TableHeaderBody<Stock>> = [
+    {
+      name: 'code',
+      title: 'Code',
+      width: '10%'
+    },
+    {
+      name: 'volume',
+      title: 'Volume',
+      width: '15%'
+    },
+    {
+      name: 'averagePrice',
+      title: 'Average',
+      width: '15%'
+    },
+    {
+      name: 'marketPrice',
+      title: 'Market Price',
+      width: '15%',
+      render: (row) => (
+        <>
+          {editData?.code?.toUpperCase() === row?.code?.toUpperCase() ? (
+            <TextField
+              sx={[
+                {
+                  '& .MuiInputBase-root': {
+                    height: '36px'
+                  }
+                }
+              ]}
+              name='marketPrice'
+              value={editData?.marketPrice ?? 0}
+              onChange={(e) => onChangeRow(e)}
+              type='number'
+              autoFocus
+              inputProps={{
+                step: 1
+              }}
+            />
+          ) : (
+            row?.marketPrice
+          )}
+        </>
+      )
+    },
+    {
+      name: 'ratio',
+      title: 'Ratio',
+      width: '15%',
+      render: (row) => <>{renderLabel(Number(row?.ratio) * 100)}</>
+    },
+    {
+      name: 'investedValue',
+      title: 'Invested Value',
+      align: 'left',
+      width: '20%',
+      render: (row) => <> {renderLabel(Number(row.investedValue?.toFixed(2)), 'gain')}</>
+    }
+  ]
+
   return (
-    <Table sx={{ minWidth: 650 }}>
-      <TableHead>
-        <TableRow>
-          <TableCell>Code</TableCell>
-          <TableCell>Volume</TableCell>
-          <TableCell>Average</TableCell>
-          <TableCell>Market Price</TableCell>
-          <TableCell align='center'>Profit/Loss</TableCell>
-          <TableCell align='center'>Invested Value</TableCell>
-          <TableCell align='center'>Actions</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <>
-            {data.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell width='10%'>{row.code}</TableCell>
-                <TableCell width='10%'>{row.volume}</TableCell>
-                <TableCell width='10%'>{row.averagePrice}</TableCell>
-                <TableCell width='15%'>
-                  {editData?.code?.toUpperCase() === row?.code?.toUpperCase() ? (
-                    <TextField
-                      sx={[
-                        {
-                          '& .MuiInputBase-root': {
-                            height: '36px'
-                          }
-                        }
-                      ]}
-                      name='marketPrice'
-                      value={editData?.marketPrice ?? 0}
-                      onChange={(e) => onChangeRow(e)}
-                      type='number'
-                      autoFocus
-                      inputProps={{
-                        step: 1
-                      }}
-                    />
-                  ) : (
-                    row?.marketPrice
-                  )}
-                </TableCell>
-                <TableCell width='10%'>{renderLabel(Number(row?.ratio) * 100)}</TableCell>
-                <TableCell width='15%'>
-                  {renderLabel(Number(row.investedValue?.toFixed(2)), 'gain')}
-                </TableCell>
-                <TableCell width='10%'>
-                  <Box display='flex' alignItems='center' justifyContent='center' gap={0.5}>
-                    <Button
-                      sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                      onClick={() => {
-                        onView(row)
-                      }}
-                    >
-                      <Link
-                        to={`/stock/${row.code}`}
-                        style={{ display: 'flex', alignItems: 'center' }}
-                        target='_blank'
-                      >
-                        <RemoveRedEyeSharp color='primary' />
-                      </Link>
-                    </Button>
-                    <Button
-                      color='info'
-                      sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                      onClick={() => {
-                        onEdit(row)
-                      }}
-                    >
-                      <Edit />
-                    </Button>
-                    <Button
-                      sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                      onClick={async () => {
-                        await onDelete(row)
-                      }}
-                    >
-                      <Delete color='error' />
-                    </Button>
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ))}
-          </>
-        )}
-      </TableBody>
-    </Table>
+    <Table
+      data={data}
+      table={table}
+      isLoading={isLoading}
+      totalItems={currentStockData?.data?.totalItems ?? 0}
+      onDelete={onDelete}
+      onEdit={onEdit}
+      pagination={pagination}
+      onSetPagination={setPagination}
+      onView={onView}
+    />
   )
 }
 

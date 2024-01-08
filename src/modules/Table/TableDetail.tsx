@@ -1,11 +1,11 @@
-import { Box, Switch, TableCell, TableHead, TableRow, TextField } from '@mui/material'
+import { Switch, TextField } from '@mui/material'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { type ErrorResponse } from 'react-router-dom'
-import type { Stock } from 'src/Models'
+import type { LabelType, Stock } from 'src/Models'
 import { Label } from 'src/components/MUIComponents'
 import Table from 'src/components/Table'
-import type { TableHeaderBody } from 'src/components/Table/type'
+import type { DefaultPagination, TableHeaderBody } from 'src/components/Table/type'
 import {
   useDeleteStockMutation,
   useGetStocksQuery,
@@ -13,6 +13,7 @@ import {
 } from 'src/services/stocks.services'
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { refetchStocks } from 'src/store/slices/stockSlice'
+import { countDays } from 'src/utils'
 
 const TableDetail = (): JSX.Element => {
   const dispatch = useAppDispatch()
@@ -22,16 +23,24 @@ const TableDetail = (): JSX.Element => {
 
   const [data, setData] = useState<Stock[]>([])
   const [editData, setEditData] = useState<Stock>()
+  const [pagination, setPagination] = useState<DefaultPagination>({
+    page: 0,
+    size: 10
+  })
 
   const {
     data: stocksData,
     isLoading,
     refetch
-  } = useGetStocksQuery({}, { refetchOnMountOrArgChange: true })
+  } = useGetStocksQuery({ ...pagination }, { refetchOnMountOrArgChange: true })
 
   useEffect(() => {
     if (stocksData?.data?.data?.length) {
-      setData(stocksData.data.data)
+      const data = stocksData?.data?.data.map((item) => ({
+        ...item,
+        t: countDays(item?.createdAt as string, new Date().toISOString())
+      }))
+      setData(data)
     }
   }, [stocksData])
 
@@ -99,14 +108,14 @@ const TableDetail = (): JSX.Element => {
     }
   }
 
-  const onDelete = async (_id: string): Promise<void> => {
-    await deleteStocks({ _id })
+  const onDelete = async (row: Stock): Promise<void> => {
+    await deleteStocks({ _id: row._id })
       .unwrap()
       .then(async () => {
         dispatch(refetchStocks(true))
         await refetch()
       })
-    return setData(data.filter((item) => item._id !== _id))
+    return setData(data.filter((item) => item._id !== row._id))
   }
 
   const table: Array<TableHeaderBody<Stock>> = [
@@ -208,8 +217,41 @@ const TableDetail = (): JSX.Element => {
           </>
         )
       }
+    },
+    {
+      name: '',
+      title: 'T+',
+      render: (row) => {
+        return <>{row.t}</>
+      }
+    },
+    {
+      name: '',
+      title: 'Available',
+      render: (row) => {
+        const options = {
+          available: {
+            type: 'success',
+            message: 'Available'
+          },
+          un: {
+            type: 'warning',
+            message: 'Unavailable'
+          }
+        }
+        const isAvailable = row?.t ?? 0 >= 2.5 ? 'available' : 'un'
+
+        return (
+          <>
+            <Label type={options[`${isAvailable}`]?.type as LabelType}>
+              {options[`${isAvailable}`]?.message}
+            </Label>
+          </>
+        )
+      }
     }
   ]
+
   return (
     <Table
       data={data}
@@ -218,6 +260,8 @@ const TableDetail = (): JSX.Element => {
       totalItems={stocksData?.data?.totalItems ?? 0}
       onDelete={onDelete}
       onEdit={onEdit}
+      pagination={pagination}
+      onSetPagination={setPagination}
     />
   )
 }

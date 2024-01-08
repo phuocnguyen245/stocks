@@ -17,17 +17,17 @@ const ConfirmModal = ({
     toggle()
     onSetModalStatus({ open: false, isBuy: 0 })
   }
+
   const onOpenBuyModal = (): void => {
     toggle()
     onSetModalStatus({ open: false, isBuy: 1 })
   }
+  const onClose = (): void => {
+    onSetModalStatus({ open: false, isBuy: 0 })
+  }
 
   return (
-    <Dialog
-      open={modalStatus.open}
-      aria-labelledby='alert-dialog-title'
-      aria-describedby='alert-dialog-description'
-    >
+    <Dialog open={modalStatus.open} onClose={onClose}>
       <Container maxWidth='lg'>
         <Box padding={4}>
           <Typography variant='h5'>Which status do you want to create?</Typography>

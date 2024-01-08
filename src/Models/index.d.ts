@@ -13,6 +13,9 @@ interface Stock {
   investedValue?: number
   status: Status
   averagePrice?: number
+  createdAt?: string
+  updatedAt?: string
+  t?: number
 }
 export interface ResponsePagination<T> {
   data?: T
