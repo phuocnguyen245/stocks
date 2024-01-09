@@ -38,7 +38,7 @@ const StocksDetail = (): JSX.Element => {
     if (stocksData?.data?.data?.length) {
       const data = stocksData?.data?.data.map((item) => ({
         ...item,
-        t: countDays(item?.createdAt as string, new Date().toISOString())
+        t: countDays(item.date)
       }))
       setData(data)
     }
@@ -66,6 +66,7 @@ const StocksDetail = (): JSX.Element => {
         ratio: 0,
         sellPrice: 0
       }
+
       await updateStocks(row)
         .unwrap()
         .then(() => dispatch(refetchStocks(true)))
@@ -127,7 +128,8 @@ const StocksDetail = (): JSX.Element => {
     {
       name: 'date',
       title: 'Date',
-      width: '10%'
+      width: '10%',
+      render: (row) => <>{moment(row.date).format('DD/MM/YYYY')}</>
     },
     {
       name: 'volume',
@@ -163,7 +165,7 @@ const StocksDetail = (): JSX.Element => {
     {
       name: 'orderPrice',
       title: 'Order',
-      width: '25%',
+      width: '15%',
       render: (row) => (
         <>
           {editData?._id === row._id ? (
@@ -239,7 +241,7 @@ const StocksDetail = (): JSX.Element => {
             message: 'Unavailable'
           }
         }
-        const isAvailable = row?.t ?? 0 >= 2.5 ? 'available' : 'un'
+        const isAvailable = (row?.t ?? 0) >= 2.5 ? 'available' : 'un'
 
         return (
           <>

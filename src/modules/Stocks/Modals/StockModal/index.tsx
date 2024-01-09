@@ -55,11 +55,11 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
     } else {
       setValue('orderPrice', null)
     }
-    setValue('date', moment(Date.now()).format('DD/MM/YYYY'))
+    setValue('date', moment(Date.now()).toISOString())
   }, [open, status])
 
   const onChangeDate = (date: MomentInput): void => {
-    setValue('date', moment(date).format('DD/MM/YYYY'))
+    setValue('date', moment(date).toISOString())
   }
 
   const handleSave = async (value: FormBody): Promise<void> => {

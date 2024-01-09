@@ -18,7 +18,11 @@ const Loader = (): JSX.Element => {
       alignItems='center'
       justifyContent='center'
       width='100%'
-      height='200px'
+      height='100%'
+      minHeight='120px'
+      position='absolute'
+      left={0}
+      top={0}
       bgcolor={theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.5)'}
     >
       <CircularProgress disableShrink thickness={3} />

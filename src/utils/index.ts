@@ -24,37 +24,25 @@ const convertToDecimal = (value: string | number, decimal = 2): number => {
   return Number(Number(value).toFixed(2))
 }
 
-const convertDay = (value: Date): string =>
-  `${value.getDate()}/${value.getMonth()}/${value.getFullYear()}`
+const countDays = (startDate: string, endDate = moment().toISOString()): number => {
+  let start = moment(startDate).utcOffset(420).startOf('day')
+  const end = moment(endDate).utcOffset(420).startOf('day')
+  let diffDays = 0
 
-const countDays = (start: string, end: string): number => {
-  const startDate: Date = new Date(start)
-  const endDate: Date = new Date(end)
+  const isAfternoon = Number(moment(endDate).format('HH')) >= 12 ? 0.5 : 0
 
-  startDate.setUTCHours(startDate.getUTCHours())
-  endDate.setUTCHours(endDate.getUTCHours())
-
-  const hoursPerHalfDay: number = 12
-
-  if (convertDay(startDate) === convertDay(endDate)) {
-    return 0
+  if (start.isSame(end)) {
+    return isAfternoon
   }
 
-  let count: number = 0
-  // eslint-disable-next-line no-unmodified-loop-condition
-  while (startDate < endDate) {
-    const dayOfWeek: number = startDate.getUTCDay()
-    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-      count += 1
+  while (start.isBefore(end)) {
+    if (start.day() !== 0 && start.day() !== 6) {
+      diffDays++
     }
-    startDate.setUTCDate(startDate.getUTCDate() + 1)
+    start = start.add(1, 'days')
   }
 
-  if (endDate.getUTCHours() + 7 >= hoursPerHalfDay) {
-    count += 0.5
-  }
-
-  return count
+  return diffDays + isAfternoon
 }
 
 export { formatVND, removeDuplicatesByKey, ratio, convertToDecimal, countDays }

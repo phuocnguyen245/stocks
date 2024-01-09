@@ -28,7 +28,7 @@ const Table = ({
 }: TableProps<any, any>): JSX.Element => {
   return (
     <Box sx={{ minWidth: '650px' }}>
-      <MUITable stickyHeader>
+      <MUITable stickyHeader sx={{ position: 'relative' }}>
         <TableHead>
           <TableRow>
             {table.map((item: TableHeaderBody<unknown>, index) => (
@@ -43,62 +43,59 @@ const Table = ({
             {(onDelete ?? onEdit ?? onView) && <TableCell align='center'>Actions</TableCell>}
           </TableRow>
         </TableHead>
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <TableBody>
-            {data.map((row, index) => (
-              <TableRow key={`${row._id as string}-${index}`}>
-                {table.map((tableItem, tableIndex) => (
-                  <TableCell {...tableItem} key={`table-${tableIndex}`}>
-                    {tableItem?.render?.(row) ? tableItem?.render?.(row) : row[tableItem.name]}{' '}
-                  </TableCell>
-                ))}
-                <TableCell>
-                  <Box display='flex' alignItems='center' justifyContent='center' gap={0.5}>
-                    {onView && (
-                      <Button
-                        sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                        onClick={() => {
-                          onView(row)
-                        }}
-                      >
-                        <Link
-                          to={`/stock/${row.code}`}
-                          style={{ display: 'flex', alignItems: 'center' }}
-                          target='_blank'
-                        >
-                          <RemoveRedEyeSharp color='primary' />
-                        </Link>
-                      </Button>
-                    )}
-                    {onEdit && (
-                      <Button
-                        color='info'
-                        sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                        onClick={() => {
-                          onEdit(row)
-                        }}
-                      >
-                        <Edit />
-                      </Button>
-                    )}
-                    {onDelete && (
-                      <Button
-                        sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                        onClick={() => {
-                          onDelete(row)
-                        }}
-                      >
-                        <Delete color='error' />
-                      </Button>
-                    )}
-                  </Box>
+        <TableBody>
+          {data.map((row, index) => (
+            <TableRow key={`${row._id as string}-${index}`}>
+              {table.map((tableItem, tableIndex) => (
+                <TableCell {...tableItem} key={`table-${tableIndex}`}>
+                  {tableItem?.render?.(row) ? tableItem?.render?.(row) : row[tableItem.name]}{' '}
                 </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        )}
+              ))}
+              <TableCell>
+                <Box display='flex' alignItems='center' justifyContent='center' gap={0.5}>
+                  {onView && (
+                    <Button
+                      sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
+                      onClick={() => {
+                        onView(row)
+                      }}
+                    >
+                      <Link
+                        to={`/stocks/${row.code}`}
+                        style={{ display: 'flex', alignItems: 'center' }}
+                        target='_blank'
+                      >
+                        <RemoveRedEyeSharp color='primary' />
+                      </Link>
+                    </Button>
+                  )}
+                  {onEdit && (
+                    <Button
+                      color='info'
+                      sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
+                      onClick={() => {
+                        onEdit(row)
+                      }}
+                    >
+                      <Edit />
+                    </Button>
+                  )}
+                  {onDelete && (
+                    <Button
+                      sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
+                      onClick={() => {
+                        onDelete(row)
+                      }}
+                    >
+                      <Delete color='error' />
+                    </Button>
+                  )}
+                </Box>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        {isLoading && <Loader />}
       </MUITable>
       <Pagination
         pagination={pagination}

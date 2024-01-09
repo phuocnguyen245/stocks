@@ -35,10 +35,11 @@ interface Payments {
   name: string
   type: PaymentType
   balance: number
-  isDelete: boolean
+  isDelete?: boolean
   createdBy?: string
   updatedBy?: string
-  _id: string
+  date: string
+  _id?: string
 }
 
 export type { Stock, Status, ResponsePagination, ResponseType, LabelType, Payments }

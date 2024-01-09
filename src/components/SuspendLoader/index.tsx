@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import NProgress from 'nprogress'
-import { Box, CircularProgress } from '@mui/material'
+import { Box, CircularProgress, Paper } from '@mui/material'
 
 const SuspendLoader = (): JSX.Element => {
   useEffect(() => {
@@ -17,12 +17,13 @@ const SuspendLoader = (): JSX.Element => {
         position: 'fixed',
         left: 0,
         top: 0,
-        width: '100%',
-        height: '100%'
+        width: '100vw',
+        height: '100vh'
       }}
       display='flex'
       alignItems='center'
       justifyContent='center'
+      component={Paper}
     >
       <CircularProgress size={64} disableShrink thickness={3} />
     </Box>

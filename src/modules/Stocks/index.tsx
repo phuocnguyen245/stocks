@@ -2,13 +2,13 @@ import { Box } from '@mui/material'
 import Paper from '@mui/material/Paper'
 import TableContainer from '@mui/material/TableContainer'
 import { useState } from 'react'
+import CurrentStocks from './CurrentStocks'
 import type { ConfirmModal as ConfirmModalType } from './Modals/index'
-import TableCurrent from './CurrentStocks'
-import TableDetail from './StocksDetail'
-import TableFooter from './TableFooter'
-import TableHeader from './StockHeader'
+import StockFooter from './StockFooter'
+import StockHeader from './StockHeader'
+import StocksDetail from './StocksDetail'
 
-const BasicTable = (): JSX.Element => {
+const Stocks = (): JSX.Element => {
   const [modalStatus, setModalStatus] = useState<ConfirmModalType>({
     isBuy: 1,
     open: false
@@ -18,23 +18,23 @@ const BasicTable = (): JSX.Element => {
 
   return (
     <TableContainer component={Paper}>
-      <Box height='100vh' paddingX={2}>
-        <TableHeader
+      <Box height='calc(100vh - 32px)' paddingX={2} mt={4}>
+        <StockHeader
           openConfirmModal={openConfirmModal}
           modalStatus={modalStatus}
           onSetModalStatus={setModalStatus}
         />
         <Box display='flex' gap={2}>
           <Box flex={1}>
-            <TableDetail />
+            <StocksDetail />
           </Box>
           <Box flex={1} flexShrink='unset'>
-            <TableCurrent />
+            <CurrentStocks />
           </Box>
         </Box>
-        <TableFooter />
+        <StockFooter />
       </Box>
     </TableContainer>
   )
 }
-export default BasicTable
+export default Stocks
