@@ -15,11 +15,7 @@ import { useAppDispatch, useAppSelector } from 'src/store'
 import { refetchStocks } from 'src/store/slices/stockSlice'
 import { formatVND, ratio } from 'src/utils'
 
-export const getStatusLabel = (status: string): JSX.Element => {
-  return <Typography>123</Typography>
-}
-
-const TableCurrent = (): JSX.Element => {
+const CurrentStocks = (): JSX.Element => {
   const [deleteCurrentStock] = useDeleteCurrentStockMutation()
   const dispatch = useAppDispatch()
   const { isRefetchStock } = useAppSelector((state) => state.Stocks)
@@ -202,4 +198,4 @@ const TableCurrent = (): JSX.Element => {
   )
 }
 
-export default TableCurrent
+export default CurrentStocks

@@ -15,7 +15,7 @@ import { useAppDispatch, useAppSelector } from 'src/store'
 import { refetchStocks } from 'src/store/slices/stockSlice'
 import { countDays } from 'src/utils'
 
-const TableDetail = (): JSX.Element => {
+const StocksDetail = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const { isRefetchStock } = useAppSelector((state) => state.Stocks)
   const [updateStocks] = useUpdateStockMutation()
@@ -266,4 +266,4 @@ const TableDetail = (): JSX.Element => {
   )
 }
 
-export default TableDetail
+export default StocksDetail

@@ -31,4 +31,14 @@ export interface ResponseType<T> {
   subMessage?: string
 }
 
-export type { Stock, Status, ResponsePagination, ResponseType, LabelType }
+interface Payments {
+  name: string
+  type: PaymentType
+  balance: number
+  isDelete: boolean
+  createdBy?: string
+  updatedBy?: string
+  _id: string
+}
+
+export type { Stock, Status, ResponsePagination, ResponseType, LabelType, Payments }

@@ -17,23 +17,26 @@ const Loader = (Component: any) => (props: any) => (
 
 const Stocks = Loader(lazy(async () => await import('src/modules/Table')))
 const Charts = Loader(lazy(async () => await import('src/modules/Charts')))
+const MainLayout = Loader(lazy(async () => await import('src/Layouts')))
 
 const routes: RouteObject[] = [
   {
     path: '',
+    element: <MainLayout />,
     children: [
       {
-        path: '/',
-        element: <Stocks />
-      },
-      {
-        path: '/stock/',
+        path: '/stocks',
+        element: <Stocks />,
         children: [
           {
             path: ':code',
             element: <Charts />
           }
         ]
+      },
+      {
+        path: '/payment',
+        element: <Stocks />
       }
     ]
   }

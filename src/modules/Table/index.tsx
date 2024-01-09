@@ -3,10 +3,10 @@ import Paper from '@mui/material/Paper'
 import TableContainer from '@mui/material/TableContainer'
 import { useState } from 'react'
 import type { ConfirmModal as ConfirmModalType } from './Modals/index'
-import TableCurrent from './TableCurrent'
-import TableDetail from './TableDetail'
+import TableCurrent from './CurrentStocks'
+import TableDetail from './StocksDetail'
 import TableFooter from './TableFooter'
-import TableHeader from './TableHeader'
+import TableHeader from './StockHeader'
 
 const BasicTable = (): JSX.Element => {
   const [modalStatus, setModalStatus] = useState<ConfirmModalType>({

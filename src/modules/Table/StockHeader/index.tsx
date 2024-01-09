@@ -1,21 +1,21 @@
 import { Box, Button } from '@mui/material'
 import { type SetStateAction } from 'react'
 import useModal from 'src/hooks/useModals'
-import type { ConfirmModal as ConfirmModalType } from '../Modals/'
+import type { ConfirmModal as ConfirmModalType } from '../Modals'
 import ConfirmModal from '../Modals/ConfirmModal'
 import StockModal from '../Modals/StockModal'
 
-interface TableHeaderProps {
+interface StockHeaderProps {
   modalStatus: ConfirmModalType
   onSetModalStatus: (state: SetStateAction<ConfirmModalType>) => void
   openConfirmModal: () => void
 }
 
-const TableHeader = ({
+const StockHeader = ({
   modalStatus,
   onSetModalStatus,
   openConfirmModal
-}: TableHeaderProps): JSX.Element => {
+}: StockHeaderProps): JSX.Element => {
   const onStockModal = useModal()
 
   const addData = (): void => {
@@ -24,9 +24,6 @@ const TableHeader = ({
 
   return (
     <Box p={4} display='flex' alignItems='center' gap={2} justifyContent='flex-end'>
-      <Button variant='contained' onClick={openConfirmModal}>
-        Created Payment
-      </Button>
       <Button variant='contained' onClick={openConfirmModal}>
         Created
       </Button>
@@ -45,4 +42,4 @@ const TableHeader = ({
   )
 }
 
-export default TableHeader
+export default StockHeader
