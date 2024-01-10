@@ -32,6 +32,12 @@ export const PaymentService = createApi({
         url: `/payment/${_id}`,
         method: 'Delete'
       })
+    }),
+    getAsset: builder.query<ResponseType<any>, any>({
+      query: (params) => ({
+        url: '/asset',
+        params
+      })
     })
   })
 })
@@ -40,5 +46,6 @@ export const {
   useGetPaymentQuery,
   useCreatePaymentMutation,
   useDeletePaymentMutation,
-  useUpdatePaymentMutation
+  useUpdatePaymentMutation,
+  useGetAssetQuery
 } = PaymentService

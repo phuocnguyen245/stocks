@@ -3,12 +3,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import 'moment/locale/vi'
 import { Provider } from 'react-redux'
+import { useRoutes } from 'react-router-dom'
+import router from './router'
 import { store } from './store'
 import './styles/index.scss'
 import theme from './styles/theme'
-import { useRoutes } from 'react-router-dom'
-import React from 'react'
-import router from './router'
 
 const App = (): JSX.Element => {
   const routes = useRoutes(router)

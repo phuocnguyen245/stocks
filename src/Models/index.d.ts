@@ -42,4 +42,16 @@ interface Payments {
   _id?: string
 }
 
-export type { Stock, Status, ResponsePagination, ResponseType, LabelType, Payments }
+interface Asset {
+  topUp: number
+  waiting: number
+  selling: number
+  order: number
+  available: number
+  net: number
+  profitOrLost: number
+  investedValue: number
+  marketValue: number
+}
+
+export type { Stock, Status, ResponsePagination, ResponseType, LabelType, Payments, Asset }
