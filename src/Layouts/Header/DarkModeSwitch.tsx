@@ -4,7 +4,7 @@ import FormGroup from '@mui/material/FormGroup'
 import Switch from '@mui/material/Switch'
 import { styled } from '@mui/material/styles'
 import { type DarkModeSwitchProps } from '.'
-import { type ChangeEvent } from 'react'
+import { memo, type ChangeEvent } from 'react'
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 76,
@@ -73,4 +73,4 @@ const DarkModeSwitch = ({ darkMode, onSetDarkMode }: DarkModeSwitchProps): JSX.E
   )
 }
 
-export default DarkModeSwitch
+export default memo(DarkModeSwitch)
