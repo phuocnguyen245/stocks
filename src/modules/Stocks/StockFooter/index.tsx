@@ -1,10 +1,11 @@
 import { Box, Grid, Typography, useTheme, type Theme } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
-import { type Asset } from 'src/Models'
+import type { LabelType, Asset } from 'src/Models'
 import { Label, Skeleton } from 'src/components/MUIComponents'
 import { PaymentService } from 'src/services/payment.services'
 import { StockService } from 'src/services/stocks.services'
-import { convertToDecimal } from 'src/utils'
+import { useAppSelector } from 'src/store'
+import { convertToDecimal, formatVND } from 'src/utils'
 
 const TableFooter = (): JSX.Element => {
   const theme: Theme = useTheme()
@@ -19,10 +20,19 @@ const TableFooter = (): JSX.Element => {
     investedValue: 0,
     marketValue: 0
   })
-  const { data: assetData, isLoading: isLoadingAsset } = PaymentService.useGetAssetQuery({})
+  const { isRefetchStock } = useAppSelector((state) => state.Stocks)
+  const {
+    data: assetData,
+    isLoading: isLoadingAsset,
+    refetch
+  } = PaymentService.useGetAssetQuery({})
   const { data: currentData, isLoading: isLoadingCurrent } = StockService.useGetCurrentStocksQuery(
     {}
   )
+
+  useEffect(() => {
+    void (isRefetchStock && refetch())
+  }, [isRefetchStock])
 
   useEffect(() => {
     if (assetData?.data) {
@@ -74,22 +84,25 @@ const TableFooter = (): JSX.Element => {
     return <Skeleton width='100px' height='40px' animation='wave' />
   }
 
-  const renderLabel = (message: string | number, compare = 0): JSX.Element => {
-    const check = Number(message) > compare ? 'ok' : 'nook'
+  const renderLabel = (message: number | string, first = 1, compare = 0): JSX.Element => {
+    const check = Number(first) === compare ? 'equal' : first > compare ? 'more' : 'less'
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const options: any = {
-      ok: {
+    const options = {
+      more: {
         type: 'success',
         message
       },
-      nook: {
+      equal: {
+        type: 'warning',
+        message
+      },
+      less: {
         type: 'error',
         message
       }
     }
 
-    return <Label type={options[check].type}>{message}</Label>
+    return <Label type={options[check].type as LabelType}>{message}</Label>
   }
   return (
     <Box
@@ -108,7 +121,9 @@ const TableFooter = (): JSX.Element => {
               <Typography>Top up:&nbsp;</Typography>
             </Grid>
             <Grid item>
-              <Typography>{isLoading ? <SkeletonRender /> : asset.topUp}</Typography>
+              <Typography>
+                {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.topUp))}
+              </Typography>
             </Grid>
           </Grid>
         </Grid>
@@ -118,7 +133,9 @@ const TableFooter = (): JSX.Element => {
               <Typography>Net Asset Value:&nbsp;</Typography>
             </Grid>
             <Grid item>
-              <Typography>{isLoading ? <SkeletonRender /> : asset.net}</Typography>
+              <Typography>
+                {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.net))}
+              </Typography>
             </Grid>
           </Grid>
         </Grid>
@@ -128,7 +145,9 @@ const TableFooter = (): JSX.Element => {
               <Typography>Available Cash:&nbsp;</Typography>
             </Grid>
             <Grid item>
-              <Typography>{isLoading ? <SkeletonRender /> : asset.available}</Typography>
+              <Typography>
+                {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.available))}
+              </Typography>
             </Grid>
           </Grid>
         </Grid>
@@ -140,7 +159,11 @@ const TableFooter = (): JSX.Element => {
             </Grid>
             <Grid item>
               <Typography>
-                {isLoading ? <SkeletonRender /> : `${asset.profitOrLost ?? 0}%`}
+                {isLoading ? (
+                  <SkeletonRender />
+                ) : (
+                  renderLabel(`${asset.profitOrLost ?? 0}%`, asset.profitOrLost)
+                )}
               </Typography>
             </Grid>
           </Grid>
@@ -152,7 +175,13 @@ const TableFooter = (): JSX.Element => {
               <Typography>Invested Value:&nbsp;</Typography>
             </Grid>
             <Grid item>
-              <Typography>{isLoading ? <SkeletonRender /> : asset.investedValue}</Typography>
+              <Typography>
+                {isLoading ? (
+                  <SkeletonRender />
+                ) : (
+                  renderLabel(formatVND(asset.investedValue), asset.profitOrLost)
+                )}
+              </Typography>
             </Grid>
           </Grid>
         </Grid>
@@ -162,7 +191,13 @@ const TableFooter = (): JSX.Element => {
               <Typography>Market Value:&nbsp;</Typography>
             </Grid>
             <Grid item>
-              <Typography>{isLoading ? <SkeletonRender /> : asset.marketValue}</Typography>
+              <Typography>
+                {isLoading ? (
+                  <SkeletonRender />
+                ) : (
+                  renderLabel(formatVND(asset.marketValue), asset.profitOrLost)
+                )}
+              </Typography>
             </Grid>
           </Grid>
         </Grid>

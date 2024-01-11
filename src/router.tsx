@@ -26,6 +26,10 @@ const routes: RouteObject[] = [
     element: <MainLayout />,
     children: [
       {
+        path: '/',
+        element: <Navigate to='/stocks' replace />
+      },
+      {
         path: '/stocks',
         children: [
           {
