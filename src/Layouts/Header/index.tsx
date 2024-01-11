@@ -2,8 +2,14 @@ import * as React from 'react'
 import { Tabs, Tab, Box, Paper } from '@mui/material'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import DarkModeSwitch from './DarkModeSwitch'
 
-const Header = (): JSX.Element => {
+export interface DarkModeSwitchProps {
+  darkMode: 'dark' | 'light'
+  onSetDarkMode: (value: React.SetStateAction<'dark' | 'light'>) => void
+}
+
+const Header = ({ darkMode, onSetDarkMode }: DarkModeSwitchProps): JSX.Element => {
   const navigate = useNavigate()
   const [value, setValue] = React.useState('1')
   const location = useLocation()
@@ -14,27 +20,45 @@ const Header = (): JSX.Element => {
   useEffect(() => {
     const options = {
       '/stocks': '1',
-      '/payments': '2'
+      '/payments': '2',
+      '/stocks/vnindex': '3'
     }
     setValue(options[location.pathname as keyof typeof options] || '1')
   }, [location])
 
   return (
-    <Paper sx={{ width: '100%', position: 'fixed', top: 0, left: 0 }}>
-      <Tabs value={value} onChange={handleChange} centered>
+    <Paper sx={{ width: '100%', top: 0, left: 0, display: 'flex', justifyContent: 'center' }}>
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        centered
+        sx={{
+          '& .MuiTabs-scroller': {
+            height: '44px',
+            minHeight: 'unset'
+          }
+        }}
+      >
         <Tab
           label='Stocks'
           value={'1'}
           onClick={() => navigate('/stocks')}
-          sx={{ color: 'text.primary' }}
+          sx={{ color: 'text.primary', fontWeight: 600 }}
         />
         <Tab
           label='Payment'
           value={'2'}
-          sx={{ color: 'text.primary' }}
+          sx={{ color: 'text.primary', fontWeight: 600 }}
           onClick={() => navigate('/payments')}
         />
+        <Tab
+          label='Charts'
+          value={'3'}
+          sx={{ color: 'text.primary', fontWeight: 600 }}
+          onClick={() => navigate('/stocks/vnindex')}
+        />
       </Tabs>
+      <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
     </Paper>
   )
 }

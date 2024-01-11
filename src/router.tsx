@@ -18,7 +18,7 @@ const Loader = (Component: any) => (props: any) => (
 const Stocks = Loader(lazy(async () => await import('src/modules/Stocks')))
 const Charts = Loader(lazy(async () => await import('src/modules/Charts')))
 const Payment = Loader(lazy(async () => await import('src/modules/Payments')))
-const MainLayout = Loader(lazy(async () => await import('src/Layouts')))
+const MainLayout = Loader(lazy(async () => await import('src/Layouts/Sidebar')))
 
 const routes: RouteObject[] = [
   {

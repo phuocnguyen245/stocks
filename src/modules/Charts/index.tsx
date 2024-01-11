@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { Box, Tab, Tabs, Typography } from '@mui/material'
+import { Box, Paper, Tab, Tabs, Typography } from '@mui/material'
 import React, { memo, useEffect, useState } from 'react'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { useGetStockStatisticQuery } from 'src/services/stocks.services'
 import StatisticCharts from './StatisticChart'
 import StockChart from './StockChart'
@@ -33,7 +33,8 @@ const CustomTabPanel = (props: TabPanelProps): JSX.Element => {
 }
 
 const Charts = (): JSX.Element => {
-  const [value, setValue] = useState(1)
+  const navigate = useNavigate()
+  const [value, setValue] = useState(0)
   const { code: paramsCode } = useParams()
   const [code, setCode] = useState<string>('')
   const [data, setData] = useState<[number[]]>([[]])
@@ -41,7 +42,11 @@ const Charts = (): JSX.Element => {
   const { data: stockStatistic } = useGetStockStatisticQuery({ code }, { skip: !code })
 
   useEffect(() => {
-    !!paramsCode && setCode(paramsCode.toUpperCase())
+    if (paramsCode) {
+      setCode(paramsCode.toUpperCase())
+    } else {
+      navigate('/stock/vnindex')
+    }
   }, [paramsCode])
 
   useEffect(() => {
@@ -54,22 +59,36 @@ const Charts = (): JSX.Element => {
     setValue(newValue)
   }
   return (
-    <Box>
+    <Box borderRadius={0}>
       <Box
         sx={{
           borderBottom: 1,
           borderColor: 'divider',
-          boxShadow: ' rgba(0, 0, 0, 0.24) 0px 3px 8px'
+          boxShadow: ' rgba(0, 0, 0, 0.24) 0px 3px 8px',
+          borderRadius: 0,
+          border: 'none'
         }}
         position='fixed'
         zIndex={1000}
         width='100%'
-        top={0}
+        top={64}
         bgcolor='text.primary'
       >
-        <Tabs value={value} onChange={handleChange} centered>
-          <Tab label='Stock Chart' />
-          <Tab label='Statistic Charts' />
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          centered
+          component={Paper}
+          sx={{
+            borderRadius: 0,
+            '& .MuiTabs-scroller': {
+              height: '44px',
+              minHeight: 'unset'
+            }
+          }}
+        >
+          <Tab label='Stock Chart' sx={{ color: 'text.primary', fontWeight: 600 }} />
+          <Tab label='Statistic Charts' sx={{ color: 'text.primary', fontWeight: 600 }} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>

@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material'
-import * as Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
+import type * as Highcharts from 'highcharts'
 import { memo, useEffect, useMemo, useState } from 'react'
+import Chart from 'src/components/Chart'
 import { Label } from 'src/components/MUIComponents'
 import { chartLabelOptions, type ChartLabelType } from '../utils'
 
@@ -196,11 +196,11 @@ const Stochastic = ({ data }: StochasticProps): JSX.Element => {
           %D: {lines.dValues[lines.dValues.length - 1]?.toFixed(2)}
         </Label>
       </Box>
-      <Box display='flex' alignItems='center'>
+      <Box display='flex' alignItems='center' mb={1.5}>
         <Typography component={'span'}>Action today:</Typography>&nbsp;
         <Typography component={'span'}>{renderLabel}</Typography>
       </Box>
-      <HighchartsReact highcharts={Highcharts} options={options} />
+      <Chart options={options} />
     </Box>
   )
 }

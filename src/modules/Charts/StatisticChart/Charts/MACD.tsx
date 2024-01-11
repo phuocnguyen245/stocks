@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material'
-import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
+import type Highcharts from 'highcharts'
 import { memo, useEffect, useMemo, useState } from 'react'
+import Chart from 'src/components/Chart'
 import { Label } from 'src/components/MUIComponents'
 import { chartLabelOptions, type ChartLabelType } from 'src/modules/Charts/StatisticChart/utils'
 
@@ -197,11 +197,11 @@ const MACD = ({ data }: MACDProps): JSX.Element => {
           {signals[signals.length - 1]?.point?.toFixed(2)}
         </Label>
       </Box>
-      <Box display='flex' alignItems='center'>
+      <Box display='flex' alignItems='center' mb={1.5}>
         <Typography component={'span'}>Action today:</Typography>&nbsp;
         <Typography component={'span'}>{renderLabel}</Typography>
       </Box>
-      <HighchartsReact highcharts={Highcharts} options={options} />
+      <Chart options={options} />
     </Box>
   )
 }

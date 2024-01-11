@@ -17,14 +17,14 @@ const Stocks = (): JSX.Element => {
   const openConfirmModal = (): void => setModalStatus({ ...modalStatus, open: true })
 
   return (
-    <TableContainer component={Paper}>
-      <Box height='calc(100vh - 32px)' paddingX={2} mt={4}>
+    <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
+      <Box height='calc(100vh - 32px)' mt={4} position='relative'>
         <StockHeader
           openConfirmModal={openConfirmModal}
           modalStatus={modalStatus}
           onSetModalStatus={setModalStatus}
         />
-        <Box display='flex' gap={2}>
+        <Box display='flex' gap={2} px={2}>
           <Box flex={1}>
             <StocksDetail />
           </Box>

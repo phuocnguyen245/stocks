@@ -106,13 +106,15 @@ const TableFooter = (): JSX.Element => {
   }
   return (
     <Box
-      position='fixed'
-      width='100vw'
+      position='absolute'
+      width='100%'
       height='100px'
       bottom={0}
       display='flex'
       alignItems='center'
-      bgcolor={theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.5)'}
+      bgcolor={
+        theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(242, 232, 252, 0.5)'
+      }
     >
       <Grid container alignItems='center' spacing={2} justifyContent='center'>
         <Grid item>

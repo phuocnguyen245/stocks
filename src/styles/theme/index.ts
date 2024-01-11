@@ -42,4 +42,4 @@ const onDarkTheme = (mode: 'dark' | 'light'): Theme => {
   return theme
 }
 
-export default onDarkTheme('dark')
+export default onDarkTheme

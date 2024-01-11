@@ -54,4 +54,20 @@ interface Asset {
   marketValue: number
 }
 
-export type { Stock, Status, ResponsePagination, ResponseType, LabelType, Payments, Asset }
+interface WatchList {
+  displayIndex: number
+  name: string
+  symbols: string[]
+  userName: string
+  watchlistID: number
+}
+export type {
+  Stock,
+  Status,
+  ResponsePagination,
+  ResponseType,
+  LabelType,
+  Payments,
+  Asset,
+  WatchList
+}

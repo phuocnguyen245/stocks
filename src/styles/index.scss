@@ -8,3 +8,32 @@ body {
 * {
   box-sizing: border-box;
 }
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 155, 155, 0.7) transparent;
+}
+
+/* This applies to a specific element */
+.watch-list {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 155, 155, 0.7) transparent;
+}
+
+/* For Webkit browsers (Chrome, Safari) */
+html::-webkit-scrollbar,
+.watch-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+html::-webkit-scrollbar-track,
+.watch-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb,
+.watch-list::-webkit-scrollbar-thumb {
+  background-color: rgba(155, 155, 155, 0.7);
+  border-radius: 20px;
+  border: 3px solid transparent;
+}

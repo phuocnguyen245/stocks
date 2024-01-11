@@ -1,11 +1,11 @@
-import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
-import { memo, useEffect, useMemo, useState } from 'react'
-import { useAppSelector } from 'src/store'
-import { type ChartLabelType, chartLabelOptions } from '../utils'
-import { Label } from 'src/components/MUIComponents'
 import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
+import type Highcharts from 'highcharts'
+import { memo, useEffect, useMemo, useState } from 'react'
+import Chart from 'src/components/Chart'
+import { Label } from 'src/components/MUIComponents'
+import { useAppSelector } from 'src/store'
+import { chartLabelOptions, type ChartLabelType } from '../utils'
 
 interface Lines {
   kValues: number[]
@@ -186,11 +186,11 @@ const StochasticRSI = (): JSX.Element => {
           %D: {lines.dValues[lines.dValues.length - 1]?.toFixed(2)}
         </Label>
       </Box>
-      <Box display='flex' alignItems='center'>
+      <Box display='flex' alignItems='center' mb={1.5}>
         <Typography component={'span'}>Action today:</Typography>&nbsp;
         <Typography component={'span'}>{renderLabel}</Typography>
       </Box>
-      <HighchartsReact highcharts={Highcharts} options={options} />
+      <Chart options={options} />
     </Box>
   )
 }

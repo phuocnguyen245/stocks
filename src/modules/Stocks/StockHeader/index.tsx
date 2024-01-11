@@ -23,7 +23,7 @@ const StockHeader = ({
   }
 
   return (
-    <Box p={4} display='flex' alignItems='center' gap={2} justifyContent='flex-end'>
+    <Box px={4} pt={6} pb={2} display='flex' alignItems='center' gap={2} justifyContent='flex-end'>
       <Button variant='contained' onClick={openConfirmModal}>
         Created
       </Button>

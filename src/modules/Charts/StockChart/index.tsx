@@ -8,6 +8,7 @@ import FullScreen from 'highcharts/modules/full-screen.js'
 import PriceIndicator from 'highcharts/modules/price-indicator.js'
 import StockTools from 'highcharts/modules/stock-tools.js'
 import { memo, useEffect, useMemo, useState } from 'react'
+import { useAppSelector } from 'src/store'
 
 Indicators(Highcharts)
 DragPanes(Highcharts)
@@ -23,13 +24,14 @@ interface StockChartProps {
 const StockChart = ({ data, code }: StockChartProps): JSX.Element => {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
 
+  const { isOpenSidebar } = useAppSelector((state) => state.Stocks)
   useEffect(() => {
-    const width = window.innerWidth
-    const height = window.innerHeight - 50
+    const width = isOpenSidebar ? window.innerWidth - 280 : window.innerWidth
+    const height = window.innerHeight - 120
     if (width && height) {
       setWindowSize({ width, height })
     }
-  }, [])
+  }, [isOpenSidebar])
 
   const volume = useMemo(
     () =>
@@ -205,7 +207,7 @@ const StockChart = ({ data, code }: StockChartProps): JSX.Element => {
   }
 
   return (
-    <Box mt='50px' p={0}>
+    <Box mt='112px' p={0}>
       <HighchartsReact highcharts={Highcharts} options={options} constructorType={'stockChart'} />
     </Box>
   )

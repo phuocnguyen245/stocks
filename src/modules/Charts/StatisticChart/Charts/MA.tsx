@@ -1,9 +1,9 @@
 import { Box, Typography } from '@mui/material'
-import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
+
 import { memo, useEffect, useState } from 'react'
 import { Label } from 'src/components/MUIComponents'
 import { chartLabelOptions, type ChartLabelType } from '../utils'
+import Chart from 'src/components/Chart'
 
 interface MaProps {
   data: number[]
@@ -59,12 +59,16 @@ const MA = ({ data }: MaProps): JSX.Element => {
         signal = 'hold'
       }
       const { type, message } = chartLabelOptions[signal]
-      return <Label type={type}>{message}</Label>
+      return (
+        <Label type={type} fontSize='14px'>
+          {message}
+        </Label>
+      )
     }
     return null
   }
 
-  const options = {
+  const options: Highcharts.Options = {
     title: {
       text: ''
     },
@@ -138,7 +142,7 @@ const MA = ({ data }: MaProps): JSX.Element => {
           MA&nbsp;
         </Typography>
       </Box>
-      <Box display='flex' alignItems='center' flexWrap='wrap' gap={0.75}>
+      <Box display='flex' alignItems='center' flexWrap='wrap' gap={0.75} mb={1.5}>
         <Box display='flex' alignItems='center'>
           <Typography component={'span'} variant='subtitle1'>
             MA10:
@@ -176,7 +180,7 @@ const MA = ({ data }: MaProps): JSX.Element => {
         </Box>
       </Box>
 
-      <HighchartsReact highcharts={Highcharts} options={options} />
+      <Chart options={options} />
     </Box>
   )
 }

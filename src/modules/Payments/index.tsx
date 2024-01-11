@@ -80,8 +80,17 @@ const Payment = (): JSX.Element => {
   ]
 
   return (
-    <TableContainer component={Paper} sx={{ height: '100vh' }}>
-      <Box px={4} display='flex' alignItems='center' gap={2} justifyContent='flex-end'>
+    <TableContainer component={Paper} sx={{ height: '100vh', borderRadius: 0 }}>
+      <Box
+        px={4}
+        pt={2}
+        pb={0}
+        pr={6}
+        display='flex'
+        alignItems='center'
+        gap={2}
+        justifyContent='flex-end'
+      >
         <Button variant='contained' onClick={toggle} sx={{ mt: 8 }}>
           Created
         </Button>

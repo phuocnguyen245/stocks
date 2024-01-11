@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from 'react'
 import MACD from './Charts/MACD'
 import RSI from './Charts/RSI'
-import { Grid } from '@mui/material'
+import { Box, Grid, Paper } from '@mui/material'
 import Stochastic from './Charts/Stochastic'
 import MA from './Charts/MA'
 import StochasticRSI from './Charts/StochasticRSI'
@@ -20,26 +20,28 @@ const StatisticCharts = ({ data }: StatisticChartsProps): JSX.Element => {
   }, [data])
 
   return (
-    <Grid container spacing={1} marginTop='50px' pb={3} px={3}>
-      <Grid item xs={4}>
-        <MA data={closePrices} />
+    <Paper>
+      <Grid container spacing={1.5} marginTop='112px' pb={3} px={3}>
+        <Grid item xs={4} pb={1.5}>
+          <MA data={closePrices} />
+        </Grid>
+        <Grid item xs={4} pb={1.5}>
+          <MACD data={closePrices} />
+        </Grid>
+        <Grid item xs={4} pb={1.5}>
+          <RSI data={closePrices} />
+        </Grid>
+        <Grid item xs={4} pb={1.5}>
+          <Stochastic data={data} />
+        </Grid>
+        <Grid item xs={4} pb={1.5}>
+          <StochasticRSI />
+        </Grid>
+        <Grid item xs={4} pb={1.5}>
+          <MFI data={data} />
+        </Grid>
       </Grid>
-      <Grid item xs={4}>
-        <MACD data={closePrices} />
-      </Grid>
-      <Grid item xs={4}>
-        <RSI data={closePrices} />
-      </Grid>
-      <Grid item xs={4}>
-        <Stochastic data={data} />
-      </Grid>
-      <Grid item xs={4}>
-        <StochasticRSI />
-      </Grid>
-      <Grid item xs={4}>
-        <MFI data={data} />
-      </Grid>
-    </Grid>
+    </Paper>
   )
 }
 
