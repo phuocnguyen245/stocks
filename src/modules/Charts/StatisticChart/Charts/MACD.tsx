@@ -1,109 +1,27 @@
 import { Box, Typography } from '@mui/material'
 import type Highcharts from 'highcharts'
 import { memo, useEffect, useMemo, useState } from 'react'
+import type { MACD as IMACD } from 'src/Models'
 import Chart from 'src/components/Chart'
 import { Label } from 'src/components/MUIComponents'
 import { chartLabelOptions, type ChartLabelType } from 'src/modules/Charts/StatisticChart/utils'
+import { convertToDecimal } from 'src/utils'
 
 interface MACDProps {
-  data: number[]
-}
-interface Signals {
-  index: number
-  action: string
-  point: number
-  macd: number
-  signal: number
+  data?: IMACD
 }
 
-const calculateEMA = (data: number[], period: number): number[] => {
-  const k = 2 / (period + 1)
-  const ema: number[] = []
-  let sum = 0
-
-  for (let i = 0; i < period; i++) {
-    sum += data[i]
-    ema.push(null as unknown as number)
-  }
-
-  ema.push(sum / period)
-
-  for (let i = period + 1; i < data.length; i++) {
-    const currentValue = data[i]
-    const prevEMA = ema[i - 1]
-    const currentEMA = (currentValue - prevEMA) * k + prevEMA
-    ema.push(currentEMA)
-  }
-
-  return ema
-}
-
-const calculateMACD = (data: number[]): number[] => {
-  const ema12 = calculateEMA(data, 12)
-  const ema26 = calculateEMA(data, 26)
-  const macdLine: number[] = []
-
-  for (let i = 0; i < data.length; i++) {
-    const macdValue = ema12[i] - ema26[i]
-    macdLine.push(macdValue)
-  }
-
-  return macdLine
-}
-
-const calculateSignalLine = (macdLine: number[], signalPeriod: number): number[] => {
-  const signalLine = calculateEMA(macdLine, signalPeriod)
-  return signalLine
-}
-
-const decideAction = (macdLine: number[], signalLine: number[]): Signals[] => {
-  const actions = []
-
-  for (let i = 0; i < macdLine.length; i++) {
-    const macd = macdLine[i]
-    const signal = signalLine[i]
-    if (macd > signal) {
-      actions.push({
-        index: i,
-        point: macd - signal,
-        action: 'BUY',
-        macd,
-        signal
-      })
-    } else if (macd < signal) {
-      actions.push({
-        index: i,
-        point: macd - signal,
-        action: 'SELL',
-        macd,
-        signal
-      })
-    } else {
-      actions.push({
-        index: i,
-        point: macd - signal,
-        action: 'HOLD',
-        macd,
-        signal
-      })
-    }
-  }
-  return actions
-}
 interface Lines {
   macd: number[]
   signal: number[]
 }
 const MACD = ({ data }: MACDProps): JSX.Element => {
-  const [signals, setSignals] = useState<Signals[]>([])
   const [lines, setLines] = useState<Lines>({ macd: [], signal: [] })
 
   useEffect(() => {
-    const macdLine = calculateMACD(data)
-    const signalLine = calculateSignalLine(macdLine, 9)
-    const action = decideAction(macdLine, signalLine)
-    setSignals(action)
-    setLines({ macd: macdLine.slice(40), signal: signalLine.slice(40) })
+    if (data) {
+      setLines({ macd: data.macd.slice(40), signal: data.signal.slice(40) })
+    }
   }, [data])
 
   const options: Highcharts.Options = {
@@ -152,8 +70,8 @@ const MACD = ({ data }: MACDProps): JSX.Element => {
   }
 
   const renderLabel = useMemo(() => {
-    if (signals.length) {
-      const lastSignal = signals[signals.length - 1].point
+    if (lines.macd.length && lines.signal.length) {
+      const lastSignal = lines.macd[lines.macd.length - 1] - lines.signal[lines.signal.length - 1]
       let actionCase: ChartLabelType
 
       if (lastSignal <= -0.5) {
@@ -174,7 +92,23 @@ const MACD = ({ data }: MACDProps): JSX.Element => {
         </Label>
       )
     }
-  }, [signals])
+  }, [lines])
+
+  const lastPriceMACD = useMemo(() => {
+    let macd = 0
+    let signal = 0
+    let minus = 0
+    if (lines.macd.length && lines.signal.length) {
+      macd = lines.macd[lines.macd.length - 1]
+      signal = lines.signal[lines.signal.length - 1]
+      minus = macd - signal
+    }
+    return {
+      macd: convertToDecimal(macd),
+      signal: convertToDecimal(signal),
+      minus
+    }
+  }, [lines])
 
   return (
     <Box>
@@ -183,18 +117,15 @@ const MACD = ({ data }: MACDProps): JSX.Element => {
           MACD:&nbsp;
         </Typography>
         <Label component={'span'} type={'success'}>
-          {signals[signals.length - 1]?.macd?.toFixed(2)}
+          {lastPriceMACD.macd}
         </Label>
         &nbsp;
         <Label component={'span'} type={'info'}>
-          {signals[signals.length - 1]?.signal?.toFixed(2)}
+          {lastPriceMACD.signal}
         </Label>
         &nbsp;
-        <Label
-          component={'span'}
-          type={signals[signals.length - 1]?.point > 0 ? 'success' : 'error'}
-        >
-          {signals[signals.length - 1]?.point?.toFixed(2)}
+        <Label component={'span'} type={lastPriceMACD.minus > 0 ? 'success' : 'error'}>
+          {lastPriceMACD.minus.toFixed(2)}
         </Label>
       </Box>
       <Box display='flex' alignItems='center' mb={1.5}>

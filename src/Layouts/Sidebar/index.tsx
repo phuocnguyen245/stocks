@@ -1,11 +1,14 @@
 import MenuIcon from '@mui/icons-material/Menu'
-import { ThemeProvider } from '@mui/material'
-import MuiAppBar, { type AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
-import Box from '@mui/material/Box'
-import CssBaseline from '@mui/material/CssBaseline'
-import IconButton from '@mui/material/IconButton'
-import Toolbar from '@mui/material/Toolbar'
-import { styled } from '@mui/material/styles'
+import {
+  Box,
+  CssBaseline,
+  IconButton,
+  AppBar as MuiAppBar,
+  ThemeProvider,
+  Toolbar,
+  styled,
+  type AppBarProps as MuiAppBarProps
+} from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Outlet } from 'react-router-dom'
@@ -13,7 +16,6 @@ import { setMode, setOpenSidebar } from 'src/store/slices/stockSlice'
 import themeProvider from 'src/styles/theme'
 import Header from '../Header'
 import SideBarDrawer from './SideBarDrawer'
-import useModal from 'src/hooks/useModals'
 
 export const drawerWidth = 280
 
@@ -59,7 +61,15 @@ const AppBar = styled(MuiAppBar, {
 
 const PersistentDrawerLeft = (): JSX.Element => {
   const dispatch = useDispatch()
-  const { open, toggle } = useModal()
+  const [open, setOpen] = useState(() => {
+    const openLocal = localStorage.getItem('isOpenDrawer')
+    if (openLocal) {
+      const isOpen = JSON.parse(openLocal)
+      const isTypeBoolean = typeof isOpen === 'boolean'
+      return isTypeBoolean ? isOpen : true
+    }
+    return true
+  })
   const [darkMode, setDarkMode] = useState<'light' | 'dark'>(() => {
     const localMode = localStorage.getItem('mode')
     if (!localMode || (localMode !== 'dark' && localMode !== 'light')) {
@@ -67,6 +77,14 @@ const PersistentDrawerLeft = (): JSX.Element => {
     }
     return localMode
   })
+
+  useEffect(() => {
+    localStorage.setItem('isOpenDrawer', JSON.stringify(open))
+  }, [open])
+
+  const toggle = (): void => {
+    setOpen(!open)
+  }
 
   const handleDrawerOpen = (): void => {
     toggle()

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWithReAuth } from './baseQuery'
-import type { ResponseType, ResponsePagination, Stock, WatchList } from '../Models'
+import type { ResponseType, ResponsePagination, Stock, WatchList, Indicator } from '../Models'
 
 export const StockService = createApi({
   reducerPath: 'StockService',
@@ -17,6 +17,12 @@ export const StockService = createApi({
       query: (params) => ({
         url: '/current-stocks',
         params
+      })
+    }),
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+    getIndicator: builder.query<ResponseType<Indicator>, { code: string }>({
+      query: ({ code }) => ({
+        url: `/stocks/indicators/${code}`
       })
     }),
     // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
@@ -64,6 +70,7 @@ export const {
   useGetStocksQuery,
   useGetCurrentStocksQuery,
   useGetStockStatisticQuery,
+  useGetIndicatorQuery,
   useCreateStockMutation,
   useUpdateStockMutation,
   useDeleteStockMutation,

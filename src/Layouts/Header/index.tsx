@@ -20,8 +20,8 @@ const Header = ({ darkMode, onSetDarkMode }: DarkModeSwitchProps): JSX.Element =
   useEffect(() => {
     const options = {
       '/stocks': '1',
-      '/payments': '2',
-      '/stocks/vnindex': '3'
+      '/stocks/vnindex': '2',
+      '/payments': '3'
     }
     setValue(options[location.pathname as keyof typeof options] || '1')
   }, [location])
@@ -46,16 +46,16 @@ const Header = ({ darkMode, onSetDarkMode }: DarkModeSwitchProps): JSX.Element =
           sx={{ color: 'text.primary', fontWeight: 600 }}
         />
         <Tab
-          label='Payment'
+          label='Charts'
           value={'2'}
           sx={{ color: 'text.primary', fontWeight: 600 }}
-          onClick={() => navigate('/payments')}
+          onClick={() => navigate('/stocks/vnindex')}
         />
         <Tab
-          label='Charts'
+          label='Payment'
           value={'3'}
           sx={{ color: 'text.primary', fontWeight: 600 }}
-          onClick={() => navigate('/stocks/vnindex')}
+          onClick={() => navigate('/payments')}
         />
       </Tabs>
       <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />

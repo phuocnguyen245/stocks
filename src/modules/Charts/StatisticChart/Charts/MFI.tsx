@@ -5,56 +5,15 @@ import Chart from 'src/components/Chart'
 import { Label } from 'src/components/MUIComponents'
 import { chartLabelOptions, type ChartLabelType } from '../utils'
 interface MFIProps {
-  data: number[][]
+  data?: number[]
 }
-
-const calculateMFI = (data: number[][], period: number): number[] => {
-  const volumes: number[] = []
-  const mfiValues: number[] = []
-  const highPrices: number[] = []
-  const lowPrices: number[] = []
-  const closePrices: number[] = []
-
-  data.forEach((item) => {
-    highPrices.push(item[2])
-    lowPrices.push(item[3])
-    closePrices.push(item[4])
-    volumes.push(item[5])
-  })
-
-  for (let i = 0; i < closePrices.length; i++) {
-    let positiveFlow = 0
-    let negativeFlow = 0
-
-    // Tính toán dòng tiền cho mỗi phiên giao dịch
-    for (let j = i - period + 1; j <= i; j++) {
-      const typicalPrice = (highPrices[j] + lowPrices[j] + closePrices[j]) / 3
-      const moneyFlow = typicalPrice * volumes[j]
-
-      if (typicalPrice > (highPrices[j - 1] + lowPrices[j - 1] + closePrices[j - 1]) / 3) {
-        positiveFlow += moneyFlow
-      } else if (typicalPrice < (highPrices[j - 1] + lowPrices[j - 1] + closePrices[j - 1]) / 3) {
-        negativeFlow += moneyFlow
-      }
-    }
-
-    const moneyRatio = positiveFlow / negativeFlow
-    const mfi = 100 - 100 / (1 + moneyRatio)
-
-    mfiValues.push(mfi)
-  }
-
-  return mfiValues
-}
-const period = 14
 
 const MFI = ({ data }: MFIProps): JSX.Element => {
   const [mfiValues, setMfiValues] = useState<number[]>([])
 
   useEffect(() => {
-    if (data.length) {
-      const mfi = calculateMFI(data.slice(100), period)
-      setMfiValues(mfi)
+    if (data?.length) {
+      setMfiValues(data)
     }
   }, [data])
 

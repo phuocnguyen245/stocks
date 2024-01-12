@@ -35,7 +35,7 @@ const calculateStochasticRSI = (rsiValues: number[], period: number): number[] =
   return kValues
 }
 
-const calculateStochasticD = (stochasticKValues: number[], smaPeriod: number): number[] => {
+const calculateStochastic = (stochasticKValues: number[], smaPeriod: number): number[] => {
   const result: number[] = []
 
   for (let i = smaPeriod - 1; i < stochasticKValues.length; i++) {
@@ -53,8 +53,9 @@ const StochasticRSI = (): JSX.Element => {
 
   useEffect(() => {
     if (RSI.length) {
-      const k = calculateStochasticRSI(RSI.slice(100), 14)
-      const d = calculateStochasticD(k, 3)
+      const stochRSI = calculateStochasticRSI(RSI.slice(100), 14)
+      const k = calculateStochastic(stochRSI, 3)
+      const d = calculateStochastic(k, 3)
       setLines({ dValues: d, kValues: k })
     }
   }, [RSI])

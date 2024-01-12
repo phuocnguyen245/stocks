@@ -7,57 +7,16 @@ import { Label } from 'src/components/MUIComponents'
 import { getRSI } from 'src/store/slices/stockSlice'
 import { chartLabelOptions, type ChartLabelType } from '../utils'
 interface RSIProps {
-  data: number[]
+  data?: number[]
 }
 
-const calculateRSI = (data: number[], period: number): number[] => {
-  const changes: number[] = []
-  const gains: number[] = []
-  const losses: number[] = []
-  const rsis: number[] = []
-
-  for (let i = 1; i < data.length; i++) {
-    changes.push(data[i] - data[i - 1])
-  }
-
-  for (let i = 0; i < period; i++) {
-    if (changes[i] > 0) {
-      gains.push(changes[i])
-      losses.push(0)
-    } else {
-      gains.push(0)
-      losses.push(Math.abs(changes[i]))
-    }
-  }
-
-  let avgGain = gains.slice(0, period).reduce((a, b) => a + b, 0) / period
-  let avgLoss = losses.slice(0, period).reduce((a, b) => a + b, 0) / period
-
-  rsis.push(100 - 100 / (1 + avgGain / avgLoss))
-
-  for (let i = period; i < changes.length; i++) {
-    if (changes[i] > 0) {
-      avgGain = (avgGain * (period - 1) + changes[i]) / period
-      avgLoss = (avgLoss * (period - 1)) / period
-    } else {
-      avgGain = (avgGain * (period - 1)) / period
-      avgLoss = (avgLoss * (period - 1) + Math.abs(changes[i])) / period
-    }
-
-    rsis.push(100 - 100 / (1 + avgGain / avgLoss))
-  }
-
-  return rsis
-}
-
-const period = 14
 const RSI = ({ data }: RSIProps): JSX.Element => {
   const dispatch = useDispatch()
   const [rsiValues, setRSIValues] = useState<number[]>([])
 
   useEffect(() => {
-    if (data.length) {
-      const rsi = calculateRSI(data, period)
+    if (data?.length) {
+      const rsi = data
       setRSIValues(rsi)
       dispatch(getRSI(rsi))
     }

@@ -95,7 +95,7 @@ const Charts = (): JSX.Element => {
         <StockChart data={data} code={code} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <StatisticCharts data={data} />
+        <StatisticCharts code={code} />
       </CustomTabPanel>
     </Box>
   )

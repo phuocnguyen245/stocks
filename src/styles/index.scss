@@ -17,13 +17,13 @@ html {
 /* This applies to a specific element */
 .watch-list {
   scrollbar-width: thin;
-  scrollbar-color: rgba(155, 155, 155, 0.7) transparent;
+  scrollbar-color: rgba(30, 84, 193, 0.7) transparent !important;
 }
 
 /* For Webkit browsers (Chrome, Safari) */
 html::-webkit-scrollbar,
 .watch-list::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 html::-webkit-scrollbar-track,
@@ -31,9 +31,14 @@ html::-webkit-scrollbar-track,
   background: transparent;
 }
 
-html::-webkit-scrollbar-thumb,
-.watch-list::-webkit-scrollbar-thumb {
+html::-webkit-scrollbar-thumb {
   background-color: rgba(155, 155, 155, 0.7);
+  border-radius: 20px;
+  border: 3px solid transparent;
+}
+
+.watch-list::-webkit-scrollbar-thumb {
+  background-color: rgba(146, 59, 227, 0.7);
   border-radius: 20px;
   border: 3px solid transparent;
 }

@@ -61,6 +61,32 @@ interface WatchList {
   userName: string
   watchlistID: number
 }
+interface MACD {
+  macd: number[]
+  signal: number[]
+}
+interface MA {
+  ma10: number[]
+  ma20: number[]
+  ma50: number[]
+  ma100: number[]
+  ma150: number[]
+  ma200: number[]
+}
+
+interface Stoch {
+  d: number[]
+  k: number[]
+}
+interface Indicator {
+  macd: MACD
+  ma: MA
+  mfi: number[]
+  rsi: number[]
+  stoch: Stoch
+  stochRSI: Stoch
+  lastPrice: number
+}
 export type {
   Stock,
   Status,
@@ -69,5 +95,9 @@ export type {
   LabelType,
   Payments,
   Asset,
-  WatchList
+  WatchList,
+  Indicator,
+  MACD,
+  MA,
+  Stoch
 }

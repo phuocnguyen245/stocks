@@ -4,68 +4,28 @@ import { memo, useEffect, useMemo, useState } from 'react'
 import Chart from 'src/components/Chart'
 import { Label } from 'src/components/MUIComponents'
 import { chartLabelOptions, type ChartLabelType } from '../utils'
+import { type Stoch } from 'src/Models'
 
 interface Signal {
   signal: ChartLabelType
   i: number
 }
 interface StochasticLines {
-  kValues: number[]
-  dValues: number[]
+  d: number[]
+  k: number[]
 }
 interface StochasticProps {
-  data: number[][]
-}
-
-const period = 14
-
-const calculateStochasticK = (prices: number[][], period: number): number[] => {
-  const result: number[] = []
-  const highPrices: number[] = []
-  const lowPrices: number[] = []
-  const closePrices: number[] = []
-
-  prices.forEach((item) => {
-    highPrices.push(item[2])
-    lowPrices.push(item[3])
-    closePrices.push(item[4])
-  })
-
-  for (let i = period - 1; i < closePrices.length; i++) {
-    const recentClose = closePrices.slice(i - period + 1, i + 1)
-    const recentLow = lowPrices.slice(i - period + 1, i + 1)
-    const recentHigh = highPrices.slice(i - period + 1, i + 1)
-
-    const lowestLow = Math.min(...recentLow)
-    const highestHigh = Math.max(...recentHigh)
-
-    const currentClose = recentClose[recentClose.length - 1]
-    const stochasticK = (100 * (currentClose - lowestLow)) / (highestHigh - lowestLow)
-    result.push(stochasticK)
-  }
-
-  return result
-}
-
-const calculateStochasticD = (stochasticKValues: number[], smaPeriod: number): number[] => {
-  const result: number[] = []
-
-  for (let i = smaPeriod - 1; i < stochasticKValues.length; i++) {
-    const recentStochasticK = stochasticKValues.slice(i - smaPeriod + 1, i + 1)
-    const stochasticD = recentStochasticK.reduce((sum, value) => sum + value, 0) / smaPeriod
-    result.push(stochasticD)
-  }
-  return result
+  data?: Stoch
 }
 
 const Stochastic = ({ data }: StochasticProps): JSX.Element => {
-  const [lines, setLines] = useState<StochasticLines>({ dValues: [], kValues: [] })
+  const [lines, setLines] = useState<StochasticLines>({ d: [], k: [] })
 
   useEffect(() => {
-    if (data.length) {
-      const k = calculateStochasticK(data.slice(100), period)
-      const d = calculateStochasticD(k, 3)
-      setLines({ dValues: d, kValues: k })
+    if (data?.d?.length && data?.k?.length) {
+      const k = data?.k
+      const d = data?.d
+      setLines({ d, k })
     }
   }, [data])
 
@@ -127,14 +87,14 @@ const Stochastic = ({ data }: StochasticProps): JSX.Element => {
       {
         type: 'line',
         name: '%K',
-        data: lines.kValues.slice(2),
+        data: lines.k.slice(2),
         color: '#48c8f3',
         lineWidth: 4
       },
       {
         type: 'line',
         name: '%D',
-        data: lines.dValues,
+        data: lines.d,
         color: '#ee6666',
         lineWidth: 4
       }
@@ -143,11 +103,11 @@ const Stochastic = ({ data }: StochasticProps): JSX.Element => {
 
   const signals = useMemo(() => {
     const arr: Signal[] = []
-    if (lines.dValues.length && lines.kValues.length) {
-      const length = lines.dValues.length
+    if (lines.d.length && lines.k.length) {
+      const length = lines.d.length
       for (let i = 0; i < length; i++) {
-        const k = lines.kValues[i + 2]
-        const d = lines.dValues[i]
+        const k = lines.k[i + 2]
+        const d = lines.d[i]
 
         if (k > d) {
           if (k <= 20) {
@@ -189,11 +149,11 @@ const Stochastic = ({ data }: StochasticProps): JSX.Element => {
           Stochastic:&nbsp;
         </Typography>
         <Label type='success' component={'span'}>
-          %K: {lines.kValues[lines.kValues.length - 1]?.toFixed(2)}
+          %K: {lines.k[lines.k.length - 1]?.toFixed(2)}
         </Label>
         &nbsp;
         <Label type='info' component={'span'}>
-          %D: {lines.dValues[lines.dValues.length - 1]?.toFixed(2)}
+          %D: {lines.d[lines.d.length - 1]?.toFixed(2)}
         </Label>
       </Box>
       <Box display='flex' alignItems='center' mb={1.5}>

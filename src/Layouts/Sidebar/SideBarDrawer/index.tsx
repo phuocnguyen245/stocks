@@ -16,6 +16,7 @@ import { drawerWidth } from '..'
 
 import { type WatchList } from 'src/Models'
 import { useGetWatchListQuery } from 'src/services/stocks.services'
+import { Link } from 'react-router-dom'
 
 interface SideBarDrawerProps {
   open: boolean
@@ -66,34 +67,65 @@ const SideBarDrawer = ({ open, toggle }: SideBarDrawerProps): JSX.Element => {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <Box sx={{ overflowY: 'auto', height: '100vh' }}>
+        <Box sx={{ overflowY: 'auto', height: 'calc(100vh - 64px)' }} className='watch-list'>
           {data.map((item) => (
             <Accordion
               key={item.displayIndex}
               expanded={expanded === item.displayIndex}
               onChange={() => setExpanded(item.displayIndex === expanded ? -1 : item.displayIndex)}
-              sx={{ my: '0 !important' }}
+              sx={{
+                minHeight: '36px',
+                my: '0 !important',
+                background:
+                  expanded === item.displayIndex
+                    ? theme.palette.mode === 'dark'
+                      ? '#6f7070'
+                      : 'rgba(242, 232, 252, 0.5)'
+                    : null,
+                '& .MuiButtonBase-root': {
+                  background:
+                    expanded === item.displayIndex
+                      ? theme.palette.mode === 'dark'
+                        ? '#4b4c4d'
+                        : theme.palette.primary.main
+                      : null
+                }
+              }}
             >
-              <AccordionSummary
-                expandIcon={<ExpandMore />}
-                aria-controls='panel1-content'
-                id='panel1-header'
-              >
-                <Typography>{item.name}</Typography>
+              <AccordionSummary expandIcon={<ExpandMore />}>
+                <Typography
+                  color={`${
+                    expanded === item.displayIndex
+                      ? theme.palette.mode === 'dark'
+                        ? 'text.primary'
+                        : 'text.secondary'
+                      : 'text.primary'
+                  }`}
+                  fontWeight={expanded === item.displayIndex ? 600 : 400}
+                >
+                  {item.name}
+                </Typography>
               </AccordionSummary>
               <AccordionDetails
                 sx={{
                   p: 0,
                   cursor: 'pointer',
                   '& :hover': {
-                    background: `${theme.palette.mode === 'dark' ? '#696e70' : '#f5f5f5'} `
+                    background: `${theme.palette.mode === 'dark' ? '#a0a3a4' : '#f8dffa'} `
                   }
                 }}
               >
                 {item.symbols.map((symbol) => (
-                  <Typography key={symbol} py={1} px={2}>
-                    {symbol}
-                  </Typography>
+                  <Link
+                    to={`/stocks/${symbol}`}
+                    key={symbol}
+                    target='_blank'
+                    style={{ color: 'unset', textDecoration: 'none' }}
+                  >
+                    <Typography key={symbol} py={1} px={2}>
+                      {symbol}
+                    </Typography>
+                  </Link>
                 ))}
               </AccordionDetails>
             </Accordion>
