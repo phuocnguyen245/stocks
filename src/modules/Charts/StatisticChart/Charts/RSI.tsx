@@ -29,8 +29,12 @@ const RSI = ({ data }: RSIProps): JSX.Element => {
 
       if (lastSignal >= 80) {
         actionCase = 'force'
-      } else if (lastSignal < 80 || lastSignal > 25) {
+      } else if (lastSignal >= 70) {
+        actionCase = 'sell'
+      } else if (lastSignal >= 30) {
         actionCase = 'hold'
+      } else if (lastSignal >= 30) {
+        actionCase = 'recommended'
       } else {
         actionCase = 'strong'
       }
@@ -51,7 +55,7 @@ const RSI = ({ data }: RSIProps): JSX.Element => {
       text: ''
     },
 
-    series: [{ data: rsiValues, type: 'line', name: 'RSI', color: '#48c8f3', lineWidth: 4 }],
+    series: [{ data: rsiValues, type: 'line', name: 'RSI', color: '#48c8f3', lineWidth: 2 }],
     yAxis: {
       title: {
         text: ''

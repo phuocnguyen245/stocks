@@ -2,9 +2,9 @@
 import { Box, Paper, Tab, Tabs, Typography } from '@mui/material'
 import React, { memo, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
-import { useGetStockStatisticQuery } from 'src/services/stocks.services'
 import StatisticCharts from './StatisticChart'
 import StockChart from './StockChart'
+import { useAppSelector } from 'src/store'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -37,9 +37,8 @@ const Charts = (): JSX.Element => {
   const [value, setValue] = useState(0)
   const { code: paramsCode } = useParams()
   const [code, setCode] = useState<string>('')
-  const [data, setData] = useState<[number[]]>([[]])
 
-  const { data: stockStatistic } = useGetStockStatisticQuery({ code }, { skip: !code })
+  const { isOpenSidebar } = useAppSelector((state) => state.Stocks)
 
   useEffect(() => {
     if (paramsCode) {
@@ -48,12 +47,6 @@ const Charts = (): JSX.Element => {
       navigate('/stock/vnindex')
     }
   }, [paramsCode])
-
-  useEffect(() => {
-    if (stockStatistic?.data?.data?.length) {
-      setData(stockStatistic.data.data)
-    }
-  }, [stockStatistic])
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
@@ -66,11 +59,12 @@ const Charts = (): JSX.Element => {
           borderColor: 'divider',
           boxShadow: ' rgba(0, 0, 0, 0.24) 0px 3px 8px',
           borderRadius: 0,
-          border: 'none'
+          border: 'none',
+          transition: 'all 0.5s ease'
         }}
         position='fixed'
         zIndex={1000}
-        width='100%'
+        width={'100%'}
         top={64}
         bgcolor='text.primary'
       >
@@ -80,6 +74,8 @@ const Charts = (): JSX.Element => {
           centered
           component={Paper}
           sx={{
+            transform: `translateX(${isOpenSidebar ? '-140px' : '0'})`,
+            transition: 'all 0.5s ease',
             borderRadius: 0,
             '& .MuiTabs-scroller': {
               height: '44px',
@@ -92,7 +88,7 @@ const Charts = (): JSX.Element => {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <StockChart data={data} code={code} />
+        <StockChart />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <StatisticCharts code={code} />

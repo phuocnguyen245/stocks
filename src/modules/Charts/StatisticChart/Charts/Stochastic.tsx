@@ -89,14 +89,14 @@ const Stochastic = ({ data }: StochasticProps): JSX.Element => {
         name: '%K',
         data: lines.k.slice(2),
         color: '#48c8f3',
-        lineWidth: 4
+        lineWidth: 2
       },
       {
         type: 'line',
         name: '%D',
         data: lines.d,
         color: '#ee6666',
-        lineWidth: 4
+        lineWidth: 2
       }
     ]
   }

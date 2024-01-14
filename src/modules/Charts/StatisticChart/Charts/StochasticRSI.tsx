@@ -6,10 +6,11 @@ import Chart from 'src/components/Chart'
 import { Label } from 'src/components/MUIComponents'
 import { useAppSelector } from 'src/store'
 import { chartLabelOptions, type ChartLabelType } from '../utils'
+import type { Stoch } from 'src/Models'
 
 interface Lines {
-  kValues: number[]
-  dValues: number[]
+  k: number[]
+  d: number[]
 }
 
 interface Signal {
@@ -17,48 +18,20 @@ interface Signal {
   i: number
 }
 
-const calculateStochasticRSI = (rsiValues: number[], period: number): number[] => {
-  const kValues: number[] = []
-
-  for (let i = period - 1; i < rsiValues.length; i++) {
-    const recentRSI = rsiValues.slice(i - period + 1, i + 1)
-
-    const lowestRSI = Math.min(...recentRSI)
-    const highestRSI = Math.max(...recentRSI)
-
-    const currentRSI = rsiValues[i]
-    const stochasticRSI = ((currentRSI - lowestRSI) / (highestRSI - lowestRSI)) * 100
-
-    kValues.push(stochasticRSI)
-  }
-
-  return kValues
+interface StockRSIProps {
+  data?: Stoch
 }
 
-const calculateStochastic = (stochasticKValues: number[], smaPeriod: number): number[] => {
-  const result: number[] = []
-
-  for (let i = smaPeriod - 1; i < stochasticKValues.length; i++) {
-    const recentStochasticK = stochasticKValues.slice(i - smaPeriod + 1, i + 1)
-    const stochasticD = recentStochasticK.reduce((sum, value) => sum + value, 0) / smaPeriod
-    result.push(stochasticD)
-  }
-  return result
-}
-
-const StochasticRSI = (): JSX.Element => {
-  const { rsi: RSI } = useAppSelector((state) => state.Stocks)
-
-  const [lines, setLines] = useState<Lines>({ dValues: [], kValues: [] })
+const StochasticRSI = ({ data }: StockRSIProps): JSX.Element => {
+  const [lines, setLines] = useState<Lines>({ d: [], k: [] })
 
   useEffect(() => {
-    if (RSI.length) {
-      const stochRSI = calculateStochasticRSI(RSI.slice(100), 14)
-      const k = calculateStochastic(stochRSI, 3)
-      const d = calculateStochastic(k, 3)
-      setLines({ dValues: d, kValues: k })
+    if (data?.d?.length && data?.k.length) {
+      const k = data?.k
+      const d = data?.d
+      setLines({ d, k })
     }
-  }, [RSI])
+  }, [data])
 
   const options: Highcharts.Options = {
     title: {
@@ -118,27 +91,27 @@ const StochasticRSI = (): JSX.Element => {
       {
         type: 'line',
         name: '%K',
-        data: lines.kValues.slice(2),
+        data: lines.k.slice(2),
         color: '#48c8f3',
-        lineWidth: 4
+        lineWidth: 2
       },
       {
         type: 'line',
         name: '%D',
-        data: lines.dValues,
+        data: lines.d,
         color: '#ee6666',
-        lineWidth: 4
+        lineWidth: 2
       }
     ]
   }
 
   const signals = useMemo(() => {
     const arr: Signal[] = []
-    if (lines.dValues.length && lines.kValues.length) {
-      const length = lines.dValues.length
+    if (lines.k.length && lines.d.length) {
+      const length = lines.d.length
       for (let i = 0; i < length; i++) {
-        const k = lines.kValues[i + 2]
-        const d = lines.dValues[i]
+        const k = lines.k[i + 2]
+        const d = lines.d[i]
 
         if (k > d) {
           if (k <= 20) {
@@ -180,11 +153,11 @@ const StochasticRSI = (): JSX.Element => {
           Stochastic RSI:&nbsp;
         </Typography>
         <Label type='success' component={'span'}>
-          %K: {lines.kValues[lines.kValues.length - 1]?.toFixed(2)}
+          %K: {lines.k[lines.k.length - 1]?.toFixed(2)}
         </Label>
         &nbsp;
         <Label type='info' component={'span'}>
-          %D: {lines.dValues[lines.dValues.length - 1]?.toFixed(2)}
+          %D: {lines.d[lines.d.length - 1]?.toFixed(2)}
         </Label>
       </Box>
       <Box display='flex' alignItems='center' mb={1.5}>

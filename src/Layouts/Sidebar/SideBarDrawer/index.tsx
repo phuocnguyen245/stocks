@@ -79,14 +79,14 @@ const SideBarDrawer = ({ open, toggle }: SideBarDrawerProps): JSX.Element => {
                 background:
                   expanded === item.displayIndex
                     ? theme.palette.mode === 'dark'
-                      ? '#6f7070'
+                      ? '#3c3c3c'
                       : 'rgba(242, 232, 252, 0.5)'
                     : null,
                 '& .MuiButtonBase-root': {
                   background:
                     expanded === item.displayIndex
                       ? theme.palette.mode === 'dark'
-                        ? '#4b4c4d'
+                        ? '#2e2e2e'
                         : theme.palette.primary.main
                       : null
                 }

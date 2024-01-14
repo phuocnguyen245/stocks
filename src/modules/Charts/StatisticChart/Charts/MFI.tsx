@@ -50,7 +50,7 @@ const MFI = ({ data }: MFIProps): JSX.Element => {
       visible: false
     },
 
-    series: [{ data: mfiValues, type: 'line', name: 'MFI', color: '#48c8f3', lineWidth: 4 }],
+    series: [{ data: mfiValues, type: 'line', name: 'MFI', color: '#48c8f3', lineWidth: 2 }],
     yAxis: {
       title: {
         text: ''

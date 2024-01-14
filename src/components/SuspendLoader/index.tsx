@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react'
 import NProgress from 'nprogress'
-import { Box, CircularProgress, Paper } from '@mui/material'
+import { Box, CircularProgress, Paper, useTheme } from '@mui/material'
 
 const SuspendLoader = (): JSX.Element => {
+  const mode = localStorage.getItem('mode')
+
   useEffect(() => {
     NProgress.start()
 
@@ -18,7 +20,8 @@ const SuspendLoader = (): JSX.Element => {
         left: 0,
         top: 0,
         width: '100vw',
-        height: '100vh'
+        height: '100vh',
+        backgroundColor: `${mode === 'dark' ? '#000' : '#fff'}`
       }}
       display='flex'
       alignItems='center'

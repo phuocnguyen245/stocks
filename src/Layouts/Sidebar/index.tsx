@@ -45,17 +45,10 @@ interface AppBarProps extends MuiAppBarProps {
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open'
 })<AppBarProps>(({ theme, open }) => ({
-  transition: theme.transitions.create(['margin', 'width'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen
-  }),
+  transition: 'all 0.5s ease',
   ...(open && {
     width: `calc(100% - ${drawerWidth}px)`,
-    marginRight: `${drawerWidth}px`,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    })
+    marginRight: `${drawerWidth}px`
   })
 }))
 
@@ -100,7 +93,7 @@ const PersistentDrawerLeft = (): JSX.Element => {
 
   return (
     <ThemeProvider theme={themeProvider(darkMode)}>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex' }} bgcolor={darkMode === 'dark' ? '#000' : '#fff'}>
         <CssBaseline />
         <AppBar position='fixed' open={open}>
           <Toolbar>

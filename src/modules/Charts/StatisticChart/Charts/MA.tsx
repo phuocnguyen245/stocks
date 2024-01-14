@@ -6,6 +6,7 @@ import { chartLabelOptions, type ChartLabelType } from '../utils'
 import Chart from 'src/components/Chart'
 import type { MA as IMA } from 'src/Models'
 import { log } from 'console'
+import { useTheme } from '@emotion/react'
 
 interface MAProps {
   data?: IMA
@@ -55,6 +56,9 @@ const MA = ({ data, lastPrice }: MAProps): JSX.Element => {
   const options: Highcharts.Options = {
     title: {
       text: ''
+    },
+    tooltip: {
+      backgroundColor: 'red'
     },
     legend: {
       layout: 'horizontal',

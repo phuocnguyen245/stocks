@@ -1,12 +1,12 @@
-import React, { memo, useMemo } from 'react'
-import MACD from './Charts/MACD'
-import RSI from './Charts/RSI'
-import { Box, Grid, Paper } from '@mui/material'
-import Stochastic from './Charts/Stochastic'
-import MA from './Charts/MA'
-import StochasticRSI from './Charts/StochasticRSI'
-import MFI from './Charts/MFI'
+import { Grid, Paper } from '@mui/material'
+import { memo } from 'react'
 import { useGetIndicatorQuery } from 'src/services/stocks.services'
+import MA from './Charts/MA'
+import MACD from './Charts/MACD'
+import MFI from './Charts/MFI'
+import RSI from './Charts/RSI'
+import Stochastic from './Charts/Stochastic'
+import StochasticRSI from './Charts/StochasticRSI'
 
 interface StatisticChartsProps {
   code: string
@@ -31,7 +31,7 @@ const StatisticCharts = ({ code }: StatisticChartsProps): JSX.Element => {
           <Stochastic data={data?.data?.stoch} />
         </Grid>
         <Grid item xs={4} pb={1.5}>
-          <StochasticRSI />
+          <StochasticRSI data={data?.data?.stochRSI} />
         </Grid>
         <Grid item xs={4} pb={1.5}>
           <MFI data={data?.data?.mfi} />

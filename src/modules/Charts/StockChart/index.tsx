@@ -1,5 +1,4 @@
 import { Box } from '@mui/material'
-import HighchartsReact from 'highcharts-react-official'
 import Highcharts from 'highcharts/highstock'
 import Indicators from 'highcharts/indicators/indicators-all.js'
 import AnnotationsAdvanced from 'highcharts/modules/annotations-advanced.js'
@@ -8,7 +7,10 @@ import FullScreen from 'highcharts/modules/full-screen.js'
 import PriceIndicator from 'highcharts/modules/price-indicator.js'
 import StockTools from 'highcharts/modules/stock-tools.js'
 import { memo, useEffect, useMemo, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { useGetStockStatisticQuery } from 'src/services/stocks.services'
 import { useAppSelector } from 'src/store'
+import ChartComponent from './ChartComponent'
 
 Indicators(Highcharts)
 DragPanes(Highcharts)
@@ -17,17 +19,26 @@ PriceIndicator(Highcharts)
 FullScreen(Highcharts)
 StockTools(Highcharts)
 
-interface StockChartProps {
-  data: [number[]]
-  code: string
-}
-const StockChart = ({ data, code }: StockChartProps): JSX.Element => {
-  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
+const StockChart = (): JSX.Element => {
+  const { code } = useParams()
+  const mode = localStorage.getItem('mode')
 
   const { isOpenSidebar } = useAppSelector((state) => state.Stocks)
+
+  const { data: stockStatistic } = useGetStockStatisticQuery({ code }, { skip: !code })
+
+  const [data, setData] = useState<[number[]]>([[]])
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
+
   useEffect(() => {
-    const width = isOpenSidebar ? window.innerWidth - 280 : window.innerWidth
-    const height = window.innerHeight - 120
+    if (stockStatistic?.data?.data?.length) {
+      setData(stockStatistic.data.data)
+    }
+  }, [stockStatistic])
+
+  useEffect(() => {
+    const width = (isOpenSidebar as boolean) ? window.innerWidth - 280 : window.innerWidth
+    const height = window.innerHeight - 112
     if (width && height) {
       setWindowSize({ width, height })
     }
@@ -138,6 +149,24 @@ const StockChart = ({ data, code }: StockChartProps): JSX.Element => {
         }
       },
       {
+        type: 'sma',
+        linkedTo: code,
+        zIndex: 1,
+        index: 20,
+        params: {
+          period: 150
+        }
+      },
+      {
+        type: 'sma',
+        linkedTo: code,
+        zIndex: 1,
+        index: 20,
+        params: {
+          period: 200
+        }
+      },
+      {
         type: 'ema',
         linkedTo: code,
         zIndex: 1,
@@ -165,13 +194,10 @@ const StockChart = ({ data, code }: StockChartProps): JSX.Element => {
         }
       },
       {
-        type: 'macd',
+        type: 'bb',
         linkedTo: code,
         zIndex: 1,
-        index: 20,
-        params: {
-          period: 18
-        }
+        index: 20
       }
     ],
     responsive: {
@@ -207,8 +233,8 @@ const StockChart = ({ data, code }: StockChartProps): JSX.Element => {
   }
 
   return (
-    <Box mt='112px' p={0}>
-      <HighchartsReact highcharts={Highcharts} options={options} constructorType={'stockChart'} />
+    <Box mt='112px' p={0} height='calc(100vh - 112px)' bgcolor={mode === 'dark' ? '#000' : '#fff'}>
+      <ChartComponent highcharts={Highcharts} options={options} />
     </Box>
   )
 }

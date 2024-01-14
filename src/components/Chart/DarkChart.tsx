@@ -2,11 +2,11 @@
 // @ts-nocheck
 import * as Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-import SandSignika from 'highcharts/themes/brand-dark'
+import BrandDark from 'highcharts/themes/brand-dark'
 import { memo } from 'react'
 
 const ChartDart = ({ options }: { options: Highcharts.Options }): JSX.Element => {
-  SandSignika(Highcharts)
+  BrandDark(Highcharts)
   Highcharts._modules['Extensions/Themes/BrandDark.js'].apply()
 
   return <HighchartsReact highcharts={Highcharts} options={options} />

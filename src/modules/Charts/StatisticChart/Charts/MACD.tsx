@@ -57,14 +57,14 @@ const MACD = ({ data }: MACDProps): JSX.Element => {
         name: 'MACD',
         data: lines.macd,
         color: '#48c8f3',
-        lineWidth: 4
+        lineWidth: 2
       },
       {
         type: 'line',
         name: 'Signal',
         data: lines.signal,
         color: '#ee6666',
-        lineWidth: 4
+        lineWidth: 2
       }
     ]
   }
