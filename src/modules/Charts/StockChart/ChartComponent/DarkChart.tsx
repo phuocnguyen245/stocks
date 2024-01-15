@@ -14,7 +14,7 @@ const ChartDart = ({
   options: Highcharts.Options
 }): JSX.Element => {
   BrandDark(Highcharts)
-  Highcharts._modules['Extensions/Themes/BrandDark.js'].apply()
+  Highcharts?._modules?.['Extensions/Themes/BrandDark.js']?.apply()
 
   return (
     <HighchartsReact highcharts={highcharts} options={options} constructorType={'stockChart'} />

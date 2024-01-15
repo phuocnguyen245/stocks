@@ -3,7 +3,6 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import FormGroup from '@mui/material/FormGroup'
 import Switch from '@mui/material/Switch'
 import { styled } from '@mui/material/styles'
-import { type DarkModeSwitchProps } from '.'
 import { memo, type ChangeEvent } from 'react'
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -53,6 +52,11 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   }
 }))
 
+interface DarkModeSwitchProps {
+  darkMode: 'dark' | 'light'
+  onSetDarkMode: (value: React.SetStateAction<'dark' | 'light'>) => void
+}
+
 const DarkModeSwitch = ({ darkMode, onSetDarkMode }: DarkModeSwitchProps): JSX.Element => {
   const onChangeMode = (e: ChangeEvent<HTMLInputElement>): void => {
     const mode = e.target.checked ? 'dark' : 'light'
@@ -60,7 +64,7 @@ const DarkModeSwitch = ({ darkMode, onSetDarkMode }: DarkModeSwitchProps): JSX.E
     localStorage.setItem('mode', mode)
   }
   return (
-    <Box position='absolute' right='80px'>
+    <Box position='absolute' right='160px' top='50%' sx={{ transform: 'translateY(-50%)' }}>
       <FormGroup>
         <FormControlLabel
           control={

@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { Box, Paper, Tab, Tabs, Typography } from '@mui/material'
+import { AppBar, Box, Paper, Tab, Tabs, Typography, useTheme } from '@mui/material'
 import React, { memo, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import StatisticCharts from './StatisticChart'
 import StockChart from './StockChart'
 import { useAppSelector } from 'src/store'
+import { FormattedMessage } from 'react-intl'
+import SwipeableViews from 'react-swipeable-views'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -33,12 +35,14 @@ const CustomTabPanel = (props: TabPanelProps): JSX.Element => {
 }
 
 const Charts = (): JSX.Element => {
+  const theme = useTheme()
   const navigate = useNavigate()
-  const [value, setValue] = useState(0)
   const { code: paramsCode } = useParams()
-  const [code, setCode] = useState<string>('')
 
   const { isOpenSidebar } = useAppSelector((state) => state.Stocks)
+
+  const [value, setValue] = useState(0)
+  const [code, setCode] = useState<string>('')
 
   useEffect(() => {
     if (paramsCode) {
@@ -51,6 +55,11 @@ const Charts = (): JSX.Element => {
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
+
+  const handleChangeIndex = (index: number) => {
+    setValue(index)
+  }
+
   return (
     <Box borderRadius={0}>
       <Box
@@ -68,31 +77,45 @@ const Charts = (): JSX.Element => {
         top={64}
         bgcolor='text.primary'
       >
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          centered
-          component={Paper}
-          sx={{
-            transform: `translateX(${isOpenSidebar ? '-140px' : '0'})`,
-            transition: 'all 0.5s ease',
-            borderRadius: 0,
-            '& .MuiTabs-scroller': {
-              height: '44px',
-              minHeight: 'unset'
-            }
-          }}
-        >
-          <Tab label='Stock Chart' sx={{ color: 'text.primary', fontWeight: 600 }} />
-          <Tab label='Statistic Charts' sx={{ color: 'text.primary', fontWeight: 600 }} />
-        </Tabs>
+        <AppBar position='static'>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            centered
+            component={Paper}
+            sx={{
+              transform: `translateX(${isOpenSidebar ? '-140px' : '0'})`,
+              transition: 'all 0.5s ease',
+              borderRadius: 0,
+              '& .MuiTabs-scroller': {
+                height: '44px',
+                minHeight: 'unset'
+              }
+            }}
+          >
+            <Tab
+              label={<FormattedMessage id='title.stock.chart' />}
+              sx={{ color: 'text.primary', fontWeight: 600 }}
+            />
+            <Tab
+              label={<FormattedMessage id='title.statistic.chart' />}
+              sx={{ color: 'text.primary', fontWeight: 600 }}
+            />
+          </Tabs>
+        </AppBar>
       </Box>
-      <CustomTabPanel value={value} index={0}>
-        <StockChart />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
-        <StatisticCharts code={code} />
-      </CustomTabPanel>
+      <SwipeableViews
+        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+        index={value}
+        onChangeIndex={handleChangeIndex}
+      >
+        <CustomTabPanel value={value} index={0}>
+          <StockChart />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={1}>
+          <StatisticCharts code={code} />
+        </CustomTabPanel>
+      </SwipeableViews>
     </Box>
   )
 }

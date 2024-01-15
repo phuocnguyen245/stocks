@@ -3,13 +3,22 @@ import { Tabs, Tab, Box, Paper } from '@mui/material'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import DarkModeSwitch from './DarkModeSwitch'
+import Languages from './Languages'
+import { FormattedMessage } from 'react-intl'
 
-export interface DarkModeSwitchProps {
+export interface HeaderProps {
   darkMode: 'dark' | 'light'
+  languages: 'vi' | 'en'
   onSetDarkMode: (value: React.SetStateAction<'dark' | 'light'>) => void
+  onSetLanguages: (value: React.SetStateAction<'vi' | 'en'>) => void
 }
 
-const Header = ({ darkMode, onSetDarkMode }: DarkModeSwitchProps): JSX.Element => {
+const Header = ({
+  darkMode,
+  languages,
+  onSetLanguages,
+  onSetDarkMode
+}: HeaderProps): JSX.Element => {
   const navigate = useNavigate()
   const [value, setValue] = React.useState('1')
   const location = useLocation()
@@ -40,25 +49,26 @@ const Header = ({ darkMode, onSetDarkMode }: DarkModeSwitchProps): JSX.Element =
         }}
       >
         <Tab
-          label='Stocks'
+          label={<FormattedMessage id='title.stocks' />}
           value={'1'}
           onClick={() => navigate('/stocks')}
           sx={{ color: 'text.primary', fontWeight: 600 }}
         />
         <Tab
-          label='Charts'
+          label={<FormattedMessage id='title.charts' />}
           value={'2'}
           sx={{ color: 'text.primary', fontWeight: 600 }}
           onClick={() => navigate('/stocks/vnindex')}
         />
         <Tab
-          label='Payment'
+          label={<FormattedMessage id='title.payments' />}
           value={'3'}
           sx={{ color: 'text.primary', fontWeight: 600 }}
           onClick={() => navigate('/payments')}
         />
       </Tabs>
       <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
+      <Languages languages={languages} onSetLanguages={onSetLanguages} />
     </Paper>
   )
 }

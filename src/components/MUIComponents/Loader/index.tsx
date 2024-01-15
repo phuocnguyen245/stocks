@@ -19,7 +19,7 @@ const Loader = (): JSX.Element => {
       justifyContent='center'
       width='100%'
       height='100%'
-      minHeight='120px'
+      minHeight='180px'
       position='absolute'
       left={0}
       top={0}

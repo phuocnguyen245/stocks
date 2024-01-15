@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom'
 import { Loader } from 'src/components/MUIComponents'
 import Pagination from './Pagination'
 import type { TableHeaderBody, TableProps } from './type'
+import { FormattedMessage } from 'react-intl'
 
 const Table = ({
   data,
@@ -31,24 +32,28 @@ const Table = ({
       <MUITable stickyHeader sx={{ position: 'relative' }}>
         <TableHead>
           <TableRow>
-            {table.map((item: TableHeaderBody<unknown>, index) => (
+            {table.map(({ title, ...rest }: TableHeaderBody<unknown>, index) => (
               <TableCell
                 sx={{ whiteSpace: 'nowrap' }}
-                {...item}
-                key={`${item.name as string}-${index}`}
+                {...rest}
+                key={`${rest.name as string}-${index}`}
               >
-                {item.title}
+                {title}
               </TableCell>
             ))}
-            {(onDelete ?? onEdit ?? onView) && <TableCell align='center'>Actions</TableCell>}
+            {(onDelete ?? onEdit ?? onView) && (
+              <TableCell align='center' sx={{ whiteSpace: 'nowrap' }} width='10%'>
+                <FormattedMessage id='label.actions' />
+              </TableCell>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
           {data.map((row, index) => (
             <TableRow key={`${row._id as string}-${index}`}>
-              {table.map((tableItem, tableIndex) => (
-                <TableCell {...tableItem} key={`table-${tableIndex}`}>
-                  {tableItem?.render?.(row) ? tableItem?.render?.(row) : row[tableItem.name]}{' '}
+              {table.map(({ title, ...rest }, tableIndex) => (
+                <TableCell {...rest} key={`table-${tableIndex}`}>
+                  {rest?.render?.(row) ?? row[rest.name]}
                 </TableCell>
               ))}
               <TableCell>

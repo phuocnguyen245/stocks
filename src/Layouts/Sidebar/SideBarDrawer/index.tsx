@@ -1,9 +1,19 @@
-import { ChevronLeft, ChevronRight, ExpandMore } from '@mui/icons-material'
+import {
+  Add,
+  ChevronLeft,
+  ChevronRight,
+  ExpandMore,
+  PlusOneOutlined,
+  PlusOneRounded,
+  PlusOneSharp,
+  PlusOneTwoTone
+} from '@mui/icons-material'
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Box,
+  Button,
   Divider,
   Drawer,
   IconButton,
@@ -14,9 +24,9 @@ import {
 import { useEffect, useState } from 'react'
 import { drawerWidth } from '..'
 
+import { Link } from 'react-router-dom'
 import { type WatchList } from 'src/Models'
 import { useGetWatchListQuery } from 'src/services/stocks.services'
-import { Link } from 'react-router-dom'
 
 interface SideBarDrawerProps {
   open: boolean
@@ -67,7 +77,7 @@ const SideBarDrawer = ({ open, toggle }: SideBarDrawerProps): JSX.Element => {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <Box sx={{ overflowY: 'auto', height: 'calc(100vh - 64px)' }} className='watch-list'>
+        <Box sx={{ overflowY: 'auto', height: 'calc(100vh - 112px)' }} className='watch-list'>
           {data.map((item) => (
             <Accordion
               key={item.displayIndex}
@@ -130,6 +140,13 @@ const SideBarDrawer = ({ open, toggle }: SideBarDrawerProps): JSX.Element => {
               </AccordionDetails>
             </Accordion>
           ))}
+        </Box>
+        <Divider />
+        <Box sx={{ cursor: 'pointer' }} height='46px'>
+          <Button fullWidth sx={{ height: '100%' }}>
+            Add Stock
+            <Add />
+          </Button>
         </Box>
       </Box>
     </Drawer>

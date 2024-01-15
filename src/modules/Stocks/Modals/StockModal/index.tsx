@@ -10,6 +10,7 @@ import { useAppDispatch } from 'src/store'
 import { refetchStocks } from 'src/store/slices/stockSlice'
 import schema from './schema'
 import { Select } from 'src/components/MUIComponents'
+import { FormattedMessage } from 'react-intl'
 
 interface FormBody {
   code: string
@@ -111,14 +112,17 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
       <Container maxWidth='sm' sx={{ padding: '0 !important' }}>
         <Box py={3} px={0} component='form' onSubmit={handleSubmit(handleSave)} id='stock-form'>
           <Box paddingBottom={2} paddingX={4}>
-            <Typography>{status === 1 ? 'Buy ' : 'Sell '}Stock</Typography>
+            <Typography>
+              {status === 1 ? 'Buy ' : 'Sell '}
+              <FormattedMessage id='label.stock' />
+            </Typography>
           </Box>
           <Divider />
           <Box paddingX={4} paddingY={2} component='form'>
             {status === 1 ? (
               <TextField
                 fullWidth
-                label='Code'
+                label={<FormattedMessage id='label.code' />}
                 autoFocus
                 inputRef={textFieldRef}
                 inputProps={{
@@ -136,14 +140,14 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
               <Select control={control} name='code' label={'Code'} options={option} />
             )}
             <DatePicker
-              label='Date'
+              label={<FormattedMessage id='label.date' />}
               sx={{ width: '100%', margin: '8px 0' }}
               defaultValue={moment(Date.now())}
               onChange={onChangeDate}
             />
             <TextField
               fullWidth
-              label='Volume'
+              label={<FormattedMessage id='label.volume' />}
               type='number'
               defaultValue={0}
               inputProps={{ min: 0 }}
@@ -156,7 +160,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
             {status === 1 ? (
               <TextField
                 fullWidth
-                label='Order Price'
+                label={<FormattedMessage id='label.order.price' />}
                 type='number'
                 defaultValue={0}
                 required
@@ -167,7 +171,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
               />
             ) : (
               <TextField
-                label='Selling Price'
+                label={<FormattedMessage id='label.selling.price' />}
                 fullWidth
                 sx={{ margin: '8px 0' }}
                 type='number'
@@ -182,7 +186,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
           <Divider />
           <Box textAlign='end' paddingX={4} paddingTop={3}>
             <Button color='warning' variant='contained' onClick={handleClose}>
-              Cancel
+              <FormattedMessage id='label.cancel' />
             </Button>
             <Button
               variant='contained'
@@ -191,7 +195,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
               form='stock-form'
               autoFocus
             >
-              Save
+              <FormattedMessage id='label.save' />
             </Button>
           </Box>
         </Box>

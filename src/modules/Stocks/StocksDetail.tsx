@@ -1,6 +1,7 @@
 import { Switch, TextField } from '@mui/material'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
+import { FormattedMessage } from 'react-intl'
 import { type ErrorResponse } from 'react-router-dom'
 import type { LabelType, Stock } from 'src/Models'
 import { Label } from 'src/components/MUIComponents'
@@ -122,18 +123,18 @@ const StocksDetail = (): JSX.Element => {
   const table: Array<TableHeaderBody<Stock>> = [
     {
       name: 'code',
-      title: 'Code',
+      title: <FormattedMessage id='label.code' />,
       width: '10%'
     },
     {
       name: 'date',
-      title: 'Date',
+      title: <FormattedMessage id='label.date' />,
       width: '10%',
       render: (row) => <>{moment(row.date).format('DD/MM/YYYY')}</>
     },
     {
       name: 'volume',
-      title: 'Volume',
+      title: <FormattedMessage id='label.volume' />,
       width: '20%',
       render: (row) => {
         return (
@@ -164,7 +165,7 @@ const StocksDetail = (): JSX.Element => {
     },
     {
       name: 'orderPrice',
-      title: 'Order',
+      title: <FormattedMessage id='label.order' />,
       width: '15%',
       render: (row) => (
         <>
@@ -193,12 +194,12 @@ const StocksDetail = (): JSX.Element => {
     },
     {
       name: 'sellPrice',
-      title: 'Sell',
+      title: <FormattedMessage id='label.sell' />,
       width: '10%'
     },
     {
       name: 'status',
-      title: 'Status',
+      title: <FormattedMessage id='label.status' />,
       width: '15%',
       render: (row) => {
         return (
@@ -229,16 +230,16 @@ const StocksDetail = (): JSX.Element => {
     },
     {
       name: '',
-      title: 'Available',
+      title: <FormattedMessage id='label.available' />,
       render: (row) => {
         const options = {
           available: {
             type: 'success',
-            message: 'Available'
+            message: <FormattedMessage id='label.available' />
           },
           un: {
             type: 'warning',
-            message: 'Unavailable'
+            message: <FormattedMessage id='label.unavailable' />
           }
         }
         const isAvailable = (row?.t ?? 0) >= 2.5 ? 'available' : 'un'

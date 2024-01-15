@@ -7,7 +7,7 @@ import { memo } from 'react'
 
 const LightChart = ({ options }: { options: Highcharts.Options }): JSX.Element => {
   BrandLight(Highcharts)
-  Highcharts._modules['Extensions/Themes/BrandLight.js'].apply()
+  Highcharts?._modules?.['Extensions/Themes/BrandLight.js']?.apply()
 
   return <HighchartsReact highcharts={Highcharts} options={options} />
 }

@@ -1,6 +1,7 @@
 import { TextField, Typography } from '@mui/material'
 import moment from 'moment'
 import React, { useCallback, useEffect, useState } from 'react'
+import { FormattedMessage } from 'react-intl'
 import { type ErrorResponse } from 'react-router-dom'
 import type { LabelType, Stock } from 'src/Models'
 import { getBgColor } from 'src/Models/constants'
@@ -125,22 +126,22 @@ const CurrentStocks = (): JSX.Element => {
   const table: Array<TableHeaderBody<Stock>> = [
     {
       name: 'code',
-      title: 'Code',
+      title: <FormattedMessage id='label.code' />,
       width: '10%'
     },
     {
       name: 'volume',
-      title: 'Volume',
+      title: <FormattedMessage id='label.volume' />,
       width: '15%'
     },
     {
       name: 'averagePrice',
-      title: 'Average',
+      title: <FormattedMessage id='label.average' />,
       width: '15%'
     },
     {
       name: 'marketPrice',
-      title: 'Market Price',
+      title: <FormattedMessage id='label.market.price' />,
       width: '15%',
       render: (row) => (
         <>
@@ -170,13 +171,13 @@ const CurrentStocks = (): JSX.Element => {
     },
     {
       name: 'ratio',
-      title: 'Ratio',
-      width: '15%',
+      title: <FormattedMessage id='label.ratio' />,
+      width: '10%',
       render: (row) => <>{renderLabel(Number(row?.ratio) * 100)}</>
     },
     {
       name: 'investedValue',
-      title: 'Invested Value',
+      title: <FormattedMessage id='label.profit.loss' />,
       align: 'left',
       width: '20%',
       render: (row) => <> {renderLabel(Number(row.investedValue?.toFixed(2)), 'gain')}</>

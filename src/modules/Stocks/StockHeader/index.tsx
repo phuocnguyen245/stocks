@@ -4,6 +4,7 @@ import useModal from 'src/hooks/useModals'
 import type { ConfirmModal as ConfirmModalType } from '../Modals'
 import ConfirmModal from '../Modals/ConfirmModal'
 import StockModal from '../Modals/StockModal'
+import { FormattedMessage } from 'react-intl'
 
 interface StockHeaderProps {
   modalStatus: ConfirmModalType
@@ -25,7 +26,7 @@ const StockHeader = ({
   return (
     <Box px={4} pt={6} pb={2} display='flex' alignItems='center' gap={2} justifyContent='flex-end'>
       <Button variant='contained' onClick={openConfirmModal}>
-        Created
+        <FormattedMessage id='label.create' />
       </Button>
       <ConfirmModal
         modalStatus={modalStatus}

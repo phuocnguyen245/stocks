@@ -1,6 +1,7 @@
 import { Box, Button, Container, Dialog, Typography } from '@mui/material'
 import { memo } from 'react'
 import type { ConfirmModal as ConfirmModalType } from '..'
+import { FormattedMessage } from 'react-intl'
 
 interface ConfirmModalProps {
   modalStatus: ConfirmModalType
@@ -30,7 +31,9 @@ const ConfirmModal = ({
     <Dialog open={modalStatus.open} onClose={onClose}>
       <Container maxWidth='lg'>
         <Box padding={4}>
-          <Typography variant='h5'>Which status do you want to create?</Typography>
+          <Typography variant='h5'>
+            <FormattedMessage id='text.which.status.do.you.want.to.create' />
+          </Typography>
           <Box display='flex' justifyContent='center' alignItems='center' gap={3} mt={2}>
             <Button
               variant='contained'
@@ -38,10 +41,10 @@ const ConfirmModal = ({
               sx={{ color: 'text.primary' }}
               onClick={onOpenBuyModal}
             >
-              Buying
+              <FormattedMessage id='label.buying' />
             </Button>
             <Button variant='contained' onClick={onOpenSellingModal}>
-              Selling
+              <FormattedMessage id='label.selling' />
             </Button>
           </Box>
         </Box>

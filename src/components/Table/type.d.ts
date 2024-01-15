@@ -1,5 +1,5 @@
 import type { TableCellProps } from '@mui/material'
-import { type SetStateAction } from 'react'
+import { type ReactNode, type SetStateAction } from 'react'
 
 interface DefaultPagination {
   page: number
@@ -7,7 +7,7 @@ interface DefaultPagination {
 }
 interface TableHeaderBody<T> extends TableCellProps {
   name: keyof T | ''
-  title: string
+  title: ReactNode
   width?: number | string
   render?: (data: T) => JSX.Element
 }

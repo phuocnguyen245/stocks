@@ -56,7 +56,7 @@ const StockChart = (): JSX.Element => {
 
   const options: Highcharts.Options = {
     title: {
-      text: `${code}`,
+      text: `${code?.toUpperCase()}`,
       align: 'center'
     },
     yAxis: [

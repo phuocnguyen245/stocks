@@ -16,6 +16,9 @@ import { setMode, setOpenSidebar } from 'src/store/slices/stockSlice'
 import themeProvider from 'src/styles/theme'
 import Header from '../Header'
 import SideBarDrawer from './SideBarDrawer'
+import { IntlProvider } from 'react-intl'
+import en from 'src/locales/en.json'
+import vi from 'src/locales/vi.json'
 
 export const drawerWidth = 280
 
@@ -70,6 +73,13 @@ const PersistentDrawerLeft = (): JSX.Element => {
     }
     return localMode
   })
+  const [languages, setLanguages] = useState<'en' | 'vi'>(() => {
+    const lang = localStorage.getItem('lang')
+    if (!lang || (lang !== 'en' && lang !== 'vi')) {
+      return 'vi'
+    }
+    return lang
+  })
 
   useEffect(() => {
     localStorage.setItem('isOpenDrawer', JSON.stringify(open))
@@ -91,29 +101,41 @@ const PersistentDrawerLeft = (): JSX.Element => {
     dispatch(setMode(darkMode))
   }, [darkMode])
 
+  const locale = {
+    en,
+    vi
+  }
+
   return (
     <ThemeProvider theme={themeProvider(darkMode)}>
-      <Box sx={{ display: 'flex' }} bgcolor={darkMode === 'dark' ? '#000' : '#fff'}>
-        <CssBaseline />
-        <AppBar position='fixed' open={open}>
-          <Toolbar>
-            <Header darkMode={darkMode} onSetDarkMode={setDarkMode} />
-            <IconButton
-              color='inherit'
-              aria-label='open drawer'
-              onClick={handleDrawerOpen}
-              edge='start'
-              sx={{ ml: 2 }}
-            >
-              <MenuIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <Main open={open} sx={{ p: 0 }}>
-          <Outlet />
-        </Main>
-        <SideBarDrawer open={open} toggle={toggle} />
-      </Box>
+      <IntlProvider locale={languages} messages={locale[languages] as Record<string, string>}>
+        <Box sx={{ display: 'flex' }} bgcolor={darkMode === 'dark' ? '#000' : '#fff'}>
+          <CssBaseline />
+          <AppBar position='fixed' open={open}>
+            <Toolbar>
+              <Header
+                darkMode={darkMode}
+                onSetDarkMode={setDarkMode}
+                languages={languages}
+                onSetLanguages={setLanguages}
+              />
+              <IconButton
+                color='inherit'
+                aria-label='open drawer'
+                onClick={handleDrawerOpen}
+                edge='start'
+                sx={{ ml: 2 }}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+          <Main open={open} sx={{ p: 0 }}>
+            <Outlet />
+          </Main>
+          <SideBarDrawer open={open} toggle={toggle} />
+        </Box>
+      </IntlProvider>
     </ThemeProvider>
   )
 }

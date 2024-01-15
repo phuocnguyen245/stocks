@@ -1,5 +1,6 @@
 import { Box, Grid, Typography, useTheme, type Theme } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
+import { FormattedMessage } from 'react-intl'
 import type { LabelType, Asset } from 'src/Models'
 import { Label, Skeleton } from 'src/components/MUIComponents'
 import { PaymentService } from 'src/services/payment.services'
@@ -70,7 +71,7 @@ const TableFooter = (): JSX.Element => {
           profitOrLost: convertToDecimal(
             ((prev.selling - prev.order + marketValue) / (prev.topUp ?? 1)) * 100
           ),
-          net: prev.topUp + prev.selling - prev.order + marketValue - investedValue
+          net: prev.topUp + prev.selling - prev.order + marketValue
         }
       })
     }
@@ -102,7 +103,11 @@ const TableFooter = (): JSX.Element => {
       }
     }
 
-    return <Label type={options[check].type as LabelType}>{message}</Label>
+    return (
+      <Label type={options[check].type as LabelType} fontWeight={600}>
+        {message}
+      </Label>
+    )
   }
   return (
     <Box
@@ -120,10 +125,13 @@ const TableFooter = (): JSX.Element => {
         <Grid item>
           <Grid container alignItems='center'>
             <Grid item>
-              <Typography>Top up:&nbsp;</Typography>
+              <Typography fontWeight={600}>
+                <FormattedMessage id='label.top.up' />
+                :&nbsp;
+              </Typography>
             </Grid>
             <Grid item>
-              <Typography>
+              <Typography fontWeight={600}>
                 {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.topUp))}
               </Typography>
             </Grid>
@@ -132,7 +140,10 @@ const TableFooter = (): JSX.Element => {
         <Grid item>
           <Grid container alignItems='center'>
             <Grid item>
-              <Typography>Net Asset Value:&nbsp;</Typography>
+              <Typography fontWeight={600}>
+                <FormattedMessage id='label.net.asset.value' />
+                :&nbsp;
+              </Typography>
             </Grid>
             <Grid item>
               <Typography>
@@ -144,7 +155,10 @@ const TableFooter = (): JSX.Element => {
         <Grid item>
           <Grid container alignItems='center'>
             <Grid item>
-              <Typography>Available Cash:&nbsp;</Typography>
+              <Typography fontWeight={600}>
+                <FormattedMessage id='label.available.cash' />
+                :&nbsp;
+              </Typography>
             </Grid>
             <Grid item>
               <Typography>
@@ -157,7 +171,10 @@ const TableFooter = (): JSX.Element => {
         <Grid item>
           <Grid container alignItems='center'>
             <Grid item>
-              <Typography>Profit/Loss:&nbsp;</Typography>
+              <Typography fontWeight={600}>
+                <FormattedMessage id='label.profit.loss' />
+                :&nbsp;
+              </Typography>
             </Grid>
             <Grid item>
               <Typography>
@@ -174,10 +191,13 @@ const TableFooter = (): JSX.Element => {
         <Grid item>
           <Grid container alignItems='center'>
             <Grid item>
-              <Typography>Invested Value:&nbsp;</Typography>
+              <Typography fontWeight={600}>
+                <FormattedMessage id='label.invested.value' />
+                :&nbsp;
+              </Typography>
             </Grid>
             <Grid item>
-              <Typography>
+              <Typography fontWeight={600}>
                 {isLoading ? (
                   <SkeletonRender />
                 ) : (
@@ -190,7 +210,10 @@ const TableFooter = (): JSX.Element => {
         <Grid item>
           <Grid container alignItems='center'>
             <Grid item>
-              <Typography>Market Value:&nbsp;</Typography>
+              <Typography fontWeight={600}>
+                <FormattedMessage id='label.market.value' />
+                :&nbsp;
+              </Typography>
             </Grid>
             <Grid item>
               <Typography>
