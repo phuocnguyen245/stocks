@@ -114,12 +114,14 @@ const CurrentStocks = (): JSX.Element => {
     const labelType: LabelType = number === 0 ? 'warning' : number > 0 ? 'success' : 'error'
     const symbol = number > 0 ? '+' : ''
     return type ? (
-      <Typography color={getBgColor(labelType)} fontWeight={600}>
+      <Typography color={getBgColor(labelType)} fontWeight={600} fontSize={14}>
         {symbol}
         {formatVND(number * 1000)}
       </Typography>
     ) : (
-      <Label type={labelType}>{number.toFixed(2)}%</Label>
+      <Label type={labelType} fontSize={14}>
+        {number.toFixed(2)}%
+      </Label>
     )
   }, [])
 
@@ -171,13 +173,13 @@ const CurrentStocks = (): JSX.Element => {
     },
     {
       name: 'ratio',
-      title: <FormattedMessage id='label.ratio' />,
+      title: <FormattedMessage id='label.profit.loss' />,
       width: '10%',
       render: (row) => <>{renderLabel(Number(row?.ratio) * 100)}</>
     },
     {
       name: 'investedValue',
-      title: <FormattedMessage id='label.profit.loss' />,
+      title: <FormattedMessage id='label.profit.loss.value' />,
       align: 'left',
       width: '20%',
       render: (row) => <> {renderLabel(Number(row.investedValue?.toFixed(2)), 'gain')}</>

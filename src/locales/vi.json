@@ -6,7 +6,7 @@
   "title.statistic.chart": "Biểu đồ Thống kê",
 
   "label.stocks": "Mã cổ phiếu",
-  "label.stock": "Mã cổ phiếu",
+  "label.stock": "Cổ phiếu",
   "label.code": "Mã",
   "label.add.stock": "Thêm Cổ phiếu",
   "label.date": "Ngày",
@@ -26,7 +26,8 @@
   "label.top.up": "Tiền nạp",
   "label.net.asset.value": "Giá trị tài sản ròng",
   "label.available.cash": "Tiền mặt có sẵn",
-  "label.profit.loss": "Lợi nhuận/Thua lỗ",
+  "label.profit.loss": "Tỷ lệ lãi/lỗ",
+  "label.profit.loss.value": "Giá trị lãi/lỗ",
   "label.market.value": "Giá trị thị trường",
   "label.create": "Tạo mới",
   "label.buying": "Mua",

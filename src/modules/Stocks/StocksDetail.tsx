@@ -135,7 +135,7 @@ const StocksDetail = (): JSX.Element => {
     {
       name: 'volume',
       title: <FormattedMessage id='label.volume' />,
-      width: '20%',
+      width: '15%',
       render: (row) => {
         return (
           <>
@@ -152,6 +152,7 @@ const StocksDetail = (): JSX.Element => {
                 value={row.volume}
                 onChange={(e) => onChangeRow(e)}
                 type='number'
+                fullWidth
                 inputProps={{
                   step: 1
                 }}
@@ -185,6 +186,7 @@ const StocksDetail = (): JSX.Element => {
               type='number'
               inputProps={{ step: '0.1' }}
               autoFocus
+              fullWidth
             />
           ) : (
             row.orderPrice
@@ -200,7 +202,7 @@ const StocksDetail = (): JSX.Element => {
     {
       name: 'status',
       title: <FormattedMessage id='label.status' />,
-      width: '15%',
+      width: '50px',
       render: (row) => {
         return (
           <>
@@ -213,7 +215,10 @@ const StocksDetail = (): JSX.Element => {
                 onChange={(e) => onChangeRow(e)}
               />
             ) : (
-              <Label type={row.status.toUpperCase() === 'BUY' ? 'success' : 'primary'}>
+              <Label
+                type={row.status.toUpperCase() === 'BUY' ? 'success' : 'primary'}
+                fontSize={14}
+              >
                 {row.status}
               </Label>
             )}
@@ -224,6 +229,7 @@ const StocksDetail = (): JSX.Element => {
     {
       name: '',
       title: 'T+',
+      align: 'center',
       render: (row) => {
         return <>{row.t}</>
       }
@@ -231,6 +237,8 @@ const StocksDetail = (): JSX.Element => {
     {
       name: '',
       title: <FormattedMessage id='label.available' />,
+      align: 'center',
+      width: '100px',
       render: (row) => {
         const options = {
           available: {
@@ -245,11 +253,13 @@ const StocksDetail = (): JSX.Element => {
         const isAvailable = (row?.t ?? 0) >= 2.5 ? 'available' : 'un'
 
         return (
-          <>
-            <Label type={options[`${isAvailable}`]?.type as LabelType}>
-              {options[`${isAvailable}`]?.message}
-            </Label>
-          </>
+          <Label
+            type={options[`${isAvailable}`]?.type as LabelType}
+            whiteSpace='nowrap'
+            fontSize={14}
+          >
+            {options[`${isAvailable}`]?.message}
+          </Label>
         )
       }
     }

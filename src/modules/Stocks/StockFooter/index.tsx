@@ -7,6 +7,7 @@ import { PaymentService } from 'src/services/payment.services'
 import { StockService } from 'src/services/stocks.services'
 import { useAppSelector } from 'src/store'
 import { convertToDecimal, formatVND } from 'src/utils'
+import Chart from '../Chart'
 
 const TableFooter = (): JSX.Element => {
   const theme: Theme = useTheme()
@@ -22,11 +23,13 @@ const TableFooter = (): JSX.Element => {
     marketValue: 0
   })
   const { isRefetchStock } = useAppSelector((state) => state.Stocks)
+
   const {
     data: assetData,
     isLoading: isLoadingAsset,
     refetch
   } = PaymentService.useGetAssetQuery({})
+
   const { data: currentData, isLoading: isLoadingCurrent } = StockService.useGetCurrentStocksQuery(
     {}
   )
@@ -110,123 +113,126 @@ const TableFooter = (): JSX.Element => {
     )
   }
   return (
-    <Box
-      position='absolute'
-      width='100%'
-      height='100px'
-      bottom={0}
-      display='flex'
-      alignItems='center'
-      bgcolor={
-        theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(242, 232, 252, 0.5)'
-      }
-    >
-      <Grid container alignItems='center' spacing={2} justifyContent='center'>
-        <Grid item>
-          <Grid container alignItems='center'>
-            <Grid item>
-              <Typography fontWeight={600}>
-                <FormattedMessage id='label.top.up' />
-                :&nbsp;
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography fontWeight={600}>
-                {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.topUp))}
-              </Typography>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item>
-          <Grid container alignItems='center'>
-            <Grid item>
-              <Typography fontWeight={600}>
-                <FormattedMessage id='label.net.asset.value' />
-                :&nbsp;
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography>
-                {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.net))}
-              </Typography>
+    <Box>
+      <Chart data={{ asset, currentData }} />
+      <Box
+        position='absolute'
+        width='100%'
+        height='100px'
+        bottom={0}
+        display='flex'
+        alignItems='center'
+        bgcolor={
+          theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(242, 232, 252, 0.5)'
+        }
+      >
+        <Grid container alignItems='center' spacing={2} justifyContent='center'>
+          <Grid item>
+            <Grid container alignItems='center'>
+              <Grid item>
+                <Typography fontWeight={600}>
+                  <FormattedMessage id='label.top.up' />
+                  :&nbsp;
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography fontWeight={600}>
+                  {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.topUp))}
+                </Typography>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        <Grid item>
-          <Grid container alignItems='center'>
-            <Grid item>
-              <Typography fontWeight={600}>
-                <FormattedMessage id='label.available.cash' />
-                :&nbsp;
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography>
-                {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.available))}
-              </Typography>
+          <Grid item>
+            <Grid container alignItems='center'>
+              <Grid item>
+                <Typography fontWeight={600}>
+                  <FormattedMessage id='label.net.asset.value' />
+                  :&nbsp;
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography>
+                  {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.net))}
+                </Typography>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
+          <Grid item>
+            <Grid container alignItems='center'>
+              <Grid item>
+                <Typography fontWeight={600}>
+                  <FormattedMessage id='label.available.cash' />
+                  :&nbsp;
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography>
+                  {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.available))}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
 
-        <Grid item>
-          <Grid container alignItems='center'>
-            <Grid item>
-              <Typography fontWeight={600}>
-                <FormattedMessage id='label.profit.loss' />
-                :&nbsp;
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography>
-                {isLoading ? (
-                  <SkeletonRender />
-                ) : (
-                  renderLabel(`${asset.profitOrLost ?? 0}%`, asset.profitOrLost)
-                )}
-              </Typography>
+          <Grid item>
+            <Grid container alignItems='center'>
+              <Grid item>
+                <Typography fontWeight={600}>
+                  <FormattedMessage id='label.profit.loss' />
+                  :&nbsp;
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography>
+                  {isLoading ? (
+                    <SkeletonRender />
+                  ) : (
+                    renderLabel(`${asset.profitOrLost ?? 0}%`, asset.profitOrLost)
+                  )}
+                </Typography>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
 
-        <Grid item>
-          <Grid container alignItems='center'>
-            <Grid item>
-              <Typography fontWeight={600}>
-                <FormattedMessage id='label.invested.value' />
-                :&nbsp;
-              </Typography>
+          <Grid item>
+            <Grid container alignItems='center'>
+              <Grid item>
+                <Typography fontWeight={600}>
+                  <FormattedMessage id='label.invested.value' />
+                  :&nbsp;
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography fontWeight={600}>
+                  {isLoading ? (
+                    <SkeletonRender />
+                  ) : (
+                    renderLabel(formatVND(asset.investedValue), asset.profitOrLost)
+                  )}
+                </Typography>
+              </Grid>
             </Grid>
-            <Grid item>
-              <Typography fontWeight={600}>
-                {isLoading ? (
-                  <SkeletonRender />
-                ) : (
-                  renderLabel(formatVND(asset.investedValue), asset.profitOrLost)
-                )}
-              </Typography>
+          </Grid>
+          <Grid item>
+            <Grid container alignItems='center'>
+              <Grid item>
+                <Typography fontWeight={600}>
+                  <FormattedMessage id='label.market.value' />
+                  :&nbsp;
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography>
+                  {isLoading ? (
+                    <SkeletonRender />
+                  ) : (
+                    renderLabel(formatVND(asset.marketValue), asset.profitOrLost)
+                  )}
+                </Typography>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
-        <Grid item>
-          <Grid container alignItems='center'>
-            <Grid item>
-              <Typography fontWeight={600}>
-                <FormattedMessage id='label.market.value' />
-                :&nbsp;
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography>
-                {isLoading ? (
-                  <SkeletonRender />
-                ) : (
-                  renderLabel(formatVND(asset.marketValue), asset.profitOrLost)
-                )}
-              </Typography>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
+      </Box>
     </Box>
   )
 }

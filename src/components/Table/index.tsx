@@ -6,6 +6,7 @@ import {
   Table as MUITable,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow
 } from '@mui/material'
@@ -28,13 +29,13 @@ const Table = ({
   onView
 }: TableProps<any, any>): JSX.Element => {
   return (
-    <Box sx={{ minWidth: '650px' }}>
+    <TableContainer sx={{ maxHeight: 600 }}>
       <MUITable stickyHeader sx={{ position: 'relative' }}>
         <TableHead>
           <TableRow>
             {table.map(({ title, ...rest }: TableHeaderBody<unknown>, index) => (
               <TableCell
-                sx={{ whiteSpace: 'nowrap' }}
+                sx={{ whiteSpace: 'nowrap', padding: '8px' }}
                 {...rest}
                 key={`${rest.name as string}-${index}`}
               >
@@ -52,11 +53,11 @@ const Table = ({
           {data.map((row, index) => (
             <TableRow key={`${row._id as string}-${index}`}>
               {table.map(({ title, ...rest }, tableIndex) => (
-                <TableCell {...rest} key={`table-${tableIndex}`}>
+                <TableCell {...rest} key={`table-${tableIndex}`} sx={{ padding: '8px' }}>
                   {rest?.render?.(row) ?? row[rest.name]}
                 </TableCell>
               ))}
-              <TableCell>
+              <TableCell size='small'>
                 <Box display='flex' alignItems='center' justifyContent='center' gap={0.5}>
                   {onView && (
                     <Button
@@ -107,7 +108,7 @@ const Table = ({
         onSetPagination={onSetPagination}
         totalItems={totalItems}
       />
-    </Box>
+    </TableContainer>
   )
 }
 

@@ -113,7 +113,12 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
         <Box py={3} px={0} component='form' onSubmit={handleSubmit(handleSave)} id='stock-form'>
           <Box paddingBottom={2} paddingX={4}>
             <Typography>
-              {status === 1 ? 'Buy ' : 'Sell '}
+              {status === 1 ? (
+                <FormattedMessage id='label.buying' />
+              ) : (
+                <FormattedMessage id='label.selling' />
+              )}
+              &nbsp;
               <FormattedMessage id='label.stock' />
             </Typography>
           </Box>
@@ -137,7 +142,12 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
                 helperText={errors.code?.message}
               />
             ) : (
-              <Select control={control} name='code' label={'Code'} options={option} />
+              <Select
+                control={control}
+                name='code'
+                label={<FormattedMessage id='label.code' />}
+                options={option}
+              />
             )}
             <DatePicker
               label={<FormattedMessage id='label.date' />}
@@ -185,7 +195,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
           </Box>
           <Divider />
           <Box textAlign='end' paddingX={4} paddingTop={3}>
-            <Button color='warning' variant='contained' onClick={handleClose}>
+            <Button color='secondary' variant='contained' onClick={handleClose}>
               <FormattedMessage id='label.cancel' />
             </Button>
             <Button
