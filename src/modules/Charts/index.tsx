@@ -7,6 +7,7 @@ import StockChart from './StockChart'
 import { useAppSelector } from 'src/store'
 import { FormattedMessage } from 'react-intl'
 import SwipeableViews from 'react-swipeable-views'
+import SearchBar from './components/SearchBar'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -71,7 +72,7 @@ const Charts = (): JSX.Element => {
           border: 'none',
           transition: 'all 0.5s ease'
         }}
-        position='fixed'
+        position='absolute'
         zIndex={1000}
         width={'100%'}
         top={64}
@@ -85,7 +86,9 @@ const Charts = (): JSX.Element => {
             component={Paper}
             sx={{
               transform: `translateX(${isOpenSidebar ? '-140px' : '0'})`,
+              position: 'relative',
               transition: 'all 0.5s ease',
+              overflow: 'unset',
               borderRadius: 0,
               '& .MuiTabs-scroller': {
                 height: '44px',
@@ -101,6 +104,7 @@ const Charts = (): JSX.Element => {
               label={<FormattedMessage id='title.statistic.chart' />}
               sx={{ color: 'text.primary', fontWeight: 600 }}
             />
+            <SearchBar />
           </Tabs>
         </AppBar>
       </Box>

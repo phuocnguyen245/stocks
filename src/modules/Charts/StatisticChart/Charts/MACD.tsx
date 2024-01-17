@@ -4,7 +4,7 @@ import { memo, useEffect, useMemo, useState } from 'react'
 import type { MACD as IMACD } from 'src/Models'
 import Chart from 'src/components/Chart'
 import { Label } from 'src/components/MUIComponents'
-import { chartLabelOptions, type ChartLabelType } from 'src/modules/Charts/StatisticChart/utils'
+import { chartLabelOptions, type ChartLabelType } from 'src/modules/Charts/utils'
 import { convertToDecimal } from 'src/utils'
 
 interface MACDProps {

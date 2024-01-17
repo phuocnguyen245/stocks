@@ -10,7 +10,7 @@ import { memo, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useGetStockStatisticQuery } from 'src/services/stocks.services'
 import { useAppSelector } from 'src/store'
-import ChartComponent from './ChartComponent'
+import ChartComponent from 'src/modules/Charts/components/ChartComponent'
 
 Indicators(Highcharts)
 DragPanes(Highcharts)

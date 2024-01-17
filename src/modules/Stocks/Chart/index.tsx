@@ -1,23 +1,39 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import Charts from 'src/components/Chart'
 import type HighCharts from 'highcharts'
-// eslint-disable-next-line react/prop-types, @typescript-eslint/no-explicit-any
-const Chart = ({ data }: { data: any }): JSX.Element => {
-  console.log(data?.currentData?.data?.data)
+import type { Stock, Asset, ResponsePagination, ResponseType } from 'src/Models'
+
+interface ChartProps {
+  currentData?: ResponseType<ResponsePagination<Stock[]>>
+  asset?: Asset
+}
+
+const Chart = ({ data }: { data: ChartProps }): JSX.Element => {
+  const chartData = useMemo(() => {
+    if (data?.currentData?.data && data?.asset) {
+      const arr = data?.currentData?.data?.data?.map((item) => ({
+        name: item.code,
+        y: ((item.volume * (item?.averagePrice ?? 0)) / (data?.asset?.investedValue ?? 1)) * 100000
+      }))
+      arr?.push({
+        name: 'Available',
+        y: (data.asset.available / data?.asset?.investedValue) * 100
+      })
+      return arr?.sort((a, b) => a.y - b.y)
+    }
+    return []
+  }, [data])
 
   const options = {
-    title: {
-      text: 'Nuclear energy production from 1965 to 2021 in US, UK, France, Germany, and Japan',
-      align: 'center'
-    },
-
     legend: {
       enabled: false
     },
-
+    title: {
+      text: ''
+    },
     tooltip: {
       valueDecimals: 2,
-      valueSuffix: ' TWh'
+      valueSuffix: '%'
     },
     plotOptions: {
       series: {
@@ -25,47 +41,35 @@ const Chart = ({ data }: { data: any }): JSX.Element => {
         colorByPoint: true,
         type: 'pie',
         size: '100%',
-        innerSize: '80%',
-        dataLabels: {
-          enabled: true,
-          crop: false,
-          distance: '10px',
-          style: {
-            fontWeight: 'bold',
-            fontSize: '16px'
+        innerSize: '0%',
+        dataLabels: [
+          {
+            enabled: true,
+            distance: 20
           },
-          connectorWidth: 0
-        }
+          {
+            enabled: true,
+            distance: -40,
+            format: '{point.percentage:.1f}%',
+            style: {
+              fontSize: '1.2em',
+              textOutline: 'none',
+              opacity: 0.7
+            },
+            filter: {
+              operator: '>',
+              property: 'percentage',
+              value: 10
+            }
+          }
+        ]
       }
     },
     series: [
       {
         type: 'pie',
         name: 'Percentage',
-        data: [
-          {
-            name: 'Water',
-            y: 55.02
-          },
-          {
-            name: 'Fat',
-            sliced: true,
-            selected: true,
-            y: 26.71
-          },
-          {
-            name: 'Carbohydrates',
-            y: 1.09
-          },
-          {
-            name: 'Protein',
-            y: 15.5
-          },
-          {
-            name: 'Ash',
-            y: 1.68
-          }
-        ]
+        data: chartData
       }
     ]
   }

@@ -87,6 +87,58 @@ interface Indicator {
   stochRSI: Stoch
   lastPrice: number
 }
+
+interface Liveboard {
+  Symbol: string
+  Open: number
+  Reference: number
+  Close: number
+  High: number
+  Low: number
+  AveragePrice: number
+  Ceiling: number
+  Floor: number
+  MatchVolume: number
+  Change: number
+  ChangePercent: number
+  BidPrice1: string
+  BidVolume1: number
+  BidPrice2: number
+  BidVolume2: number
+  BidPrice3: number
+  BidVolume3: number
+  OfferPrice1: string
+  OfferVolume1: number
+  OfferPrice2: number
+  OfferVolume2: number
+  OfferPrice3: number
+  OfferVolume3: number
+  TotalVolume: number
+  TotalValue: number
+  RemainForeignVolume: number
+  OverBuy: number
+  OverSell: number
+  ForeignBuy: number
+  ForeignBuyValue: number
+  ForeignSell: number
+  ForeignSellValue: number
+  ActiveBuyVol: number
+  ActiveSellVol: number
+  Exchange: string
+  ModifiedDate: string
+}
+
+interface Board {
+  liveboard: Liveboard
+  SectorID: string
+  FinancialTag: string
+  CompanyName: string
+  SubSectorID: string
+  WeightListing: number
+  WeightCirculation: number
+  Commodities: string
+}
+
 export type {
   Stock,
   Status,
@@ -99,5 +151,6 @@ export type {
   Indicator,
   MACD,
   MA,
-  Stoch
+  Stoch,
+  Board
 }

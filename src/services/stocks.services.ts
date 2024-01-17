@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWithReAuth } from './baseQuery'
-import type { ResponseType, ResponsePagination, Stock, WatchList, Indicator } from '../Models'
+import type {
+  ResponseType,
+  ResponsePagination,
+  Stock,
+  WatchList,
+  Indicator,
+  Board
+} from '../Models'
 
 export const StockService = createApi({
   reducerPath: 'StockService',
@@ -19,7 +26,6 @@ export const StockService = createApi({
         params
       })
     }),
-    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     getIndicator: builder.query<ResponseType<Indicator>, { code: string }>({
       query: ({ code }) => ({
         url: `/stocks/indicators/${code}`
@@ -29,6 +35,12 @@ export const StockService = createApi({
     getWatchList: builder.query<ResponseType<WatchList[]>, void>({
       query: () => ({
         url: '/stocks/watch-lists'
+      })
+    }),
+    getBoard: builder.query<ResponseType<ResponsePagination<Board[]>>, any>({
+      query: ({ search, ...rest }) => ({
+        url: `/stocks/board?search=${search}`,
+        params: { ...rest }
       })
     }),
     deleteCurrentStock: builder.mutation<ResponseType<{ message: string }>, any>({
@@ -71,6 +83,7 @@ export const {
   useGetCurrentStocksQuery,
   useGetStockStatisticQuery,
   useGetIndicatorQuery,
+  useGetBoardQuery,
   useCreateStockMutation,
   useUpdateStockMutation,
   useDeleteStockMutation,

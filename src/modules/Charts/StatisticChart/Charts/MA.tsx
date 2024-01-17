@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material'
 
 import { memo, useCallback, useEffect, useState } from 'react'
 import { Label } from 'src/components/MUIComponents'
-import { chartLabelOptions, type ChartLabelType } from '../utils'
+import { chartLabelOptions, type ChartLabelType } from '../../utils'
 import Chart from 'src/components/Chart'
 import type { MA as IMA } from 'src/Models'
 import { log } from 'console'

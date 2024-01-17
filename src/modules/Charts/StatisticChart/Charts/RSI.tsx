@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import Chart from 'src/components/Chart'
 import { Label } from 'src/components/MUIComponents'
 import { getRSI } from 'src/store/slices/stockSlice'
-import { chartLabelOptions, type ChartLabelType } from '../utils'
+import { chartLabelOptions, type ChartLabelType } from '../../utils'
 interface RSIProps {
   data?: number[]
 }
