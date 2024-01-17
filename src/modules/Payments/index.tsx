@@ -1,6 +1,6 @@
 import { Box, Button, Container, Paper, TableContainer, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
-import type { LabelType, Payments } from 'src/Models'
+import type { LabelType, Payments } from 'src/models'
 import Table from 'src/components/Table'
 import type { DefaultPagination, TableHeaderBody } from 'src/components/Table/type'
 import { useDeletePaymentMutation, useGetPaymentQuery } from 'src/services/payment.services'

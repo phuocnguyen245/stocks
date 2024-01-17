@@ -25,7 +25,7 @@ import { useEffect, useState } from 'react'
 import { drawerWidth } from '..'
 
 import { Link } from 'react-router-dom'
-import { type WatchList } from 'src/Models'
+import { type WatchList } from 'src/models'
 import { useGetWatchListQuery } from 'src/services/stocks.services'
 
 interface SideBarDrawerProps {
@@ -121,7 +121,7 @@ const SideBarDrawer = ({ open, toggle }: SideBarDrawerProps): JSX.Element => {
                   p: 0,
                   cursor: 'pointer',
                   '& :hover': {
-                    background: `${theme.palette.mode === 'dark' ? '#a0a3a4' : '#f8dffa'} `
+                    background: `${theme.palette.mode === 'dark' ? '#6e6e6e' : '#f8dffa'}`
                   }
                 }}
               >

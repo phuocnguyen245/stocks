@@ -10,6 +10,15 @@ const onDarkTheme = (mode: 'dark' | 'light'): Theme => {
       secondary: {
         main: '#31e631'
       },
+      success: {
+        main: '#31e631'
+      },
+      warning: {
+        main: 'rgb(204, 170, 0)'
+      },
+      error: {
+        main: '#d41834'
+      },
       text: {
         primary: mode === 'dark' ? '#fff' : '#000',
         secondary: mode === 'dark' ? '#000' : '#fff'

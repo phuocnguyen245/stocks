@@ -1,17 +1,22 @@
-import { Box, Typography } from '@mui/material'
-import React, { ChangeEvent, UIEventHandler, useEffect, useRef, useState } from 'react'
-import type { Board } from 'src/Models'
+import { Box, Typography, useTheme } from '@mui/material'
+import { memo, useEffect, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router'
+import type { Board } from 'src/models'
 import { useGetBoardQuery } from 'src/services/stocks.services'
 
 const SearchResult = ({ search }: { search: string }): JSX.Element => {
+  const theme = useTheme()
   const boxRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
+  const location = useLocation()
+
   const [data, setData] = useState<Board[]>([])
   const [pagination, setPagination] = useState({
     page: 0,
     size: 10,
-    totalItems: 0,
     search: ''
   })
+  const [totalItems, setTotalItems] = useState(0)
 
   const { data: boardData } = useGetBoardQuery(
     { ...pagination },
@@ -19,23 +24,32 @@ const SearchResult = ({ search }: { search: string }): JSX.Element => {
   )
 
   useEffect(() => {
-    setPagination((prev) => ({ ...prev, search }))
-  }, [search])
-
-  useEffect(() => {
     if (boardData?.data?.data?.length) {
       setData((prev) => [...prev, ...(boardData?.data?.data ?? [])])
+      setTotalItems(boardData?.data?.totalItems)
+    } else {
+      setData([])
+      setTotalItems(0)
     }
   }, [boardData])
 
   useEffect(() => {
-    const boxElement = boxRef.current
-    boxElement?.addEventListener('scroll', onScroll)
-
-    return () => {
-      boxElement?.removeEventListener('scroll', onScroll)
+    if (search) {
+      setPagination((prev) => ({ ...prev, page: 0, search }))
     }
-  }, [])
+    setData([])
+  }, [search])
+
+  useEffect(() => {
+    if (data.length) {
+      const boxElement = boxRef.current
+      boxElement?.addEventListener('scroll', onScroll)
+
+      return () => {
+        boxElement?.removeEventListener('scroll', onScroll)
+      }
+    }
+  }, [data])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onScroll = (): void => {
@@ -45,20 +59,24 @@ const SearchResult = ({ search }: { search: string }): JSX.Element => {
       const clientHeight = boxRef?.current?.clientHeight ?? 0
 
       if (scrollTop + clientHeight >= scrollHeight) {
-        // if (pagination.page * pagination.size < pagination.totalItems) {
-        setPagination((prev) => ({ ...prev, page: prev.page + 1 }))
-        // }
+        if ((pagination.page + 1) * pagination.size < totalItems) {
+          setPagination((prev) => ({ ...prev, page: prev.page + 1 }))
+        }
       }
     }
   }
 
+  const onClickBoard = (code: string): void => {
+    navigate(`/stocks/${code.toLowerCase()}`, { replace: true })
+  }
+
   return (
     <Box
-      bgcolor={'#f9f3fe'}
+      bgcolor={theme.palette.mode === 'dark' ? '#3c3c3c' : '#f9f3fe'}
       borderRadius={2}
-      width='100%'
-      maxWidth='410px'
-      maxHeight='410px'
+      width='500px'
+      maxWidth='600px'
+      maxHeight='460px'
       sx={{
         overflowY: 'auto',
         overflowX: 'hidden'
@@ -70,25 +88,36 @@ const SearchResult = ({ search }: { search: string }): JSX.Element => {
         <Box
           key={item.liveboard.Symbol}
           p={2}
+          mx={1}
           borderRadius={2}
           sx={{
             cursor: 'pointer',
             '&:hover': {
-              background: '#f8dffa'
+              background: `${theme.palette.mode === 'dark' ? '#6e6e6e' : '#f8dffa'}`
             }
           }}
+          onClick={() => onClickBoard(item.liveboard.Symbol)}
         >
           <Box display='flex' justifyContent='space-between' alignItems='center' mb={0.25}>
-            <Typography>{item.liveboard.Symbol}</Typography>
-            <Typography>{item.liveboard.Close}</Typography>
+            <Typography fontWeight={600}>{item.liveboard.Symbol}</Typography>
+            <Typography fontWeight={600}>{item.liveboard.Close}</Typography>
           </Box>
-          <Box display='flex' justifyContent='space-between' alignItems='center'>
+          <Box display='flex' justifyContent='space-between' alignItems='center' gap={0.75}>
             <Typography flex={1} textOverflow='ellipsis' whiteSpace='nowrap' overflow='hidden'>
               {item.CompanyName}
             </Typography>
             <Typography
               width={80}
               textAlign='right'
+              fontWeight={600}
+              sx={{
+                color:
+                  item.liveboard.ChangePercent > 0
+                    ? `${theme.palette.success.main}`
+                    : item.liveboard.ChangePercent < 0
+                      ? `${theme.palette.error.main}`
+                      : `${theme.palette.warning.main}`
+              }}
             >{`${item.liveboard.Change} / ${item.liveboard.ChangePercent}`}</Typography>
           </Box>
         </Box>
@@ -97,4 +126,4 @@ const SearchResult = ({ search }: { search: string }): JSX.Element => {
   )
 }
 
-export default SearchResult
+export default memo(SearchResult)

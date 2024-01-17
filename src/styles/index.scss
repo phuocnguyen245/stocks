@@ -3,15 +3,18 @@ body {
   overflow-x: hidden;
   margin: 0;
   padding: 0;
+  user-select: none;
 }
 
 * {
   box-sizing: border-box;
+  cursor: default;
 }
 
 html {
   scrollbar-width: thin;
   scrollbar-color: rgba(155, 155, 155, 0.7) transparent;
+  cursor: default;
 }
 
 /* This applies to a specific element */

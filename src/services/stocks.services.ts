@@ -8,7 +8,7 @@ import type {
   WatchList,
   Indicator,
   Board
-} from '../Models'
+} from '../models'
 
 export const StockService = createApi({
   reducerPath: 'StockService',

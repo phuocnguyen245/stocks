@@ -1,9 +1,8 @@
-import { Box, TextField, Typography, debounce } from '@mui/material'
-import { useEffect, useState, type ChangeEvent } from 'react'
-import { useDebounce } from 'src/hooks'
-import { useGetBoardQuery } from 'src/services/stocks.services'
+import { Box, TextField } from '@mui/material'
+import { useState, type ChangeEvent } from 'react'
 import { useAppSelector } from 'src/store'
 import SearchResult from './SearchResult'
+import { useDebounce } from 'src/hooks'
 
 const SearchBar = (): JSX.Element => {
   const { isOpenSidebar } = useAppSelector((state) => state.Stocks)
@@ -11,7 +10,7 @@ const SearchBar = (): JSX.Element => {
   const debouncedSearchTerm = useDebounce(search, 500)
 
   const onChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setSearch(e.target.value)
+    setSearch(e.target.value.trim())
   }
 
   return (
@@ -29,7 +28,7 @@ const SearchBar = (): JSX.Element => {
                 height: '36px'
               },
               '& input': {
-                textTransform: 'uppercase'
+                textTransform: search ? 'uppercase' : 'none'
               }
             }
           ]}
@@ -37,6 +36,7 @@ const SearchBar = (): JSX.Element => {
           value={search}
           onChange={onChange}
           fullWidth
+          placeholder='Search...'
         />
       </Box>
       <Box position='fixed' left={isOpenSidebar ? 164 : 24} top='100%' zIndex={10000000000}>

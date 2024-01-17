@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material'
 import type Highcharts from 'highcharts'
 import { memo, useEffect, useMemo, useState } from 'react'
-import type { MACD as IMACD } from 'src/Models'
+import type { MACD as IMACD } from 'src/models'
 import Chart from 'src/components/Chart'
 import { Label } from 'src/components/MUIComponents'
 import { chartLabelOptions, type ChartLabelType } from 'src/modules/Charts/utils'
