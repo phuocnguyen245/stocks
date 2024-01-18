@@ -36,6 +36,7 @@ const SideBarDrawer = ({ open, toggle }: SideBarDrawerProps): JSX.Element => {
   const theme = useTheme()
 
   const { data: watchList } = useGetWatchListQuery()
+  const [isShow, setIsShow] = useState(false)
 
   const [data, setData] = useState<WatchList[]>([])
   const [expanded, setExpanded] = useState<number>(-1)
@@ -53,9 +54,14 @@ const SideBarDrawer = ({ open, toggle }: SideBarDrawerProps): JSX.Element => {
     }
   }, [watchList])
 
+  useEffect(() => {
+    setIsShow(false)
+  }, [])
+
   return (
     <Drawer
       sx={{
+        display: isShow ? 'block' : 'none',
         width: drawerWidth,
         flexShrink: 0,
         '& .MuiDrawer-paper': {

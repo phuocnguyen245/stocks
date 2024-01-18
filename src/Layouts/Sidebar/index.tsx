@@ -19,6 +19,7 @@ import SideBarDrawer from './SideBarDrawer'
 import { IntlProvider } from 'react-intl'
 import en from 'src/locales/en.json'
 import vi from 'src/locales/vi.json'
+import { useIsLogin } from 'src/hooks'
 
 export const drawerWidth = 280
 
@@ -43,20 +44,23 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean
+  isLogin: boolean
 }
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open'
-})<AppBarProps>(({ theme, open }) => ({
+})<AppBarProps>(({ theme, open, isLogin }) => ({
   transition: 'all 0.5s ease',
+  width: '100%',
   ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginRight: `${drawerWidth}px`
+    width: isLogin ? `calc(100% - ${drawerWidth}px)` : '100%',
+    marginRight: isLogin ? `${drawerWidth}px` : '0'
   })
 }))
 
 const PersistentDrawerLeft = (): JSX.Element => {
   const dispatch = useDispatch()
+  const isLogin = useIsLogin()
   const [open, setOpen] = useState(() => {
     const openLocal = localStorage.getItem('isOpenDrawer')
     if (openLocal) {
@@ -111,20 +115,21 @@ const PersistentDrawerLeft = (): JSX.Element => {
       <IntlProvider locale={languages} messages={locale[languages] as Record<string, string>}>
         <Box sx={{ display: 'flex' }} bgcolor={darkMode === 'dark' ? '#000' : '#fff'}>
           <CssBaseline />
-          <AppBar position='fixed' open={open}>
+          <AppBar position='fixed' open={open} isLogin={isLogin}>
             <Toolbar>
               <Header
                 darkMode={darkMode}
                 onSetDarkMode={setDarkMode}
                 languages={languages}
                 onSetLanguages={setLanguages}
+                isLogin={isLogin}
               />
               <IconButton
                 color='inherit'
                 aria-label='open drawer'
                 onClick={handleDrawerOpen}
                 edge='start'
-                sx={{ ml: 2 }}
+                sx={{ ml: 2, display: isLogin ? 'block' : 'none' }}
               >
                 <MenuIcon />
               </IconButton>

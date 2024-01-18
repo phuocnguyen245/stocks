@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Tabs, Tab, Box, Paper } from '@mui/material'
+import { Tabs, Tab, Box, Paper, Grid } from '@mui/material'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import DarkModeSwitch from './DarkModeSwitch'
@@ -9,6 +9,7 @@ import { FormattedMessage } from 'react-intl'
 export interface HeaderProps {
   darkMode: 'dark' | 'light'
   languages: 'vi' | 'en'
+  isLogin: boolean
   onSetDarkMode: (value: React.SetStateAction<'dark' | 'light'>) => void
   onSetLanguages: (value: React.SetStateAction<'vi' | 'en'>) => void
 }
@@ -16,6 +17,7 @@ export interface HeaderProps {
 const Header = ({
   darkMode,
   languages,
+  isLogin,
   onSetLanguages,
   onSetDarkMode
 }: HeaderProps): JSX.Element => {
@@ -36,7 +38,10 @@ const Header = ({
   }, [location])
 
   return (
-    <Paper sx={{ width: '100%', top: 0, left: 0, display: 'flex', justifyContent: 'center' }}>
+    <Paper
+      sx={{ width: '100%', top: 0, left: 0, display: 'flex', justifyContent: 'space-between' }}
+    >
+      <Box></Box>
       <Tabs
         value={value}
         onChange={handleChange}
@@ -67,8 +72,14 @@ const Header = ({
           onClick={() => navigate('/payments')}
         />
       </Tabs>
-      <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
-      <Languages languages={languages} onSetLanguages={onSetLanguages} />
+      <Grid container width='max-content'>
+        <Grid item>
+          <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
+        </Grid>
+        <Grid item>
+          <Languages languages={languages} onSetLanguages={onSetLanguages} />
+        </Grid>
+      </Grid>
     </Paper>
   )
 }

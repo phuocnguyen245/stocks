@@ -19,8 +19,8 @@ const Languages = ({ languages, onSetLanguages }: LanguageProps): JSX.Element =>
     localStorage.setItem('lang', value)
   }
   return (
-    <Box position='absolute' right='80px' top='50%' sx={{ transform: 'translateY(-50%)' }}>
-      <FormControl fullWidth>
+    <Box>
+      <FormControl sx={{ width: 120 }}>
         <Select
           labelId='language'
           value={languages as '' | HTMLInputElement | undefined}
@@ -28,6 +28,9 @@ const Languages = ({ languages, onSetLanguages }: LanguageProps): JSX.Element =>
           sx={{
             '& fieldset': {
               border: 'none'
+            },
+            '& .MuiSelect-select': {
+              textAlign: 'right'
             }
           }}
         >

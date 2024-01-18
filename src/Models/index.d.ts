@@ -1,6 +1,22 @@
 type Status = 'Buy' | 'Sell'
 type LabelType = 'success' | 'error' | 'warning' | 'primary' | 'secondary' | 'info'
 
+interface User {
+  _id?: string
+  name: string
+  username: string
+  password: string
+  createdAt?: string
+  updatedAt?: string
+}
+
+interface UserWithToken extends User {
+  tokens: {
+    access: string
+    refresh: string
+  }
+}
+
 interface Stock {
   _id: string
   code: string
@@ -152,5 +168,7 @@ export type {
   MACD,
   MA,
   Stoch,
-  Board
+  Board,
+  User,
+  UserWithToken
 }

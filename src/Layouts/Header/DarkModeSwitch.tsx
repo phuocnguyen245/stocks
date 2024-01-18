@@ -64,13 +64,12 @@ const DarkModeSwitch = ({ darkMode, onSetDarkMode }: DarkModeSwitchProps): JSX.E
     localStorage.setItem('mode', mode)
   }
   return (
-    <Box position='absolute' right='160px' top='50%' sx={{ transform: 'translateY(-50%)' }}>
+    <Box height={56}>
       <FormGroup>
         <FormControlLabel
-          control={
-            <MaterialUISwitch sx={{ m: 1 }} checked={darkMode === 'dark'} onChange={onChangeMode} />
-          }
+          control={<MaterialUISwitch checked={darkMode === 'dark'} onChange={onChangeMode} />}
           label=''
+          sx={{ height: 56, mr: 0 }}
         />
       </FormGroup>
     </Box>

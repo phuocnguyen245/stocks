@@ -113,10 +113,10 @@ const SearchResult = ({ search }: { search: string }): JSX.Element => {
               sx={{
                 color:
                   item.liveboard.ChangePercent > 0
-                    ? `${theme.palette.success.main}`
+                    ? 'success.main'
                     : item.liveboard.ChangePercent < 0
-                      ? `${theme.palette.error.main}`
-                      : `${theme.palette.warning.main}`
+                      ? 'error.main'
+                      : 'warning.main'
               }}
             >{`${item.liveboard.Change} / ${item.liveboard.ChangePercent}`}</Typography>
           </Box>

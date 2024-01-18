@@ -42,6 +42,7 @@ const Chart = ({ data }: { data: ChartProps }): JSX.Element => {
         type: 'pie',
         size: '100%',
         innerSize: '0%',
+        width: '200px',
         dataLabels: [
           {
             enabled: true,

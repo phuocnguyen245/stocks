@@ -11,10 +11,8 @@ export const baseQuery = fetchBaseQuery({
     const token = localStorage.getItem('tokens')
     if (token) {
       const tokenParse = JSON.parse(token)
-      const {
-        token: { accessToken }
-      } = tokenParse
-      headers.set('Authorization', `Bearer ${accessToken}`)
+      const { access } = tokenParse
+      headers.set('Authorization', `Bearer ${access}`)
     }
     return headers
   }
@@ -33,20 +31,34 @@ export const baseQueryWithReAuth: BaseQueryFn<FetchArgs, unknown, FetchBaseQuery
   if (result.error && result.error.status === 401) {
     const token = localStorage.getItem('tokens')
     if (token) {
+      const tokenParse = JSON.parse(token)
+      const { refresh } = tokenParse
       const refreshArgs = {
-        url: '/get-refresh-token',
+        url: '/users/refresh-token',
         body: {
-          refreshToken: JSON.parse(token).token.refreshToken
+          refreshToken: refresh
         },
         method: 'POST'
       }
       try {
         const refreshResult = await baseQuery(refreshArgs, api, extraOptions)
-        localStorage.setItem('tokens', JSON.stringify({ token: refreshResult.data }))
-        result = await baseQuery(args, api, extraOptions)
+
+        if (refreshResult?.data) {
+          localStorage.setItem(
+            'tokens',
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            JSON.stringify({ ...(refreshResult.data as any).data })
+          )
+          result = await baseQuery(args, api, extraOptions)
+        } else {
+          localStorage.removeItem('tokens')
+          localStorage.removeItem('user')
+          window.location.href = '/login'
+        }
       } catch (error) {
         localStorage.removeItem('tokens')
         localStorage.removeItem('user')
+        window.location.href = '/login'
       }
     }
   }
