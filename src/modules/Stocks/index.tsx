@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import Paper from '@mui/material/Paper'
 import TableContainer from '@mui/material/TableContainer'
 import { useState } from 'react'
@@ -17,24 +17,29 @@ const Stocks = (): JSX.Element => {
   const openConfirmModal = (): void => setModalStatus({ ...modalStatus, open: true })
 
   return (
-    <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
-      <Box height='calc(100vh - 32px)' mt={4} position='relative'>
-        <StockHeader
-          openConfirmModal={openConfirmModal}
-          modalStatus={modalStatus}
-          onSetModalStatus={setModalStatus}
-        />
-        <Box display='flex' gap={2} px={2}>
-          <Box flex={1.5}>
-            <StocksDetail />
-          </Box>
-          <Box flex={1} flexShrink='unset'>
-            <CurrentStocks />
-          </Box>
+    <Box
+      component={Paper}
+      sx={{ borderRadius: 0 }}
+      position='relative'
+      height='100%'
+      minHeight={'100vh'}
+      pt={4}
+    >
+      <StockHeader
+        openConfirmModal={openConfirmModal}
+        modalStatus={modalStatus}
+        onSetModalStatus={setModalStatus}
+      />
+      <Box display='flex' gap={2} px={2}>
+        <Box flex={1.5}>
+          <StocksDetail />
         </Box>
-        <StockFooter />
+        <Box flex={1} flexShrink='unset'>
+          <CurrentStocks />
+        </Box>
       </Box>
-    </TableContainer>
+      <StockFooter />
+    </Box>
   )
 }
 export default Stocks

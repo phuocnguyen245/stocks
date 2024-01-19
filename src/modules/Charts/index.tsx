@@ -89,11 +89,7 @@ const Charts = (): JSX.Element => {
               position: 'relative',
               transition: 'all 0.5s ease',
               overflow: 'unset',
-              borderRadius: 0,
-              '& .MuiTabs-scroller': {
-                height: '44px',
-                minHeight: 'unset'
-              }
+              borderRadius: 0
             }}
           >
             <Tab

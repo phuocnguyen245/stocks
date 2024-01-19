@@ -25,14 +25,15 @@ export const drawerWidth = 280
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean
-}>(({ theme, open }) => ({
+  isLogin?: boolean
+}>(({ theme, open, isLogin }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
   }),
-  marginRight: `-${drawerWidth}px`,
+  marginRight: isLogin ? `-${drawerWidth}px` : 0,
   ...(open && {
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
@@ -135,10 +136,10 @@ const PersistentDrawerLeft = (): JSX.Element => {
               </IconButton>
             </Toolbar>
           </AppBar>
-          <Main open={open} sx={{ p: 0 }}>
+          <Main open={open} sx={{ p: 0 }} isLogin={isLogin}>
             <Outlet />
           </Main>
-          <SideBarDrawer open={open} toggle={toggle} />
+          <SideBarDrawer open={open} toggle={toggle} isLogin={isLogin} />
         </Box>
       </IntlProvider>
     </ThemeProvider>

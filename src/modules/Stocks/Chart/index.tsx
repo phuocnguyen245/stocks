@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react'
-import Charts from 'src/components/Chart'
 import type HighCharts from 'highcharts'
-import type { Stock, Asset, ResponsePagination, ResponseType } from 'src/models'
+import { useMemo } from 'react'
+import Charts from 'src/components/Chart'
+import type { Asset, ResponsePagination, ResponseType, Stock } from 'src/models'
 
 interface ChartProps {
   currentData?: ResponseType<ResponsePagination<Stock[]>>
@@ -25,24 +25,15 @@ const Chart = ({ data }: { data: ChartProps }): JSX.Element => {
   }, [data])
 
   const options = {
-    legend: {
-      enabled: false
-    },
-    title: {
-      text: ''
-    },
-    tooltip: {
-      valueDecimals: 2,
-      valueSuffix: '%'
+    title: '',
+    chart: {
+      type: 'pie',
+      title: ''
     },
     plotOptions: {
       series: {
-        borderWidth: 0,
-        colorByPoint: true,
-        type: 'pie',
-        size: '100%',
-        innerSize: '0%',
-        width: '200px',
+        allowPointSelect: true,
+        cursor: 'pointer',
         dataLabels: [
           {
             enabled: true,

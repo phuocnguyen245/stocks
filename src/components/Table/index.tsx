@@ -29,7 +29,7 @@ const Table = ({
   onView
 }: TableProps<any, any>): JSX.Element => {
   return (
-    <TableContainer sx={{ maxHeight: 600 }}>
+    <Box sx={{ maxHeight: 600 }}>
       <MUITable stickyHeader sx={{ position: 'relative' }}>
         <TableHead>
           <TableRow>
@@ -108,7 +108,7 @@ const Table = ({
         onSetPagination={onSetPagination}
         totalItems={totalItems}
       />
-    </TableContainer>
+    </Box>
   )
 }
 

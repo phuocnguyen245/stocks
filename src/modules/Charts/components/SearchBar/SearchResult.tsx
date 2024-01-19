@@ -88,7 +88,7 @@ const SearchResult = ({ search }: { search: string }): JSX.Element => {
         <Box
           key={item.liveboard.Symbol}
           p={2}
-          mx={1}
+          m={1}
           borderRadius={2}
           sx={{
             cursor: 'pointer',

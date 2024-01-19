@@ -39,25 +39,33 @@ const Header = ({
 
   return (
     <Paper
-      sx={{ width: '100%', top: 0, left: 0, display: 'flex', justifyContent: 'space-between' }}
+      sx={{
+        width: '100%',
+        top: 0,
+        left: 0,
+        display: 'flex',
+        justifyContent: 'space-between',
+        height: 52
+      }}
     >
-      <Box></Box>
+      <Box width={185}></Box>
       <Tabs
         value={value}
         onChange={handleChange}
         centered
         sx={{
           '& .MuiTabs-scroller': {
-            height: '44px',
+            height: '50px',
             minHeight: 'unset'
-          }
+          },
+          display: isLogin ? 'block' : 'none'
         }}
       >
         <Tab
           label={<FormattedMessage id='title.stocks' />}
           value={'1'}
           onClick={() => navigate('/stocks')}
-          sx={{ color: 'text.primary', fontWeight: 600 }}
+          sx={{ color: 'text.primary', fontWeight: 600, height: 56 }}
         />
         <Tab
           label={<FormattedMessage id='title.charts' />}

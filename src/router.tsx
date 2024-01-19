@@ -10,15 +10,17 @@ const PrivateRoute = ({
   element: React.ComponentType
   path?: string
 }): JSX.Element => {
-  const tokens = localStorage.getItem('tokens') ?? ''
-  const isLoggedIn = Boolean(JSON.parse(tokens))
-  if (isLoggedIn) {
-    if (path === '/') {
-      return <Navigate to='/stocks' replace />
+  const tokens = localStorage.getItem('tokens')
+  if (tokens) {
+    const isLoggedIn = Boolean(JSON.parse(tokens))
+    if (isLoggedIn) {
+      if (path === '/') {
+        return <Navigate to='/stocks' replace />
+      }
+      return <Element />
     }
-    return <Element />
+    localStorage.removeItem('tokens')
   }
-  localStorage.removeItem('tokens')
   return <Navigate to='/login' replace />
 }
 

@@ -112,9 +112,14 @@ const TableFooter = (): JSX.Element => {
       </Label>
     )
   }
+
   return (
     <Box>
-      <Chart data={{ asset, currentData }} />
+      <Grid container>
+        <Grid item>
+          <Chart data={{ asset, currentData }} />
+        </Grid>
+      </Grid>
       <Box
         position='absolute'
         width='100%'
@@ -122,9 +127,7 @@ const TableFooter = (): JSX.Element => {
         bottom={0}
         display='flex'
         alignItems='center'
-        bgcolor={
-          theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(242, 232, 252, 0.5)'
-        }
+        bgcolor={theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#f9f3fe'}
       >
         <Grid container alignItems='center' spacing={2} justifyContent='center'>
           <Grid item>
@@ -172,7 +175,6 @@ const TableFooter = (): JSX.Element => {
               </Grid>
             </Grid>
           </Grid>
-
           <Grid item>
             <Grid container alignItems='center'>
               <Grid item>
@@ -192,7 +194,6 @@ const TableFooter = (): JSX.Element => {
               </Grid>
             </Grid>
           </Grid>
-
           <Grid item>
             <Grid container alignItems='center'>
               <Grid item>
