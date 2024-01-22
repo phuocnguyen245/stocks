@@ -14,7 +14,7 @@ const onDarkTheme = (mode: 'dark' | 'light'): Theme => {
         main: '#31e631'
       },
       warning: {
-        main: 'rgb(204, 170, 0)'
+        main: '#ffd500'
       },
       error: {
         main: '#d41834'

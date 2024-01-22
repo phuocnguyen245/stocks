@@ -1,13 +1,4 @@
-import {
-  Add,
-  ChevronLeft,
-  ChevronRight,
-  ExpandMore,
-  PlusOneOutlined,
-  PlusOneRounded,
-  PlusOneSharp,
-  PlusOneTwoTone
-} from '@mui/icons-material'
+import { Add, ChevronLeft, ChevronRight, ExpandMore } from '@mui/icons-material'
 import {
   Accordion,
   AccordionDetails,
@@ -16,6 +7,7 @@ import {
   Button,
   Divider,
   Drawer,
+  Link,
   IconButton,
   Typography,
   styled,
@@ -23,9 +15,7 @@ import {
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { drawerWidth } from '..'
-
-import { Link } from 'react-router-dom'
-import { type WatchList } from 'src/models'
+import { type Board, type WatchList } from 'src/models'
 import { useGetWatchListQuery } from 'src/services/stocks.services'
 
 interface SideBarDrawerProps {
@@ -121,22 +111,63 @@ const SideBarDrawer = ({ open, isLogin, toggle }: SideBarDrawerProps): JSX.Eleme
               <AccordionDetails
                 sx={{
                   p: 0,
-                  cursor: 'pointer',
-                  '& :hover': {
-                    background: `${theme.palette.mode === 'dark' ? '#6e6e6e' : '#f8dffa'}`
-                  }
+                  cursor: 'pointer'
                 }}
               >
-                {item.symbols.map((symbol) => (
+                {item.stocks.map((stock: Board) => (
                   <Link
-                    to={`/stocks/${symbol}`}
-                    key={symbol}
+                    href={`/stocks/${stock.liveboard.Symbol}`}
+                    key={stock.liveboard.Symbol}
                     target='_blank'
                     style={{ color: 'unset', textDecoration: 'none' }}
+                    sx={{
+                      '& :hover': {
+                        background: `${theme.palette.mode === 'dark' ? '#6e6e6e' : '#f8dffa'}`
+                      }
+                    }}
                   >
-                    <Typography key={symbol} py={1} px={2}>
-                      {symbol}
-                    </Typography>
+                    <Box py={0.75} px={1.5}>
+                      <Box
+                        display='flex'
+                        justifyContent='space-between'
+                        alignItems='center'
+                        mb={0.25}
+                      >
+                        <Typography fontWeight={600}>{stock.liveboard.Symbol}</Typography>
+                        <Typography fontWeight={600}>{stock.liveboard.Close}</Typography>
+                      </Box>
+                      <Box
+                        display='flex'
+                        justifyContent='space-between'
+                        alignItems='center'
+                        gap={0.75}
+                      >
+                        <Typography
+                          flex={1}
+                          textOverflow='ellipsis'
+                          whiteSpace='nowrap'
+                          overflow='hidden'
+                          fontSize={14}
+                        >
+                          {stock.CompanyName}
+                        </Typography>
+                        <Typography
+                          width={80}
+                          textAlign='right'
+                          fontWeight={600}
+                          whiteSpace='nowrap'
+                          fontSize={14}
+                          sx={{
+                            color:
+                              stock.liveboard.ChangePercent > 0
+                                ? 'success.main'
+                                : stock.liveboard.ChangePercent < 0
+                                  ? 'error.main'
+                                  : 'warning.main'
+                          }}
+                        >{`${stock.liveboard.Change} / ${stock.liveboard.ChangePercent}%`}</Typography>
+                      </Box>
+                    </Box>
                   </Link>
                 ))}
               </AccordionDetails>

@@ -28,10 +28,11 @@ const TableFooter = (): JSX.Element => {
     data: assetData,
     isLoading: isLoadingAsset,
     refetch
-  } = PaymentService.useGetAssetQuery({})
+  } = PaymentService.useGetAssetQuery({}, { refetchOnMountOrArgChange: true })
 
   const { data: currentData, isLoading: isLoadingCurrent } = StockService.useGetCurrentStocksQuery(
-    {}
+    {},
+    { refetchOnMountOrArgChange: true }
   )
 
   useEffect(() => {
@@ -123,13 +124,13 @@ const TableFooter = (): JSX.Element => {
       <Box
         position='absolute'
         width='100%'
-        height='100px'
+        height='80px'
         bottom={0}
         display='flex'
         alignItems='center'
         bgcolor={theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#f9f3fe'}
       >
-        <Grid container alignItems='center' spacing={2} justifyContent='center'>
+        <Grid container alignItems='center' columnSpacing={2} justifyContent='center'>
           <Grid item>
             <Grid container alignItems='center'>
               <Grid item>
@@ -188,7 +189,7 @@ const TableFooter = (): JSX.Element => {
                   {isLoading ? (
                     <SkeletonRender />
                   ) : (
-                    renderLabel(`${asset.profitOrLost ?? 0}%`, asset.profitOrLost)
+                    renderLabel(`${asset.profitOrLost || 0}%`, asset.profitOrLost)
                   )}
                 </Typography>
               </Grid>

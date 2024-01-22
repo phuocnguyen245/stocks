@@ -21,7 +21,7 @@ import en from 'src/locales/en.json'
 import vi from 'src/locales/vi.json'
 import { useIsLogin } from 'src/hooks'
 
-export const drawerWidth = 280
+export const drawerWidth = 380
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean

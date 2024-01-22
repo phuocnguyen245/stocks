@@ -118,7 +118,7 @@ const SearchResult = ({ search }: { search: string }): JSX.Element => {
                       ? 'error.main'
                       : 'warning.main'
               }}
-            >{`${item.liveboard.Change} / ${item.liveboard.ChangePercent}`}</Typography>
+            >{`${item.liveboard.Change} / ${item.liveboard.ChangePercent}%`}</Typography>
           </Box>
         </Box>
       ))}

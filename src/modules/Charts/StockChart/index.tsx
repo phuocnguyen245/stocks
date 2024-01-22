@@ -37,7 +37,7 @@ const StockChart = (): JSX.Element => {
   }, [stockStatistic])
 
   useEffect(() => {
-    const width = (isOpenSidebar as boolean) ? window.innerWidth - 280 : window.innerWidth
+    const width = (isOpenSidebar as boolean) ? window.innerWidth - 380 : window.innerWidth
     const height = window.innerHeight - 112
     if (width && height) {
       setWindowSize({ width, height })

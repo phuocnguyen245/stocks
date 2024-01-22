@@ -76,6 +76,7 @@ interface WatchList {
   symbols: string[]
   userName: string
   watchlistID: number
+  stocks: Board[]
 }
 interface MACD {
   macd: number[]
@@ -155,6 +156,12 @@ interface Board {
   Commodities: string
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface ErrorResponse1 {
+  message: string
+  subMessage: string
+}
+
 export type {
   Stock,
   Status,
@@ -170,5 +177,6 @@ export type {
   Stoch,
   Board,
   User,
-  UserWithToken
+  UserWithToken,
+  ErrorResponse1
 }

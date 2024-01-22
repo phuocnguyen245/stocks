@@ -43,3 +43,18 @@ html::-webkit-scrollbar-thumb {
   border-radius: 20px;
   border: 3px solid transparent;
 }
+
+.notistack-Snackbar {
+  & .alert {
+    color: #fff;
+    &.success {
+      background-color: #a020f0;
+    }
+    &.error {
+      background-color: #d41834;
+    }
+    &.warning {
+      background-color: #ffd500;
+    }
+  }
+}

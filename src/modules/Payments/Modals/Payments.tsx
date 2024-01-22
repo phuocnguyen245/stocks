@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
   Box,
@@ -13,8 +14,11 @@ import { DatePicker } from '@mui/x-date-pickers'
 import moment, { type MomentInput } from 'moment'
 import { memo, useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { useForm } from 'react-hook-form'
+import NumberFormat from 'src/components/MUIComponents/NumberFormat'
+import { useAlert } from 'src/hooks'
 import { useCreatePaymentMutation } from 'src/services/payment.services'
 import schema from './schema'
+import { ErrorResponse } from 'react-router'
 
 enum Type {
   BUY = 0,
@@ -38,14 +42,13 @@ const PaymentModal = ({ open, refetch, handleClose }: PaymentModalProps): JSX.El
   const textFieldRef = useRef(null)
   const [createPayment] = useCreatePaymentMutation()
   const [checked, setChecked] = useState<boolean>(true)
+  const alert = useAlert()
 
   const {
     register,
     setValue,
-    getValues,
     handleSubmit,
     reset,
-    control,
     formState: { errors }
   } = useForm<FormBody>({
     resolver: yupResolver(schema)
@@ -70,17 +73,33 @@ const PaymentModal = ({ open, refetch, handleClose }: PaymentModalProps): JSX.El
     setChecked(e.target.checked)
   }
 
+  const materialUiTextFieldProps = {
+    required: true,
+    error: !!errors?.balance,
+    helperText: errors.balance?.message,
+    fullWidth: true,
+    label: 'Balance',
+    sx: { margin: '8px 0' },
+    ...register('balance'),
+    onChange: (e: ChangeEvent<HTMLInputElement>) => {
+      setValue('balance', Number(e.target.value.split(',').join('')))
+    }
+  }
+
   const handleSave = async (data: FormBody): Promise<void> => {
     try {
       const { name, date, type, balance } = data
-
       const response = await createPayment({ name, date, type, balance: Number(balance) }).unwrap()
       if (response.data) {
         refetch()
         handleClose()
+        alert({ message: response.message, variant: 'success' })
       }
       reset()
-    } catch (error) {}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      alert({ message: error?.message, variant: 'error' })
+    }
   }
 
   return (
@@ -103,25 +122,13 @@ const PaymentModal = ({ open, refetch, handleClose }: PaymentModalProps): JSX.El
               error={!!errors.name}
               helperText={errors.name?.message}
             />
-
             <DatePicker
               label='Date'
               sx={{ width: '100%', margin: '8px 0' }}
               defaultValue={moment(Date.now())}
               onChange={onChangeDate}
             />
-
-            <TextField
-              fullWidth
-              label='Balance'
-              type='number'
-              defaultValue={0}
-              required
-              sx={{ margin: '8px 0' }}
-              {...register('balance')}
-              error={!!errors?.balance}
-              helperText={errors.balance?.message}
-            />
+            <NumberFormat {...materialUiTextFieldProps} TextField={TextField} />
             <Box display='flex' alignItems='center'>
               <Typography>Type:</Typography>
               <Switch

@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Box, Button, Container, Dialog, Divider, TextField, Typography } from '@mui/material'
+import { Box, Container, Dialog, Divider, TextField, Typography } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import moment, { type MomentInput } from 'moment'
 import { memo, useEffect, useMemo, useRef } from 'react'
@@ -9,8 +9,9 @@ import { StockService, useCreateStockMutation } from 'src/services/stocks.servic
 import { useAppDispatch } from 'src/store'
 import { refetchStocks } from 'src/store/slices/stockSlice'
 import schema from './schema'
-import { Select } from 'src/components/MUIComponents'
+import { Select, Button } from 'src/components/MUIComponents'
 import { FormattedMessage } from 'react-intl'
+import { useAlert } from 'src/hooks'
 
 interface FormBody {
   code: string
@@ -30,7 +31,8 @@ interface StockModalProps {
 const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JSX.Element => {
   const textFieldRef = useRef(null)
   const dispatch = useAppDispatch()
-  const [createStock] = useCreateStockMutation()
+  const [createStock, { isLoading }] = useCreateStockMutation()
+  const alert = useAlert()
 
   const {
     register,
@@ -76,10 +78,12 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
       if (response.data) {
         reset()
         dispatch(refetchStocks(true))
+        alert({ message: response.message, variant: 'success' })
         return addData({ ...response.data })
       }
-    } catch (error) {
-      console.log(error)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      alert({ message: error.data.message, variant: 'error' })
     }
   }
 
@@ -199,6 +203,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
               <FormattedMessage id='label.cancel' />
             </Button>
             <Button
+              isLoading={isLoading}
               variant='contained'
               sx={{ marginLeft: 2 }}
               type='submit'
