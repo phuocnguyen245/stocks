@@ -1,5 +1,5 @@
+import { useTheme } from '@mui/material'
 import { type LabelType } from './index'
-
 const getColor = (type: LabelType): string => {
   const hexColors = {
     success: ' #f8fff9',
@@ -14,7 +14,7 @@ const getColor = (type: LabelType): string => {
 
 const getBgColor = (type: LabelType): string => {
   const hexColors = {
-    success: ' #31e631',
+    success: 'success.main',
     error: ' #FFB6C1',
     warning: '#FFDAB9',
     primary: '#a41bfa',

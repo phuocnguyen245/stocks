@@ -12,9 +12,11 @@ interface TableHeaderBody<T> extends TableCellProps {
   render?: (data: T) => JSX.Element
 }
 
-interface TableProps<T, P> {
+interface TableProps<T, Y, P> {
   data: T[]
+  subData?: Y[]
   table: Array<TableHeaderBody<T>>
+  subTable?: Array<TableHeaderBody<T>>
   isLoading: boolean
   totalItems: number
   pagination: P

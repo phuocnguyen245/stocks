@@ -11,6 +11,7 @@ import Chart from '../Chart'
 
 const TableFooter = (): JSX.Element => {
   const theme: Theme = useTheme()
+  const { isOpenSidebar } = useAppSelector((state) => state.Stocks)
   const [asset, setAsset] = useState<Asset>({
     topUp: 0,
     waiting: 0,
@@ -62,7 +63,7 @@ const TableFooter = (): JSX.Element => {
     if (currentData?.data?.data) {
       let investedValue = 0
       let marketValue = 0
-      currentData?.data?.data.forEach((stock) => {
+      currentData?.data?.data?.forEach((stock) => {
         marketValue += (stock?.marketPrice ?? 0) * stock?.volume * 1000
         investedValue += (stock?.averagePrice ?? 0) * (stock?.volume ?? 0) * 1000
       })
@@ -116,21 +117,24 @@ const TableFooter = (): JSX.Element => {
 
   return (
     <Box>
-      <Grid container>
-        <Grid item>
-          <Chart data={{ asset, currentData }} />
-        </Grid>
-      </Grid>
       <Box
-        position='absolute'
-        width='100%'
-        height='80px'
+        position='fixed'
+        width={`calc(100vw - ${isOpenSidebar ? '340px' : '0px'})`}
+        height='auto'
         bottom={0}
+        py={3}
         display='flex'
         alignItems='center'
         bgcolor={theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#f9f3fe'}
+        boxShadow='rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px'
       >
-        <Grid container alignItems='center' columnSpacing={2} justifyContent='center'>
+        <Grid
+          container
+          alignItems='center'
+          columnSpacing={2}
+          rowSpacing={1}
+          justifyContent='center'
+        >
           <Grid item>
             <Grid container alignItems='center'>
               <Grid item>

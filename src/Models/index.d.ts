@@ -32,6 +32,7 @@ interface Stock {
   createdAt?: string
   updatedAt?: string
   t?: number
+  stocks?: Stock[]
 }
 export interface ResponsePagination<T> {
   data?: T

@@ -8,6 +8,7 @@ import PaymentsModal from './Modals/Payments'
 import useModal from 'src/hooks/useModals'
 import { Label } from 'src/components/MUIComponents'
 import { formatVND } from 'src/utils'
+import Helmet from 'src/components/Helmet'
 
 const Payment = (): JSX.Element => {
   const [deletePayment] = useDeletePaymentMutation()
@@ -80,35 +81,40 @@ const Payment = (): JSX.Element => {
   ]
 
   return (
-    <TableContainer component={Paper} sx={{ height: '100vh', borderRadius: 0 }}>
-      <Box
-        px={4}
-        pt={2}
-        pb={0}
-        pr={6}
-        display='flex'
-        alignItems='center'
-        gap={2}
-        justifyContent='flex-end'
-      >
-        <Button variant='contained' onClick={toggle} sx={{ mt: 8 }}>
-          Created
-        </Button>
-      </Box>
-      <Container sx={{ p: 2 }}>
-        <Table
-          data={data}
-          table={table}
-          isLoading={isLoading}
-          totalItems={paymentData?.data?.totalItems ?? 0}
-          onDelete={onDelete}
-          onEdit={onEdit}
-          pagination={pagination}
-          onSetPagination={setPagination}
-        />
-        <PaymentsModal open={open} handleClose={toggle} refetch={refetch} />
-      </Container>
-    </TableContainer>
+    <>
+      <Helmet>
+        <title>Payments</title>
+      </Helmet>
+      <TableContainer component={Paper} sx={{ height: '100vh', borderRadius: 0 }}>
+        <Box
+          px={4}
+          pt={2}
+          pb={0}
+          pr={6}
+          display='flex'
+          alignItems='center'
+          gap={2}
+          justifyContent='flex-end'
+        >
+          <Button variant='contained' onClick={toggle} sx={{ mt: 8 }}>
+            Created
+          </Button>
+        </Box>
+        <Container sx={{ p: 2 }}>
+          <Table
+            data={data}
+            table={table}
+            isLoading={isLoading}
+            totalItems={paymentData?.data?.totalItems ?? 0}
+            onDelete={onDelete}
+            onEdit={onEdit}
+            pagination={pagination}
+            onSetPagination={setPagination}
+          />
+          <PaymentsModal open={open} handleClose={toggle} refetch={refetch} />
+        </Container>
+      </TableContainer>
+    </>
   )
 }
 

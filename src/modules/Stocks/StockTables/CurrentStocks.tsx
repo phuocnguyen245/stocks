@@ -1,4 +1,4 @@
-import { TextField, Typography } from '@mui/material'
+import { Switch, TextField, Typography } from '@mui/material'
 import moment from 'moment'
 import React, { useCallback, useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
@@ -14,13 +14,15 @@ import {
 } from 'src/services/stocks.services'
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { refetchStocks } from 'src/store/slices/stockSlice'
-import { formatVND, ratio } from 'src/utils'
+import { countDays, formatVND, ratio } from 'src/utils'
 
 const CurrentStocks = (): JSX.Element => {
   const [deleteCurrentStock] = useDeleteCurrentStockMutation()
   const dispatch = useAppDispatch()
   const { isRefetchStock } = useAppSelector((state) => state.Stocks)
   const [data, setData] = useState<Stock[]>([])
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [subData, setSubData] = useState<any[]>([])
   const [editData, setEditData] = useState<Stock>()
   const [pagination, setPagination] = useState<DefaultPagination>({
     page: 0,
@@ -42,8 +44,18 @@ const CurrentStocks = (): JSX.Element => {
           investedValue: Number((item?.investedValue ?? 0).toFixed(2))
         }))
       )
+      setSubData(
+        Object.values(currentStockData.data.data).map(
+          (item: Stock) =>
+            item.stocks?.map((stock) => ({
+              ...stock,
+              t: countDays(stock.date)
+            }))
+        )
+      )
     }
   }, [currentStockData])
+  console.log(subData)
 
   useEffect(() => {
     if (isRefetchStock) {
@@ -128,7 +140,7 @@ const CurrentStocks = (): JSX.Element => {
   const table: Array<TableHeaderBody<Stock>> = [
     {
       name: 'code',
-      title: <FormattedMessage id='label.code' />,
+      title: '',
       width: '10%'
     },
     {
@@ -186,6 +198,114 @@ const CurrentStocks = (): JSX.Element => {
     }
   ]
 
+  const subTable: Array<TableHeaderBody<Stock>> = [
+    {
+      name: 'code',
+      title: <FormattedMessage id='label.code' />,
+      width: '10%'
+    },
+
+    {
+      name: 'volume',
+      title: <FormattedMessage id='label.volume' />,
+      width: '15%',
+      render: (row) => {
+        return (
+          <>
+            {editData?._id === row._id ? (
+              <TextField
+                sx={[
+                  {
+                    '& .MuiInputBase-root': {
+                      height: '36px'
+                    }
+                  }
+                ]}
+                name='volume'
+                value={row.volume}
+                onChange={(e) => onChangeRow(e)}
+                type='number'
+                fullWidth
+                inputProps={{
+                  step: 1
+                }}
+              />
+            ) : (
+              row.volume
+            )}
+          </>
+        )
+      }
+    },
+    {
+      name: 'orderPrice',
+      title: <FormattedMessage id='label.order' />,
+      width: '15%',
+      render: (row) => (
+        <>
+          {editData?._id === row._id ? (
+            <TextField
+              sx={[
+                { width: '120px', padding: '0' },
+                {
+                  '& .MuiInputBase-root': {
+                    height: '36px'
+                  }
+                }
+              ]}
+              name='orderPrice'
+              value={row.orderPrice}
+              onChange={(e) => onChangeRow(e)}
+              type='number'
+              inputProps={{ step: '0.1' }}
+              autoFocus
+              fullWidth
+            />
+          ) : (
+            row.orderPrice
+          )}
+        </>
+      )
+    },
+    {
+      name: '',
+      title: 'T+',
+      align: 'center',
+      render: (row) => {
+        return <>{row.t}</>
+      }
+    },
+    {
+      name: '',
+      title: <FormattedMessage id='label.available' />,
+      align: 'center',
+      width: '100px',
+      render: (row) => {
+        const options = {
+          available: {
+            type: 'success',
+            message: <FormattedMessage id='label.available' />
+          },
+          un: {
+            type: 'warning',
+            message: <FormattedMessage id='label.unavailable' />
+          }
+        }
+        const isAvailable = (row?.t ?? 0) >= 2.5 ? 'available' : 'un'
+
+        return (
+          <Label
+            type={options[`${isAvailable}`]?.type as LabelType}
+            whiteSpace='nowrap'
+            fontSize={14}
+          >
+            {options[`${isAvailable}`]?.message}
+          </Label>
+        )
+      }
+    }
+  ]
+
   return (
     <Table
       data={data}
@@ -197,6 +317,8 @@ const CurrentStocks = (): JSX.Element => {
       pagination={pagination}
       onSetPagination={setPagination}
       onView={onView}
+      subTable={subTable}
+      subData={subData}
     />
   )
 }

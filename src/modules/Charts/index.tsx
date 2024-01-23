@@ -8,6 +8,7 @@ import { useAppSelector } from 'src/store'
 import { FormattedMessage } from 'react-intl'
 import SwipeableViews from 'react-swipeable-views'
 import SearchBar from './components/SearchBar'
+import Helmet from 'src/components/Helmet'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -62,61 +63,66 @@ const Charts = (): JSX.Element => {
   }
 
   return (
-    <Box borderRadius={0}>
-      <Box
-        sx={{
-          borderBottom: 1,
-          borderColor: 'divider',
-          boxShadow: ' rgba(0, 0, 0, 0.24) 0px 3px 8px',
-          borderRadius: 0,
-          border: 'none',
-          transition: 'all 0.5s ease'
-        }}
-        position='absolute'
-        zIndex={1000}
-        width={'100%'}
-        top={64}
-        bgcolor='text.primary'
-      >
-        <AppBar position='static'>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            centered
-            component={Paper}
-            sx={{
-              transform: `translateX(${isOpenSidebar ? '-140px' : '0'})`,
-              position: 'relative',
-              transition: 'all 0.5s ease',
-              overflow: 'unset',
-              borderRadius: 0
-            }}
-          >
-            <Tab
-              label={<FormattedMessage id='title.stock.chart' />}
-              sx={{ color: 'text.primary', fontWeight: 600 }}
-            />
-            <Tab
-              label={<FormattedMessage id='title.statistic.chart' />}
-              sx={{ color: 'text.primary', fontWeight: 600 }}
-            />
-            <SearchBar />
-          </Tabs>
-        </AppBar>
+    <>
+      <Helmet>
+        <title>Stocks</title>
+      </Helmet>
+      <Box borderRadius={0}>
+        <Box
+          sx={{
+            borderBottom: 1,
+            borderColor: 'divider',
+            boxShadow: ' rgba(0, 0, 0, 0.24) 0px 3px 8px',
+            borderRadius: 0,
+            border: 'none',
+            transition: 'all 0.5s ease'
+          }}
+          position='absolute'
+          zIndex={1000}
+          width={'100%'}
+          top={64}
+          bgcolor='text.primary'
+        >
+          <AppBar position='static'>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              centered
+              component={Paper}
+              sx={{
+                transform: `translateX(${isOpenSidebar ? '-140px' : '0'})`,
+                position: 'relative',
+                transition: 'all 0.5s ease',
+                overflow: 'unset',
+                borderRadius: 0
+              }}
+            >
+              <Tab
+                label={<FormattedMessage id='title.stock.chart' />}
+                sx={{ color: 'text.primary', fontWeight: 600 }}
+              />
+              <Tab
+                label={<FormattedMessage id='title.statistic.chart' />}
+                sx={{ color: 'text.primary', fontWeight: 600 }}
+              />
+              <SearchBar />
+            </Tabs>
+          </AppBar>
+        </Box>
+        <SwipeableViews
+          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+          index={value}
+          onChangeIndex={handleChangeIndex}
+        >
+          <CustomTabPanel value={value} index={0}>
+            <StockChart />
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={1}>
+            <StatisticCharts code={code} />
+          </CustomTabPanel>
+        </SwipeableViews>
       </Box>
-      <SwipeableViews
-        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-        index={value}
-        onChangeIndex={handleChangeIndex}
-      >
-        <CustomTabPanel value={value} index={0}>
-          <StockChart />
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={1}>
-          <StatisticCharts code={code} />
-        </CustomTabPanel>
-      </SwipeableViews>
-    </Box>
+    </>
   )
 }
 

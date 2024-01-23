@@ -5,19 +5,49 @@ const onDarkTheme = (mode: 'dark' | 'light'): Theme => {
     palette: {
       mode,
       primary: {
-        main: '#A020F0'
+        main: mode === 'light' ? '#A020F0' : '#b641ff'
       },
       secondary: {
         main: '#31e631'
       },
       success: {
-        main: '#31e631'
+        main: mode === 'light' ? colors.green[500] : '#2ac32a',
+        50: colors.green[50],
+        100: colors.green[100],
+        200: colors.green[200],
+        300: colors.green[300],
+        400: colors.green[400],
+        500: colors.green[500],
+        600: colors.green[600],
+        700: colors.green[700],
+        800: colors.green[800],
+        900: colors.green[900]
       },
       warning: {
-        main: '#ffd500'
+        main: mode === 'light' ? colors.yellow[600] : colors.yellow[400],
+        50: colors.yellow[50],
+        100: colors.yellow[100],
+        200: colors.yellow[200],
+        300: colors.yellow[300],
+        400: colors.yellow[400],
+        500: colors.yellow[500],
+        600: colors.yellow[600],
+        700: colors.yellow[700],
+        800: colors.yellow[800],
+        900: colors.yellow[900]
       },
       error: {
-        main: '#d41834'
+        main: mode === 'light' ? colors.red[700] : colors.red[400],
+        50: colors.red[50],
+        100: colors.red[100],
+        200: colors.red[200],
+        300: colors.red[300],
+        400: colors.red[400],
+        500: colors.red[500],
+        600: colors.red[600],
+        700: colors.red[700],
+        800: colors.red[800],
+        900: colors.red[900]
       },
       text: {
         primary: mode === 'dark' ? '#fff' : '#000',

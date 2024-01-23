@@ -30,10 +30,11 @@ html::-webkit-scrollbar,
 html::-webkit-scrollbar-track,
 .watch-list::-webkit-scrollbar-track {
   background: transparent;
+  background: #554b4c;
 }
 
 html::-webkit-scrollbar-thumb {
-  background-color: rgba(155, 155, 155, 0.7);
+  background-color: #ccc;
   border-radius: 20px;
   border: 3px solid transparent;
 }
@@ -51,7 +52,7 @@ html::-webkit-scrollbar-thumb {
       background-color: #a020f0;
     }
     &.error {
-      background-color: #d41834;
+      background-color: #ffb6c1;
     }
     &.warning {
       background-color: #ffd500;
