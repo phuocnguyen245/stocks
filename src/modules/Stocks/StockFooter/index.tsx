@@ -122,17 +122,18 @@ const TableFooter = (): JSX.Element => {
         width={`calc(100vw - ${isOpenSidebar ? '340px' : '0px'})`}
         height='auto'
         bottom={0}
-        py={3}
+        py={2}
         display='flex'
         alignItems='center'
         bgcolor={theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#f9f3fe'}
         boxShadow='rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px'
+        sx={{ transition: 'all .2s ease-in-out' }}
       >
         <Grid
           container
           alignItems='center'
           columnSpacing={2}
-          rowSpacing={1}
+          rowSpacing={0.75}
           justifyContent='center'
         >
           <Grid item>
@@ -154,13 +155,13 @@ const TableFooter = (): JSX.Element => {
             <Grid container alignItems='center'>
               <Grid item>
                 <Typography fontWeight={600}>
-                  <FormattedMessage id='label.net.asset.value' />
+                  <FormattedMessage id='label.available.cash' />
                   :&nbsp;
                 </Typography>
               </Grid>
               <Grid item>
                 <Typography>
-                  {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.net))}
+                  {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.available))}
                 </Typography>
               </Grid>
             </Grid>
@@ -169,13 +170,13 @@ const TableFooter = (): JSX.Element => {
             <Grid container alignItems='center'>
               <Grid item>
                 <Typography fontWeight={600}>
-                  <FormattedMessage id='label.available.cash' />
+                  <FormattedMessage id='label.net.asset.value' />
                   :&nbsp;
                 </Typography>
               </Grid>
               <Grid item>
                 <Typography>
-                  {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.available))}
+                  {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.net))}
                 </Typography>
               </Grid>
             </Grid>

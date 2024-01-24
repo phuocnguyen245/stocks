@@ -29,15 +29,15 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
 }>(({ theme, open, isLogin }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
-  transition: theme.transitions.create('margin', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen
+  transition: theme.transitions.create('all', {
+    easing: theme.transitions.easing.easeInOut,
+    duration: '0,2s'
   }),
   marginRight: isLogin ? `-${drawerWidth}px` : 0,
   ...(open && {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
+    transition: theme.transitions.create('all', {
+      easing: theme.transitions.easing.easeInOut,
+      duration: '0,2s'
     }),
     marginRight: 0
   })
@@ -51,7 +51,7 @@ interface AppBarProps extends MuiAppBarProps {
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open'
 })<AppBarProps>(({ theme, open, isLogin }) => ({
-  transition: 'all 0.5s ease',
+  transition: 'all 0.2s ease-in-out',
   width: '100%',
   ...(open && {
     width: isLogin ? `calc(100% - ${drawerWidth}px)` : '100%',

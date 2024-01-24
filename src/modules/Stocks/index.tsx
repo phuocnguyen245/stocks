@@ -36,10 +36,10 @@ const Stocks = (): JSX.Element => {
           onSetModalStatus={setModalStatus}
         />
         <Box display='flex' gap={2} px={2}>
-          <Box flex={1.5}>
+          <Box flex={1}>
             <StocksDetail />
           </Box>
-          <Box flex={1} flexShrink='unset'>
+          <Box flex={1.5} flexShrink='unset'>
             <CurrentStocks />
           </Box>
         </Box>

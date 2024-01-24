@@ -3,10 +3,11 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { type ErrorResponse } from 'react-router-dom'
-import type { LabelType, Stock } from 'src/models'
 import { Label } from 'src/components/MUIComponents'
 import Table from 'src/components/Table'
 import type { DefaultPagination, TableHeaderBody } from 'src/components/Table/type'
+import { useAlert } from 'src/hooks'
+import type { Stock } from 'src/models'
 import {
   useDeleteStockMutation,
   useGetStocksQuery,
@@ -21,7 +22,7 @@ const StocksDetail = (): JSX.Element => {
   const { isRefetchStock } = useAppSelector((state) => state.Stocks)
   const [updateStocks] = useUpdateStockMutation()
   const [deleteStocks] = useDeleteStockMutation()
-
+  const alert = useAlert()
   const [data, setData] = useState<Stock[]>([])
   const [editData, setEditData] = useState<Stock>()
   const [pagination, setPagination] = useState<DefaultPagination>({
@@ -55,25 +56,36 @@ const StocksDetail = (): JSX.Element => {
   }, [isRefetchStock])
 
   const onEdit = async (row: Stock): Promise<void> => {
-    if (editData?._id) {
-      const defaultRow: Stock = {
-        _id: '',
-        code: '',
-        date: moment(Date.now()).format('DD/MM/YYYY'),
-        volume: 0,
-        orderPrice: 0,
-        marketPrice: 0,
-        status: 'Buy',
-        ratio: 0,
-        sellPrice: 0
-      }
+    const defaultRow: Stock = {
+      _id: '',
+      code: '',
+      date: moment(Date.now()).format('DD/MM/YYYY'),
+      volume: 0,
+      orderPrice: 0,
+      marketPrice: 0,
+      status: 'Buy',
+      ratio: 0,
+      sellPrice: 0,
+      stop: [],
+      take: []
+    }
 
-      await updateStocks(row)
-        .unwrap()
-        .then(() => dispatch(refetchStocks(true)))
+    try {
+      if (editData?._id) {
+        const response = await updateStocks(row).unwrap()
+        if (response.data) {
+          dispatch(refetchStocks(true))
+          alert({ message: response.message, variant: 'success' })
+        }
+        return setEditData(defaultRow)
+      }
+      return setEditData(row)
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      alert({ message: error.data.message, variant: 'error' })
       return setEditData(defaultRow)
     }
-    return setEditData(row)
   }
 
   const onChangeRow = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
@@ -111,13 +123,17 @@ const StocksDetail = (): JSX.Element => {
   }
 
   const onDelete = async (row: Stock): Promise<void> => {
-    await deleteStocks({ _id: row._id })
-      .unwrap()
-      .then(async () => {
-        dispatch(refetchStocks(true))
+    try {
+      const response = await deleteStocks({ _id: row._id }).unwrap()
+      if (response) {
         await refetch()
-      })
-    return setData(data.filter((item) => item._id !== row._id))
+        dispatch(refetchStocks(true))
+        return setData(data.filter((item) => item._id !== row._id))
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      alert({ message: error.data.message, variant: 'error' })
+    }
   }
 
   const table: Array<TableHeaderBody<Stock>> = [
@@ -129,13 +145,13 @@ const StocksDetail = (): JSX.Element => {
     {
       name: 'date',
       title: <FormattedMessage id='label.date' />,
-      width: '10%',
+      width: '20%',
       render: (row) => <>{moment(row.date).format('DD/MM/YYYY')}</>
     },
     {
       name: 'volume',
       title: <FormattedMessage id='label.volume' />,
-      width: '15%',
+      width: '25%',
       render: (row) => {
         return (
           <>
@@ -144,7 +160,8 @@ const StocksDetail = (): JSX.Element => {
                 sx={[
                   {
                     '& .MuiInputBase-root': {
-                      height: '36px'
+                      height: '36px',
+                      minWidth: '80px'
                     }
                   }
                 ]}
@@ -167,7 +184,7 @@ const StocksDetail = (): JSX.Element => {
     {
       name: 'orderPrice',
       title: <FormattedMessage id='label.order' />,
-      width: '15%',
+      width: '25%',
       render: (row) => (
         <>
           {editData?._id === row._id ? (
@@ -176,7 +193,8 @@ const StocksDetail = (): JSX.Element => {
                 { width: '120px', padding: '0' },
                 {
                   '& .MuiInputBase-root': {
-                    height: '36px'
+                    height: '36px',
+                    minWidth: '80px'
                   }
                 }
               ]}
@@ -223,43 +241,6 @@ const StocksDetail = (): JSX.Element => {
               </Label>
             )}
           </>
-        )
-      }
-    },
-    {
-      name: '',
-      title: 'T+',
-      align: 'center',
-      render: (row) => {
-        return <>{row.t}</>
-      }
-    },
-    {
-      name: '',
-      title: <FormattedMessage id='label.available' />,
-      align: 'center',
-      width: '100px',
-      render: (row) => {
-        const options = {
-          available: {
-            type: 'success',
-            message: <FormattedMessage id='label.available' />
-          },
-          un: {
-            type: 'warning',
-            message: <FormattedMessage id='label.unavailable' />
-          }
-        }
-        const isAvailable = (row?.t ?? 0) >= 2.5 ? 'available' : 'un'
-
-        return (
-          <Label
-            type={options[`${isAvailable}`]?.type as LabelType}
-            whiteSpace='nowrap'
-            fontSize={14}
-          >
-            {options[`${isAvailable}`]?.message}
-          </Label>
         )
       }
     }

@@ -55,7 +55,6 @@ const CurrentStocks = (): JSX.Element => {
       )
     }
   }, [currentStockData])
-  console.log(subData)
 
   useEffect(() => {
     if (isRefetchStock) {
@@ -140,7 +139,7 @@ const CurrentStocks = (): JSX.Element => {
   const table: Array<TableHeaderBody<Stock>> = [
     {
       name: 'code',
-      title: '',
+      title: <FormattedMessage id='label.code' />,
       width: '10%'
     },
     {
@@ -200,72 +199,12 @@ const CurrentStocks = (): JSX.Element => {
 
   const subTable: Array<TableHeaderBody<Stock>> = [
     {
-      name: 'code',
-      title: <FormattedMessage id='label.code' />,
-      width: '10%'
-    },
-
-    {
       name: 'volume',
-      title: <FormattedMessage id='label.volume' />,
-      width: '15%',
-      render: (row) => {
-        return (
-          <>
-            {editData?._id === row._id ? (
-              <TextField
-                sx={[
-                  {
-                    '& .MuiInputBase-root': {
-                      height: '36px'
-                    }
-                  }
-                ]}
-                name='volume'
-                value={row.volume}
-                onChange={(e) => onChangeRow(e)}
-                type='number'
-                fullWidth
-                inputProps={{
-                  step: 1
-                }}
-              />
-            ) : (
-              row.volume
-            )}
-          </>
-        )
-      }
+      title: <FormattedMessage id='label.volume' />
     },
     {
       name: 'orderPrice',
-      title: <FormattedMessage id='label.order' />,
-      width: '15%',
-      render: (row) => (
-        <>
-          {editData?._id === row._id ? (
-            <TextField
-              sx={[
-                { width: '120px', padding: '0' },
-                {
-                  '& .MuiInputBase-root': {
-                    height: '36px'
-                  }
-                }
-              ]}
-              name='orderPrice'
-              value={row.orderPrice}
-              onChange={(e) => onChangeRow(e)}
-              type='number'
-              inputProps={{ step: '0.1' }}
-              autoFocus
-              fullWidth
-            />
-          ) : (
-            row.orderPrice
-          )}
-        </>
-      )
+      title: <FormattedMessage id='label.order' />
     },
     {
       name: '',
@@ -273,6 +212,34 @@ const CurrentStocks = (): JSX.Element => {
       align: 'center',
       render: (row) => {
         return <>{row.t}</>
+      }
+    },
+    {
+      name: '',
+      title: 'Take 1',
+      render: (row) => {
+        return <>{row.take[0].price}</>
+      }
+    },
+    {
+      name: '',
+      title: 'Take 2',
+      render: (row) => {
+        return <>{row.take[1]?.price || 0}</>
+      }
+    },
+    {
+      name: '',
+      title: 'Stop 1',
+      render: (row) => {
+        return <>{row.stop[0]?.price || 0}</>
+      }
+    },
+    {
+      name: '',
+      title: 'Stop 2',
+      render: (row) => {
+        return <>{row.stop[1]?.price || 0}</>
       }
     },
     {

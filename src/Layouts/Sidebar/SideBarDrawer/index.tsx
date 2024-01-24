@@ -70,13 +70,14 @@ const SideBarDrawer = ({ open, isLogin, toggle }: SideBarDrawerProps): JSX.Eleme
         '& .MuiDrawer-paper': {
           width: drawerWidth,
           boxSizing: 'border-box'
-        }
+        },
+        boxShadow: 3
       }}
       variant='persistent'
       anchor='right'
       open={open}
     >
-      <Box sx={{ overflowY: 'hidden' }}>
+      <Box sx={{ overflowY: 'hidden' }} boxShadow={3}>
         <DrawerHeader onClick={toggle} sx={{ cursor: 'pointer' }}>
           <Typography pl={2} fontWeight={600}>
             Watch Lists

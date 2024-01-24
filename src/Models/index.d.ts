@@ -17,6 +17,12 @@ interface UserWithToken extends User {
   }
 }
 
+interface Target {
+  name: string
+  price: number
+  volume: number
+}
+
 interface Stock {
   _id: string
   code: string
@@ -33,6 +39,8 @@ interface Stock {
   updatedAt?: string
   t?: number
   stocks?: Stock[]
+  take: Target[]
+  stop: Target[]
 }
 export interface ResponsePagination<T> {
   data?: T
@@ -179,5 +187,6 @@ export type {
   Board,
   User,
   UserWithToken,
-  ErrorResponse1
+  ErrorResponse1,
+  Target
 }

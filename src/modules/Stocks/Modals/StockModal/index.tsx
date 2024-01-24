@@ -1,10 +1,19 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Box, Container, Dialog, Divider, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  Container,
+  Dialog,
+  Divider,
+  Grid,
+  IconButton,
+  TextField,
+  Typography
+} from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import moment, { type MomentInput } from 'moment'
-import { memo, useEffect, useMemo, useRef } from 'react'
+import { type ChangeEvent, memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import type { Stock } from 'src/models'
+import type { Stock, Target } from 'src/models'
 import { StockService, useCreateStockMutation } from 'src/services/stocks.services'
 import { useAppDispatch } from 'src/store'
 import { refetchStocks } from 'src/store/slices/stockSlice'
@@ -12,7 +21,10 @@ import schema from './schema'
 import { Select, Button } from 'src/components/MUIComponents'
 import { FormattedMessage } from 'react-intl'
 import { useAlert } from 'src/hooks'
-
+import { v4 as uuidV4 } from 'uuid'
+import { Add, Remove } from '@mui/icons-material'
+import { useGetAssetQuery } from 'src/services/payment.services'
+import { convertToDecimal } from 'src/utils'
 interface FormBody {
   code: string
   volume: number
@@ -28,11 +40,28 @@ interface StockModalProps {
   addData: (data: Stock) => void
 }
 
+interface TargetItem extends Target {
+  id: string
+}
+
+interface TargetState {
+  take: TargetItem[]
+  stop: TargetItem[]
+}
+
 const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JSX.Element => {
   const textFieldRef = useRef(null)
   const dispatch = useAppDispatch()
   const [createStock, { isLoading }] = useCreateStockMutation()
   const alert = useAlert()
+
+  const { data } = useGetAssetQuery({})
+  const init = { id: uuidV4(), name: '', price: 0, volume: 0 }
+
+  const [target, setTarget] = useState<TargetState>({
+    take: [{ id: uuidV4(), name: '', price: 0, volume: 0 }],
+    stop: [{ id: uuidV4(), name: '', price: 0, volume: 0 }]
+  })
 
   const {
     register,
@@ -73,12 +102,18 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
         volume,
         date: getValues('date'),
         ...(status === 1 ? { orderPrice } : { sellPrice }),
-        status: status === 1 ? 'Buy' : 'Sell'
+        status: status === 1 ? 'Buy' : 'Sell',
+        take: target.take,
+        stop: target.stop
       }).unwrap()
       if (response.data) {
         reset()
         dispatch(refetchStocks(true))
         alert({ message: response.message, variant: 'success' })
+        setTarget({
+          take: [{ id: uuidV4(), name: '', price: 0, volume: 0 }],
+          stop: [{ id: uuidV4(), name: '', price: 0, volume: 0 }]
+        })
         return addData({ ...response.data })
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -101,14 +136,71 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
     return []
   }, [status])
 
+  const onAddTakeOrStop = (type: keyof TargetState): void => {
+    return setTarget((prev) => ({ ...prev, [type]: [...prev[type], init] }))
+  }
+
+  const onRemoveTakeOrStop = (type: keyof TargetState, id: string): void => {
+    return setTarget((prev) => ({ ...prev, [type]: prev[type].filter((t) => t.id !== id) }))
+  }
+
+  const onChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    type: keyof TargetState,
+    id: string
+  ): void => {
+    const name = e.target.name
+    const value = Number(e.target.value)
+
+    setTarget((prev) => ({
+      ...prev,
+      [type]: prev[type].map((t) => {
+        if (t.id === id) {
+          return { ...t, [name]: value }
+        }
+        return { ...t }
+      })
+    }))
+  }
+
+  const onChangeInput = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    const name = e.target.name
+    const value = Number(e.target.value)
+    setValue(name as keyof FormBody, value)
+    const targetVolume = getValues('volume') ?? 0
+    const targetPrice = getValues('orderPrice') ?? 0
+    setTarget({
+      stop: [
+        {
+          id: uuidV4(),
+          name: '',
+          price: convertToDecimal(((targetPrice ?? 0) * 96) / 100),
+          volume: targetVolume / 2
+        },
+        {
+          id: uuidV4(),
+          name: '',
+          price: convertToDecimal(((targetPrice ?? 0) * 92) / 100),
+          volume: targetVolume
+        }
+      ],
+      take: [
+        {
+          id: uuidV4(),
+          name: '',
+          price: convertToDecimal(((targetPrice ?? 0) * 104) / 100),
+          volume: targetVolume
+        }
+      ]
+    })
+  }
+
   return (
     <Dialog
       open={open}
       onClose={handleClose}
       onKeyUp={(e) => {
         if (e.key === 'Enter') {
-          console.log('123')
-
           handleSubmit(handleSave)
         }
       }}
@@ -159,42 +251,164 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
               defaultValue={moment(Date.now())}
               onChange={onChangeDate}
             />
-            <TextField
-              fullWidth
-              label={<FormattedMessage id='label.volume' />}
-              type='number'
-              defaultValue={0}
-              inputProps={{ min: 0 }}
-              required
-              sx={{ margin: '8px 0' }}
-              {...register('volume')}
-              error={!!errors.volume}
-              helperText={errors.volume?.message}
-            />
-            {status === 1 ? (
-              <TextField
-                fullWidth
-                label={<FormattedMessage id='label.order.price' />}
-                type='number'
-                defaultValue={0}
-                required
-                sx={{ margin: '8px 0' }}
-                {...register('orderPrice')}
-                error={!!errors?.orderPrice}
-                helperText={errors.orderPrice?.message}
-              />
-            ) : (
-              <TextField
-                label={<FormattedMessage id='label.selling.price' />}
-                fullWidth
-                sx={{ margin: '8px 0' }}
-                type='number'
-                required
-                defaultValue={0}
-                {...register('sellPrice')}
-                error={!!errors?.sellPrice}
-                helperText={errors.sellPrice?.message}
-              />
+
+            <Grid container columnSpacing={0.75}>
+              <Grid item md={6}>
+                <TextField
+                  fullWidth
+                  label={<FormattedMessage id='label.volume' />}
+                  type='number'
+                  inputProps={{ min: 0 }}
+                  required
+                  sx={{ margin: '8px 0' }}
+                  {...register('volume')}
+                  onChange={onChangeInput}
+                  error={!!errors.volume}
+                  helperText={errors.volume?.message}
+                />
+              </Grid>
+              <Grid item md={6}>
+                {status === 1 ? (
+                  <TextField
+                    fullWidth
+                    label={<FormattedMessage id='label.order.price' />}
+                    type='number'
+                    required
+                    sx={{ margin: '8px 0' }}
+                    {...register('orderPrice')}
+                    onChange={onChangeInput}
+                    error={!!errors?.orderPrice}
+                    helperText={errors.orderPrice?.message}
+                  />
+                ) : (
+                  <TextField
+                    fullWidth
+                    label={<FormattedMessage id='label.selling.price' />}
+                    type='number'
+                    required
+                    sx={{ margin: '8px 0' }}
+                    {...register('sellPrice')}
+                    error={!!errors?.sellPrice}
+                    helperText={errors.sellPrice?.message}
+                  />
+                )}
+              </Grid>
+            </Grid>
+
+            {status === 1 && (
+              <Box mt={0.5}>
+                <Typography mb={0.75}>Takes</Typography>
+                {target.take.map((item, index) => (
+                  <Grid
+                    container
+                    key={item.id}
+                    pb={1}
+                    alignItems='center'
+                    justifyContent='space-between'
+                    columnSpacing={0.75}
+                  >
+                    <Grid item>
+                      <TextField
+                        fullWidth
+                        label='Volume'
+                        name='volume'
+                        value={item.volume}
+                        onChange={(e) => onChange(e, 'take', item.id)}
+                        type='number'
+                        inputProps={{ step: '0.1' }}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <TextField
+                        fullWidth
+                        label='Price'
+                        name='price'
+                        value={item.price}
+                        onChange={(e) => onChange(e, 'take', item.id)}
+                        type='number'
+                        inputProps={{ step: '0.1' }}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <IconButton
+                        sx={{ bgcolor: index === 0 ? 'primary.main' : 'error.main', p: 0 }}
+                      >
+                        {index === 0 ? (
+                          <Add
+                            color='inherit'
+                            onClick={() => onAddTakeOrStop('take' as keyof TargetState)}
+                            sx={{ width: '32px', height: '32px' }}
+                          />
+                        ) : (
+                          <Remove
+                            onClick={() => onRemoveTakeOrStop('take', item.id)}
+                            sx={{ width: '32px', height: '32px' }}
+                          />
+                        )}
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                ))}
+              </Box>
+            )}
+
+            {status === 1 && (
+              <Box mt={0.5}>
+                <Typography mb={0.75}>Stops</Typography>
+                {target.stop.map((item, index) => (
+                  <Grid
+                    container
+                    key={item.id}
+                    pb={1}
+                    alignItems='center'
+                    justifyContent='space-between'
+                    columnSpacing={0.75}
+                  >
+                    <Grid item md={6}>
+                      <TextField
+                        fullWidth
+                        label='Volume'
+                        name='volume'
+                        value={item.volume}
+                        onChange={(e) => onChange(e, 'stop', item.id)}
+                        type='number'
+                        inputProps={{ step: '0.1' }}
+                        disabled
+                      />
+                    </Grid>
+                    <Grid item md={6}>
+                      <TextField
+                        fullWidth
+                        label='Price'
+                        name='price'
+                        value={item.price}
+                        onChange={(e) => onChange(e, 'stop', item.id)}
+                        type='number'
+                        inputProps={{ step: '0.1' }}
+                        disabled
+                      />
+                    </Grid>
+                    {/* <Grid item>
+                      <IconButton
+                        sx={{ bgcolor: index === 0 ? 'primary.main' : 'error.main', p: 0 }}
+                      >
+                        {index === 0 ? (
+                          <Add
+                            color='inherit'
+                            onClick={() => onAddTakeOrStop('stop')}
+                            sx={{ width: '32px', height: '32px' }}
+                          />
+                        ) : (
+                          <Remove
+                            onClick={() => onRemoveTakeOrStop('stop', item.id)}
+                            sx={{ width: '32px', height: '32px' }}
+                          />
+                        )}
+                      </IconButton>
+                    </Grid> */}
+                  </Grid>
+                ))}
+              </Box>
             )}
           </Box>
           <Divider />
