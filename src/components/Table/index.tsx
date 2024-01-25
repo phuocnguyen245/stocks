@@ -79,7 +79,7 @@ const Table = ({
                 {subTable && (
                   <TableCell>
                     <IconButton size='small' onClick={() => onOpen(row._id)}>
-                      {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                      {open.includes(row._id) ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                     </IconButton>
                   </TableCell>
                 )}
@@ -133,7 +133,7 @@ const Table = ({
               {subTable && (
                 <TableRow>
                   <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
-                    <Collapse in={!open.includes(row._id)} timeout='auto' unmountOnExit>
+                    <Collapse in={open.includes(row._id)} timeout='auto' unmountOnExit>
                       <Box sx={{ margin: 1 }}>
                         <MUITable size='small' aria-label='purchases'>
                           <TableHead>
