@@ -1,10 +1,11 @@
-import { Box, TextField } from '@mui/material'
+import { Box, type BoxProps, TextField } from '@mui/material'
 import { useState, type ChangeEvent } from 'react'
 import { useAppSelector } from 'src/store'
 import SearchResult from './SearchResult'
 import { useDebounce } from 'src/hooks'
 
-const SearchBar = (): JSX.Element => {
+interface SearchBarProps extends BoxProps {}
+const SearchBar = (props: SearchBarProps): JSX.Element => {
   const { isOpenSidebar } = useAppSelector((state) => state.Stocks)
   const [search, setSearch] = useState('')
   const debouncedSearchTerm = useDebounce(search, 500)
@@ -15,12 +16,7 @@ const SearchBar = (): JSX.Element => {
 
   return (
     <>
-      <Box
-        position='absolute'
-        left={isOpenSidebar ? 164 : 24}
-        top={'calc(50% + 2px)'}
-        sx={{ transform: 'translateY(-50%)' }}
-      >
+      <Box position='absolute' left={isOpenSidebar ? 164 : 24} {...props}>
         <TextField
           sx={[
             {
@@ -39,7 +35,7 @@ const SearchBar = (): JSX.Element => {
           placeholder='Search...'
         />
       </Box>
-      <Box position='fixed' left={isOpenSidebar ? 164 : 24} top='100%' zIndex={10000000000}>
+      <Box position='fixed' left={isOpenSidebar ? 164 : 24} top='100%' zIndex={10000}>
         <SearchResult search={debouncedSearchTerm} />
       </Box>
     </>

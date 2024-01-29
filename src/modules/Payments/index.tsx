@@ -1,5 +1,5 @@
 import { Box, Button, Container, Paper, TableContainer, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import type { LabelType, Payments } from 'src/models'
 import Table from 'src/components/Table'
 import type { DefaultPagination, TableHeaderBody } from 'src/components/Table/type'
@@ -35,6 +35,7 @@ const Payment = (): JSX.Element => {
 
   const onEdit = async (row: Payments): Promise<void> => {
     setEditData(row)
+    toggle()
   }
 
   const onDelete = async (row: Payments): Promise<void> => {
@@ -111,11 +112,11 @@ const Payment = (): JSX.Element => {
             pagination={pagination}
             onSetPagination={setPagination}
           />
-          <PaymentsModal open={open} handleClose={toggle} refetch={refetch} />
+          <PaymentsModal open={open} handleClose={toggle} refetch={refetch} editData={editData} />
         </Container>
       </TableContainer>
     </>
   )
 }
 
-export default Payment
+export default memo(Payment)

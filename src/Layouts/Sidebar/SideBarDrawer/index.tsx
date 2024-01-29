@@ -69,9 +69,9 @@ const SideBarDrawer = ({ open, isLogin, toggle }: SideBarDrawerProps): JSX.Eleme
         flexShrink: 0,
         '& .MuiDrawer-paper': {
           width: drawerWidth,
-          boxSizing: 'border-box'
-        },
-        boxShadow: 3
+          boxSizing: 'border-box',
+          overflowY: 'unset'
+        }
       }}
       variant='persistent'
       anchor='right'

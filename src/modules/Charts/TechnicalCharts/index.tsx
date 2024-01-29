@@ -8,11 +8,11 @@ import RSI from './Charts/RSI'
 import Stochastic from './Charts/Stochastic'
 import StochasticRSI from './Charts/StochasticRSI'
 
-interface StatisticChartsProps {
+interface TechnicalChartProps {
   code: string
 }
 
-const StatisticCharts = ({ code }: StatisticChartsProps): JSX.Element => {
+const TechnicalCharts = ({ code }: TechnicalChartProps): JSX.Element => {
   const { data } = useGetIndicatorQuery({ code }, { refetchOnMountOrArgChange: true, skip: !code })
 
   return (
@@ -41,4 +41,4 @@ const StatisticCharts = ({ code }: StatisticChartsProps): JSX.Element => {
   )
 }
 
-export default memo(StatisticCharts)
+export default memo(TechnicalCharts)

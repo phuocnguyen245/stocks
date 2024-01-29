@@ -4,6 +4,9 @@
   "title.payments": "Payments",
   "title.stock.chart": "Stock Charts",
   "title.statistic.chart": "Statistic Charts",
+  "title.technical.chart": "Technical Charts",
+  "title.holding.stocks": "Holding Stocks",
+  "title.filter.stocks": "Filter Stocks",
 
   "label.stocks": "Stocks",
   "label.stock": "Stock",

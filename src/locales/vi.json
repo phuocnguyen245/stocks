@@ -4,6 +4,9 @@
   "title.payments": "Thanh toán",
   "title.stock.chart": "Biểu đồ Cổ phiếu",
   "title.statistic.chart": "Biểu đồ Thống kê",
+  "title.technical.chart": "Biểu đồ Kỹ thuật",
+  "title.holding.stocks": "Cổ phiếu đang giữ",
+  "title.filter.stocks": "Bộ loc Cổ phiếu",
 
   "label.stocks": "Mã cổ phiếu",
   "label.stock": "Cổ phiếu",

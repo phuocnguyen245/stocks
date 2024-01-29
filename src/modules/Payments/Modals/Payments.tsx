@@ -16,9 +16,9 @@ import { memo, useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { useForm } from 'react-hook-form'
 import NumberFormat from 'src/components/MUIComponents/NumberFormat'
 import { useAlert } from 'src/hooks'
-import { useCreatePaymentMutation } from 'src/services/payment.services'
+import { useCreatePaymentMutation, useUpdatePaymentMutation } from 'src/services/payment.services'
 import schema from './schema'
-import { ErrorResponse } from 'react-router'
+import { type Payments } from 'src/models'
 
 enum Type {
   BUY = 0,
@@ -34,13 +34,15 @@ interface FormBody {
 
 interface PaymentModalProps {
   open: boolean
+  editData?: Payments
   handleClose: () => void
   refetch: () => void
 }
 
-const PaymentModal = ({ open, refetch, handleClose }: PaymentModalProps): JSX.Element => {
+const PaymentModal = ({ open, editData, refetch, handleClose }: PaymentModalProps): JSX.Element => {
   const textFieldRef = useRef(null)
   const [createPayment] = useCreatePaymentMutation()
+  const [updatePayment] = useUpdatePaymentMutation()
   const [checked, setChecked] = useState<boolean>(true)
   const alert = useAlert()
 
@@ -53,6 +55,16 @@ const PaymentModal = ({ open, refetch, handleClose }: PaymentModalProps): JSX.El
   } = useForm<FormBody>({
     resolver: yupResolver(schema)
   })
+
+  useEffect(() => {
+    if (editData) {
+      setValue('balance', editData.balance)
+      setValue('date', editData.date)
+      setValue('name', editData.name)
+      setValue('type', editData.type ? 0 : 1)
+      setChecked(editData.type === 0)
+    }
+  }, [editData])
 
   useEffect(() => {
     if (open && textFieldRef.current) {
@@ -88,14 +100,31 @@ const PaymentModal = ({ open, refetch, handleClose }: PaymentModalProps): JSX.El
 
   const handleSave = async (data: FormBody): Promise<void> => {
     try {
-      const { name, date, type, balance } = data
-      const response = await createPayment({ name, date, type, balance: Number(balance) }).unwrap()
-      if (response.data) {
+      const { name, date, balance } = data
+      const type = checked ? 0 : 1
+      let response
+      if (editData?.balance) {
+        response = await updatePayment({
+          name,
+          date,
+          type,
+          balance: Number(balance),
+          _id: editData?._id
+        }).unwrap()
+      } else {
+        response = await createPayment({
+          name,
+          date,
+          type,
+          balance: Number(balance)
+        }).unwrap()
+      }
+      if (response) {
         refetch()
         handleClose()
         alert({ message: response.message, variant: 'success' })
+        reset()
       }
-      reset()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       alert({ message: error?.message, variant: 'error' })
