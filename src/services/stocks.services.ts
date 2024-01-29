@@ -45,8 +45,7 @@ export const StockService = createApi({
     }),
     getRecommended: builder.query<ResponseType<ResponsePagination<Board[]>>, any>({
       query: (params) => ({
-        url: 'stocks/recommended',
-        params
+        url: `stocks/recommended?q=${params}`
       })
     }),
     deleteCurrentStock: builder.mutation<ResponseType<{ message: string }>, any>({

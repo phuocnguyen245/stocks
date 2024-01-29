@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Check } from '@mui/icons-material'
 import { Box, Container, Grid, List, ListItem, Slider, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Helmet from 'src/components/Helmet'
 import { useDebounce } from 'src/hooks'
 import { useGetRecommendedQuery } from 'src/services/stocks.services'
@@ -28,7 +27,7 @@ const FilterStocks = (): JSX.Element => {
     'stoshRSI',
     'mfi'
   ])
-  const [filter, setFilter] = useState<FilterStocksType | null>({
+  const [filter, setFilter] = useState<FilterStocksType>({
     macd: [-1, 1],
     rsi: [0, 30],
     stoch: [0, 40],
@@ -36,32 +35,28 @@ const FilterStocks = (): JSX.Element => {
     stoshRSI: [0, 40]
   })
 
-  const { data } = useGetRecommendedQuery({ ...filter }, { refetchOnMountOrArgChange: true })
+  const filterDebounce = useDebounce(filter, 500)
+
+  const { data } = useGetRecommendedQuery(JSON.stringify(filterDebounce), {
+    refetchOnMountOrArgChange: true
+  })
 
   const handleChange = (event: Event, newValue: number | number[]): void => {
     const target = event.target as HTMLDivElement
     const name = (target as HTMLInputElement).name
     setFilter({ ...filter, [name as keyof FilterStocksType]: newValue as number[] })
   }
-  const [key, setKey] = useState<keyof FilterStocksType | null>(null)
-  const debouncedKey = useDebounce(key as string, 500)
-
-  useEffect(() => {
-    if (debouncedKey !== null) {
-      setDefaultFilter((prev: any) => {
-        if (prev.includes(debouncedKey as unknown as any)) {
-          const { [debouncedKey]: _, ...rest } = filter ?? {}
-          setFilter(rest)
-          return prev.filter((item: any) => item !== debouncedKey)
-        }
-        setFilter({ ...filter, [debouncedKey]: [0, 100] })
-        return [...prev, debouncedKey]
-      })
-    }
-  }, [debouncedKey])
 
   const onSetDefaultFilter = (key: keyof FilterStocksType): void => {
-    setKey(key)
+    setDefaultFilter((prev: Array<keyof FilterStocksType>) => {
+      if (prev.includes(key)) {
+        const { [key]: _, ...rest } = filter ?? {}
+        setFilter(rest)
+        return prev.filter((item: keyof FilterStocksType) => item !== key)
+      }
+      setFilter({ ...filter, [key]: [0, 100] })
+      return [...prev, key]
+    })
   }
 
   return (

@@ -137,7 +137,7 @@ const SideBarDrawer = ({ open, isLogin, toggle }: SideBarDrawerProps): JSX.Eleme
                     cursor: 'pointer'
                   }}
                 >
-                  {item.stocks.map((stock: Board, index) => (
+                  {item?.stocks?.map((stock: Board, index) => (
                     <Link
                       href={`/stocks/${stock.liveboard.Symbol}`}
                       key={stock.liveboard.Symbol}
