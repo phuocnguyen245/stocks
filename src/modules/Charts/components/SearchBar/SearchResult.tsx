@@ -1,5 +1,5 @@
-import { Box, Typography, useTheme } from '@mui/material'
-import { memo, useEffect, useRef, useState } from 'react'
+import { Box, Divider, Typography, useTheme } from '@mui/material'
+import { Fragment, memo, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import type { Board } from 'src/models'
 import { useGetBoardQuery } from 'src/services/stocks.services'
@@ -74,8 +74,8 @@ const SearchResult = ({ search }: { search: string }): JSX.Element => {
     <Box
       bgcolor={theme.palette.mode === 'dark' ? '#3c3c3c' : '#f9f3fe'}
       borderRadius={2}
-      width='500px'
-      maxWidth='600px'
+      width='400px'
+      maxWidth='400px'
       maxHeight='460px'
       sx={{
         overflowY: 'auto',
@@ -85,42 +85,51 @@ const SearchResult = ({ search }: { search: string }): JSX.Element => {
       ref={boxRef}
     >
       {data.map((item) => (
-        <Box
-          key={item.liveboard.Symbol}
-          p={2}
-          m={1}
-          borderRadius={2}
-          sx={{
-            cursor: 'pointer',
-            '&:hover': {
-              background: `${theme.palette.mode === 'dark' ? '#6e6e6e' : '#f8dffa'}`
-            }
-          }}
-          onClick={() => onClickBoard(item.liveboard.Symbol)}
-        >
-          <Box display='flex' justifyContent='space-between' alignItems='center' mb={0.25}>
-            <Typography fontWeight={600}>{item.liveboard.Symbol}</Typography>
-            <Typography fontWeight={600}>{item.liveboard.Close}</Typography>
+        <Fragment key={item.liveboard.Symbol}>
+          <Box
+            py={1.5}
+            px={2}
+            sx={{
+              cursor: 'pointer',
+              '&:hover': {
+                background: `${theme.palette.mode === 'dark' ? '#6e6e6e' : '#f8dffa'}`
+              }
+            }}
+            onClick={() => onClickBoard(item.liveboard.Symbol)}
+          >
+            <Box display='flex' justifyContent='space-between' alignItems='center' mb={0.25}>
+              <Typography fontWeight={600}>{item.liveboard.Symbol}</Typography>
+              <Typography fontWeight={600}>{item.liveboard.Close}</Typography>
+            </Box>
+            <Box display='flex' justifyContent='space-between' alignItems='center' gap={0.75}>
+              <Typography
+                flex={1}
+                textOverflow='ellipsis'
+                whiteSpace='nowrap'
+                overflow='hidden'
+                fontSize={14}
+              >
+                {item.CompanyName}
+              </Typography>
+              <Typography
+                width={80}
+                textAlign='right'
+                fontWeight={600}
+                whiteSpace='nowrap'
+                fontSize={14}
+                sx={{
+                  color:
+                    item.liveboard.ChangePercent > 0
+                      ? 'success.main'
+                      : item.liveboard.ChangePercent < 0
+                        ? 'error.main'
+                        : 'warning.main'
+                }}
+              >{`${item.liveboard.Change} / ${item.liveboard.ChangePercent}%`}</Typography>
+            </Box>
           </Box>
-          <Box display='flex' justifyContent='space-between' alignItems='center' gap={0.75}>
-            <Typography flex={1} textOverflow='ellipsis' whiteSpace='nowrap' overflow='hidden'>
-              {item.CompanyName}
-            </Typography>
-            <Typography
-              width={80}
-              textAlign='right'
-              fontWeight={600}
-              sx={{
-                color:
-                  item.liveboard.ChangePercent > 0
-                    ? 'success.main'
-                    : item.liveboard.ChangePercent < 0
-                      ? 'error.main'
-                      : 'warning.main'
-              }}
-            >{`${item.liveboard.Change} / ${item.liveboard.ChangePercent}%`}</Typography>
-          </Box>
-        </Box>
+          <Divider />
+        </Fragment>
       ))}
     </Box>
   )

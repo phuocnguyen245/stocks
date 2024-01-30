@@ -17,7 +17,7 @@ const TechnicalCharts = ({ code }: TechnicalChartProps): JSX.Element => {
 
   return (
     <Paper>
-      <Grid container spacing={1.5} marginTop='112px' pb={3} px={3}>
+      <Grid container spacing={1.5} marginTop='12px' pb={3} px={3}>
         <Grid item xs={4} pb={1.5}>
           <MA data={data?.data?.ma} lastPrice={data?.data?.lastPrice ?? 0} />
         </Grid>

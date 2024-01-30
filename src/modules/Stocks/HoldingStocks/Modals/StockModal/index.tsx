@@ -330,22 +330,21 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
                       />
                     </Grid>
                     <Grid item>
-                      <IconButton
-                        sx={{ bgcolor: index === 0 ? 'primary.main' : 'error.main', p: 0 }}
-                      >
-                        {index === 0 ? (
-                          <Add
-                            color='inherit'
-                            onClick={() => onAddTakeOrStop('take' as keyof TargetState)}
-                            sx={{ width: '32px', height: '32px' }}
-                          />
-                        ) : (
-                          <Remove
-                            onClick={() => onRemoveTakeOrStop('take', item.id)}
-                            sx={{ width: '32px', height: '32px' }}
-                          />
-                        )}
-                      </IconButton>
+                      {index === 0 ? (
+                        <IconButton
+                          sx={{ bgcolor: index === 0 ? 'primary.main' : 'error.main', p: 0 }}
+                          onClick={() => onAddTakeOrStop('take' as keyof TargetState)}
+                        >
+                          <Add color='inherit' sx={{ width: '32px', height: '32px' }} />
+                        </IconButton>
+                      ) : (
+                        <IconButton
+                          sx={{ bgcolor: index === 0 ? 'primary.main' : 'error.main', p: 0 }}
+                          onClick={() => onRemoveTakeOrStop('take', item.id)}
+                        >
+                          <Remove sx={{ width: '32px', height: '32px' }} />
+                        </IconButton>
+                      )}
                     </Grid>
                   </Grid>
                 ))}

@@ -1,19 +1,29 @@
+import { Box } from '@mui/material'
+import { FormattedMessage } from 'react-intl'
 import SwipeableTabs from 'src/components/SwipeableTabs'
 import HoldingStocks from './HoldingStocks'
 import FilterStocks from './FilterStocks'
-import { Box, Paper } from '@mui/material'
-import { FormattedMessage } from 'react-intl'
 
 const Stocks = (): JSX.Element => {
   return (
-    <Box component={Paper} sx={{ borderRadius: 0 }}>
-      <SwipeableTabs
-        components={[
-          { title: <FormattedMessage id='title.holding.stocks' />, component: <HoldingStocks /> },
-          { title: <FormattedMessage id='title.filter.stocks' />, component: <FilterStocks /> }
-        ]}
-      />
-    </Box>
+    <SwipeableTabs
+      components={[
+        {
+          title: <FormattedMessage id='title.holding.stocks' />,
+          link: {
+            url: '/stocks'
+          },
+          component: <HoldingStocks />
+        },
+        {
+          title: <FormattedMessage id='title.filter.stocks' />,
+          link: {
+            url: '/stocks/filters'
+          },
+          component: <FilterStocks />
+        }
+      ]}
+    />
   )
 }
 export default Stocks

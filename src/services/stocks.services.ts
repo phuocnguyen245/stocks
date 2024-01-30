@@ -43,7 +43,7 @@ export const StockService = createApi({
         params: { ...rest }
       })
     }),
-    getRecommended: builder.query<ResponseType<ResponsePagination<Board[]>>, any>({
+    getRecommended: builder.query<ResponseType<Indicator[]>, any>({
       query: (params) => ({
         url: `stocks/recommended?q=${params}`
       })

@@ -3,6 +3,7 @@ import { Box, Container, Grid, List, ListItem, Slider, Typography } from '@mui/m
 import { useState } from 'react'
 import Helmet from 'src/components/Helmet'
 import { useDebounce } from 'src/hooks'
+import FilterResult from 'src/modules/Stocks/FilterStocks/FilterResult'
 import { useGetRecommendedQuery } from 'src/services/stocks.services'
 
 interface FilterStocksType {
@@ -35,16 +36,19 @@ const FilterStocks = (): JSX.Element => {
     stoshRSI: [0, 40]
   })
 
-  const filterDebounce = useDebounce(filter, 500)
+  const filterDebounce = useDebounce(filter, 1500)
 
   const { data } = useGetRecommendedQuery(JSON.stringify(filterDebounce), {
     refetchOnMountOrArgChange: true
   })
 
-  const handleChange = (event: Event, newValue: number | number[]): void => {
+  const handleChange = (
+    event: Event | React.SyntheticEvent<Element, Event>,
+    value: number | number[]
+  ): void => {
     const target = event.target as HTMLDivElement
     const name = (target as HTMLInputElement).name
-    setFilter({ ...filter, [name as keyof FilterStocksType]: newValue as number[] })
+    setFilter({ ...filter, [name as keyof FilterStocksType]: value as number[] })
   }
 
   const onSetDefaultFilter = (key: keyof FilterStocksType): void => {
@@ -60,12 +64,12 @@ const FilterStocks = (): JSX.Element => {
   }
 
   return (
-    <Box height='100%' position='relative' minHeight='100vh' pt={14}>
+    <>
       <Helmet>
         <title>Filter Stocks</title>
       </Helmet>
-      <Container sx={{ pt: 5 }} maxWidth='md'>
-        <Grid container md={12} spacing={2}>
+      <Container sx={{ mt: 3 }}>
+        <Grid container spacing={2}>
           <Grid item md={4}>
             <List
               sx={{
@@ -83,7 +87,7 @@ const FilterStocks = (): JSX.Element => {
                       sx={{ bgcolor: isIncludes ? '#f8dffa' : 'transparent' }}
                       width='100%'
                       px={3}
-                      py={2}
+                      py={1}
                       display='flex'
                       justifyContent='space-between'
                       alignItems='center'
@@ -112,7 +116,7 @@ const FilterStocks = (): JSX.Element => {
                     key={item}
                     sx={{
                       width: '100%',
-                      height: '56px',
+                      height: '40px',
                       px: 3
                     }}
                   >
@@ -123,6 +127,7 @@ const FilterStocks = (): JSX.Element => {
                             name={item}
                             value={filter?.[item]}
                             onChange={handleChange}
+                            onChangeCommitted={handleChange}
                             valueLabelDisplay='auto'
                             getAriaValueText={valuetext}
                             min={item === 'macd' ? -10 : 0}
@@ -144,8 +149,9 @@ const FilterStocks = (): JSX.Element => {
             </List>
           </Grid>
         </Grid>
+        <FilterResult data={data?.data ?? []} />
       </Container>
-    </Box>
+    </>
   )
 }
 

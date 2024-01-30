@@ -112,6 +112,23 @@ interface Indicator {
   stoch: Stoch
   stochRSI: Stoch
   lastPrice: number
+  code: string
+  result: {
+    macd: {
+      macd: number
+      signal: number
+    }
+    mfi: number
+    rsi: nnumber
+    stoch: {
+      k: number
+      d: number
+    }
+    stochRSI: {
+      k: number
+      d: number
+    }
+  }
 }
 
 interface Liveboard {

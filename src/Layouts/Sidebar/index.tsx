@@ -23,12 +23,14 @@ import { useIsLogin } from 'src/hooks'
 
 export const drawerWidth = 340
 
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
+const Main = styled('main', {
+  shouldForwardProp: (prop) => prop !== 'open' && prop !== 'isLogin'
+})<{
   open?: boolean
   isLogin?: boolean
 }>(({ theme, open, isLogin }) => ({
-  flexGrow: 1,
   padding: theme.spacing(3),
+  width: '100%',
   transition: theme.transitions.create('all', {
     easing: theme.transitions.easing.easeInOut,
     duration: '0,2s'
@@ -49,7 +51,7 @@ interface AppBarProps extends MuiAppBarProps {
 }
 
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open'
+  shouldForwardProp: (prop) => prop !== 'open' && prop !== 'isLogin'
 })<AppBarProps>(({ theme, open, isLogin }) => ({
   transition: 'all 0.2s ease-in-out',
   width: '100%',

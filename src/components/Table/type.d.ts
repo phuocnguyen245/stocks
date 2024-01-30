@@ -19,8 +19,8 @@ interface TableProps<T, Y, P> {
   subTable?: Array<TableHeaderBody<T>>
   isLoading: boolean
   totalItems: number
-  pagination: P
-  onSetPagination: (value: SetStateAction<P>) => void
+  pagination?: P
+  onSetPagination?: (value: SetStateAction<P>) => void
   onDelete?: (value: T) => void
   onEdit?: (value: T) => void
   onView?: (value: T) => void

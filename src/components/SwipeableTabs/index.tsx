@@ -1,11 +1,15 @@
 import { AppBar, Box, Paper, Tab, Tabs, Typography, useTheme } from '@mui/material'
-import React, { useState, type ReactNode } from 'react'
+import React, { useState, type ReactNode, useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router'
 import SwipeableViews from 'react-swipeable-views'
 import { useAppSelector } from 'src/store'
 
 interface Components {
-  component: ReactNode
+  component?: ReactNode
   title: ReactNode
+  link?: {
+    url: string
+  }
 }
 interface TabPanelProps {
   children?: React.ReactNode
@@ -21,27 +25,30 @@ const CustomTabPanel = (props: TabPanelProps): JSX.Element => {
   const { children, value, index, ...other } = props
 
   return (
-    <div
-      role='tabpanel'
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 0 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
+    <Box hidden={value !== index} {...other}>
+      {value === index && <Box sx={{ p: 0 }}>{children}</Box>}
+    </Box>
   )
 }
 
 const SwipeableTabs = ({ components }: SwipeableTabsProps): JSX.Element => {
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
+
   const theme = useTheme()
   const { isOpenSidebar } = useAppSelector((state) => state.Stocks)
 
-  const [value, setValue] = useState(0)
+  const [value, setValue] = useState<number>(() => {
+    if (components) {
+      const index = components.findIndex((item) => item.link?.url === pathname)
+      if (index === -1) {
+        navigate('/stocks')
+        return 0
+      }
+      return index
+    }
+    return 0
+  })
 
   const handleChange = (_: React.SyntheticEvent, newValue: number): void => {
     setValue(newValue)
@@ -52,7 +59,7 @@ const SwipeableTabs = ({ components }: SwipeableTabsProps): JSX.Element => {
   }
 
   return (
-    <Box borderRadius={0}>
+    <Box borderRadius={0} mt={14}>
       <Box
         sx={{
           boxShadow: ' rgba(0, 0, 0, 0.24) 0px 3px 8px'
@@ -80,6 +87,7 @@ const SwipeableTabs = ({ components }: SwipeableTabsProps): JSX.Element => {
                 key={index}
                 label={component.title}
                 sx={{ color: 'text.primary', fontWeight: 600 }}
+                onClick={() => component?.link && navigate(component?.link.url)}
               />
             ))}
           </Tabs>
@@ -89,6 +97,7 @@ const SwipeableTabs = ({ components }: SwipeableTabsProps): JSX.Element => {
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
         index={value}
         onChangeIndex={handleChangeIndex}
+        style={{ position: 'relative' }}
       >
         {components.map((component, index) => (
           <CustomTabPanel value={value} index={index} key={index}>

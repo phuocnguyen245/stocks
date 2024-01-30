@@ -15,10 +15,9 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TableRow,
-  Typography
+  TableRow
 } from '@mui/material'
-import { memo, useState } from 'react'
+import { Fragment, memo, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { Link } from 'react-router-dom'
 import { Loader } from 'src/components/MUIComponents'
@@ -55,11 +54,11 @@ const Table = ({
         <TableHead>
           <TableRow>
             {[...(subTable ? [{ name: '', title: '' }] : []), ...table].map(
-              ({ title, ...rest }: TableHeaderBody<unknown>, index) => (
+              ({ title, render, ...rest }: TableHeaderBody<unknown>, index) => (
                 <TableCell
                   sx={{ whiteSpace: 'nowrap', padding: '8px' }}
                   {...rest}
-                  key={`${rest.name as string}-${index}`}
+                  key={`header-${rest.name as string}-${index}`}
                 >
                   {title}
                 </TableCell>
@@ -73,9 +72,9 @@ const Table = ({
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row, index) => (
-            <>
-              <TableRow key={`${row._id as string}-${index}`}>
+          {data.map((row, dataIndex) => (
+            <Fragment key={dataIndex}>
+              <TableRow>
                 {subTable && (
                   <TableCell>
                     <IconButton size='small' onClick={() => onOpen(row._id)}>
@@ -83,52 +82,54 @@ const Table = ({
                     </IconButton>
                   </TableCell>
                 )}
-                {table.map(({ title, ...rest }, tableIndex) => (
-                  <TableCell {...rest} key={`table-${tableIndex}`} sx={{ padding: '8px' }}>
-                    {rest?.render?.(row) ?? row[rest.name]}
+                {table.map(({ title, render, ...rest }, tableIndex) => (
+                  <TableCell {...rest} key={`${tableIndex}-${dataIndex}`} sx={{ padding: '8px' }}>
+                    {render?.(row) ?? row[rest.name]}
                   </TableCell>
                 ))}
-                <TableCell size='small'>
-                  <Box display='flex' alignItems='center' justifyContent='center' gap={0.5}>
-                    {onView && (
-                      <Button
-                        sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                        onClick={() => {
-                          onView(row)
-                        }}
-                      >
-                        <Link
-                          to={`/stocks/${row.code}`}
-                          style={{ display: 'flex', alignItems: 'center' }}
-                          target='_blank'
+                {(onView ?? onEdit ?? onDelete) && (
+                  <TableCell size='small'>
+                    <Box display='flex' alignItems='center' justifyContent='center' gap={0.5}>
+                      {onView && (
+                        <Button
+                          sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
+                          onClick={() => {
+                            onView(row)
+                          }}
                         >
-                          <RemoveRedEyeSharp color='primary' />
-                        </Link>
-                      </Button>
-                    )}
-                    {onEdit && (
-                      <Button
-                        color='info'
-                        sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                        onClick={() => {
-                          onEdit(row)
-                        }}
-                      >
-                        <Edit />
-                      </Button>
-                    )}
-                    {onDelete && (
-                      <Button
-                        sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                        onClick={() => {
-                          onDelete(row)
-                        }}
-                      >
-                        <Delete color='error' />
-                      </Button>
-                    )}
-                  </Box>
-                </TableCell>
+                          <Link
+                            to={`/stocks/${row.code}`}
+                            style={{ display: 'flex', alignItems: 'center' }}
+                            target='_blank'
+                          >
+                            <RemoveRedEyeSharp color='primary' />
+                          </Link>
+                        </Button>
+                      )}
+                      {onEdit && (
+                        <Button
+                          color='info'
+                          sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
+                          onClick={() => {
+                            onEdit(row)
+                          }}
+                        >
+                          <Edit />
+                        </Button>
+                      )}
+                      {onDelete && (
+                        <Button
+                          sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
+                          onClick={() => {
+                            onDelete(row)
+                          }}
+                        >
+                          <Delete color='error' />
+                        </Button>
+                      )}
+                    </Box>
+                  </TableCell>
+                )}
               </TableRow>
               {subTable && (
                 <TableRow>
@@ -143,7 +144,7 @@ const Table = ({
                                   <TableCell
                                     sx={{ whiteSpace: 'nowrap', padding: '8px' }}
                                     {...rest}
-                                    key={`${rest.name as string}-${index}`}
+                                    key={`${rest.name as string}-${index}-sub-${dataIndex}`}
                                   >
                                     {title}
                                   </TableCell>
@@ -152,19 +153,21 @@ const Table = ({
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {subData?.map((subItems) => {
+                            {subData?.map((subItems, subDataIndex) => {
                               return subItems
                                 .filter((item: any) => item.code === row.code)
-                                .map((subItem: any) => {
+                                .map((subItem: any, subItemIndex: number) => {
                                   return (
-                                    <TableRow key={subItem._id}>
-                                      {subTable?.map(({ title, ...rest }, tableIndex) => (
+                                    <TableRow
+                                      key={`sub-data-${subItem._id}-${subDataIndex}-${subItemIndex}`}
+                                    >
+                                      {subTable?.map(({ title, render, ...rest }, index) => (
                                         <TableCell
                                           {...rest}
-                                          key={`table-${tableIndex}`}
+                                          key={`sub-item-${subItem._id}-${index}`}
                                           sx={{ padding: '8px' }}
                                         >
-                                          {rest?.render?.(subItem) ?? subItem[rest.name]}
+                                          {render?.(subItem) ?? subItem[rest.name]}
                                         </TableCell>
                                       ))}
                                     </TableRow>
@@ -178,16 +181,18 @@ const Table = ({
                   </TableCell>
                 </TableRow>
               )}
-            </>
+            </Fragment>
           ))}
         </TableBody>
         {isLoading && <Loader />}
       </MUITable>
-      <Pagination
-        pagination={pagination}
-        onSetPagination={onSetPagination}
-        totalItems={totalItems}
-      />
+      {pagination && onSetPagination && (
+        <Pagination
+          pagination={pagination}
+          onSetPagination={onSetPagination}
+          totalItems={totalItems}
+        />
+      )}
     </Box>
   )
 }

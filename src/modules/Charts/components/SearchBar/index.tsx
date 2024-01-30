@@ -35,7 +35,7 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
           placeholder='Search...'
         />
       </Box>
-      <Box position='fixed' left={isOpenSidebar ? 164 : 24} top='100%' zIndex={10000}>
+      <Box position='fixed' left={24} top={80} zIndex={10000}>
         <SearchResult search={debouncedSearchTerm} />
       </Box>
     </>

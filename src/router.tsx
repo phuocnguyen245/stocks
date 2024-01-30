@@ -36,12 +36,15 @@ const Loader = (Component: any) => (props: any) => (
   </Suspense>
 )
 
+const MainLayout = Loader(lazy(async () => await import('src/Layouts/Sidebar')))
+const AuthLayout = Loader(lazy(async () => await import('src/modules/Auth/Layout')))
+
 const Stocks = Loader(lazy(async () => await import('src/modules/Stocks')))
 const Charts = Loader(lazy(async () => await import('src/modules/Charts')))
 const Payment = Loader(lazy(async () => await import('src/modules/Payments')))
-const AuthLayout = Loader(lazy(async () => await import('src/modules/Auth/Layout')))
+const FilterStocks = Loader(lazy(async () => await import('src/modules/Stocks/FilterStocks')))
+const HoldingStocks = Loader(lazy(async () => await import('src/modules/Stocks/HoldingStocks')))
 const Login = Loader(lazy(async () => await import('src/modules/Auth/Login')))
-const MainLayout = Loader(lazy(async () => await import('src/Layouts/Sidebar')))
 
 const routes: RouteObject[] = [
   {
@@ -59,6 +62,16 @@ const routes: RouteObject[] = [
             path: '',
             element: <PrivateRoute element={Stocks} />
           },
+
+          {
+            path: 'filters',
+            element: <PrivateRoute element={Stocks} />
+          }
+        ]
+      },
+      {
+        path: '/stocks',
+        children: [
           {
             path: ':code',
             element: <PrivateRoute element={Charts} />

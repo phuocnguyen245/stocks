@@ -17,7 +17,7 @@ const HoldingStocks = (): JSX.Element => {
   const openConfirmModal = (): void => setModalStatus({ ...modalStatus, open: true })
 
   return (
-    <Box height='100%' position='relative' minHeight='100vh' pt={14}>
+    <Box height='100%' position='relative' minHeight='100vh' pt={0}>
       <Helmet>
         <title>Stocks</title>
       </Helmet>
