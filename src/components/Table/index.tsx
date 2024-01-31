@@ -49,8 +49,8 @@ const Table = ({
   }
 
   return (
-    <Box sx={{ maxHeight: 600 }}>
-      <MUITable stickyHeader sx={{ position: 'relative' }} size='small'>
+    <Box boxShadow={2}>
+      <MUITable stickyHeader sx={{ position: 'relative' }} size='small' style={{ padding: '16px' }}>
         <TableHead>
           <TableRow>
             {[...(subTable ? [{ name: '', title: '' }] : []), ...table].map(

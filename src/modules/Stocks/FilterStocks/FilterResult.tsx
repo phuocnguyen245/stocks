@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from '@mui/material'
+import { Box, Container, Paper, Typography } from '@mui/material'
 import { FormattedMessage } from 'react-intl'
 import Table from 'src/components/Table'
 import { type TableHeaderBody } from 'src/components/Table/type'
@@ -71,11 +71,7 @@ const FilterResult = ({ data }: FilterResultProps): JSX.Element => {
       }
     }
   ]
-  return (
-    <Box>
-      <Table data={data} table={table} isLoading={false} totalItems={0} />
-    </Box>
-  )
+  return <Table data={data} table={table} isLoading={false} totalItems={0} />
 }
 
 export default FilterResult

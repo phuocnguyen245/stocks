@@ -67,6 +67,18 @@ export const StockService = createApi({
         method: 'POST'
       })
     }),
+    refreshStocks: builder.mutation<ResponseType<{ date: string }>, any>({
+      query: () => ({
+        url: '/stocks/refresh',
+        method: 'POST'
+      })
+    }),
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+    refreshTime: builder.query<ResponseType<{ date: string }>, void>({
+      query: () => ({
+        url: '/stocks/refresh'
+      })
+    }),
     updateStock: builder.mutation<ResponseType<ResponsePagination<[number[]]>>, any>({
       query: ({ _id, ...rest }) => ({
         url: `/stocks/${_id}`,
@@ -89,10 +101,12 @@ export const {
   useGetStockStatisticQuery,
   useGetIndicatorQuery,
   useGetBoardQuery,
+  useRefreshStocksMutation,
   useCreateStockMutation,
   useUpdateStockMutation,
   useDeleteStockMutation,
   useDeleteCurrentStockMutation,
   useGetWatchListQuery,
-  useGetRecommendedQuery
+  useGetRecommendedQuery,
+  useRefreshTimeQuery
 } = StockService

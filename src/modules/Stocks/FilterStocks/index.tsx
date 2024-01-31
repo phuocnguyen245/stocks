@@ -31,9 +31,9 @@ const FilterStocks = (): JSX.Element => {
   const [filter, setFilter] = useState<FilterStocksType>({
     macd: [-1, 1],
     rsi: [0, 30],
-    stoch: [0, 40],
+    stoch: [0, 30],
     mfi: [0, 30],
-    stoshRSI: [0, 40]
+    stoshRSI: [0, 30]
   })
 
   const filterDebounce = useDebounce(filter, 1500)
@@ -54,8 +54,7 @@ const FilterStocks = (): JSX.Element => {
   const onSetDefaultFilter = (key: keyof FilterStocksType): void => {
     setDefaultFilter((prev: Array<keyof FilterStocksType>) => {
       if (prev.includes(key)) {
-        const { [key]: _, ...rest } = filter ?? {}
-        setFilter(rest)
+        setFilter(() => ({ ...filter, [key]: key === 'macd' ? [-10, 10] : [0, 100] }))
         return prev.filter((item: keyof FilterStocksType) => item !== key)
       }
       setFilter({ ...filter, [key]: [0, 100] })
@@ -68,15 +67,16 @@ const FilterStocks = (): JSX.Element => {
       <Helmet>
         <title>Filter Stocks</title>
       </Helmet>
-      <Container sx={{ mt: 3 }}>
-        <Grid container spacing={2}>
+      <Container sx={{ mt: 3, minHeight: 'calc(100vh - 112px)' }}>
+        <Grid container columnSpacing={2}>
           <Grid item md={4}>
             <List
               sx={{
                 bgcolor: '#f9f3fe',
                 p: 0,
                 borderRadius: 1,
-                overflow: 'hidden'
+                overflow: 'hidden',
+                boxShadow: 2
               }}
             >
               {technicalList.map((item) => {
@@ -106,7 +106,8 @@ const FilterStocks = (): JSX.Element => {
                 bgcolor: '#f9f3fe',
                 p: 0,
                 borderRadius: 1,
-                width: '100%'
+                width: '100%',
+                boxShadow: 2
               }}
             >
               {technicalList.map((item) => {
@@ -149,7 +150,9 @@ const FilterStocks = (): JSX.Element => {
             </List>
           </Grid>
         </Grid>
-        <FilterResult data={data?.data ?? []} />
+        <Box mt={2}>
+          <FilterResult data={data?.data ?? []} />
+        </Box>
       </Container>
     </>
   )

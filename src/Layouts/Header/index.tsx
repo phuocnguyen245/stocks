@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import DarkModeSwitch from './DarkModeSwitch'
 import Languages from './Languages'
 import { FormattedMessage } from 'react-intl'
+import RefreshTime from './RefreshTime'
 
 export interface HeaderProps {
   darkMode: 'dark' | 'light'
@@ -48,7 +49,7 @@ const Header = ({
         height: 52
       }}
     >
-      <Box width={185}></Box>
+      <Box width={300}></Box>
       <Tabs
         value={value}
         onChange={handleChange}
@@ -80,7 +81,10 @@ const Header = ({
           onClick={() => navigate('/payments')}
         />
       </Tabs>
-      <Grid container width='max-content'>
+      <Grid container width='max-content' alignItems='center' flexWrap='nowrap'>
+        <Grid item>
+          <RefreshTime />
+        </Grid>
         <Grid item>
           <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
         </Grid>

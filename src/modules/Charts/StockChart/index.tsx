@@ -44,6 +44,21 @@ const StockChart = (): JSX.Element => {
     }
   }, [isOpenSidebar])
 
+  useEffect(() => {
+    const onResize = (): void => {
+      const width = (isOpenSidebar as boolean) ? window.innerWidth - 340 : window.innerWidth
+      const height = window.innerHeight - 112
+      if (width && height) {
+        setWindowSize({ width, height })
+      }
+    }
+    window.addEventListener('resize', onResize)
+
+    return (): void => {
+      window.removeEventListener('resize', onResize)
+    }
+  }, [isOpenSidebar])
+
   const volume = useMemo(
     () =>
       data?.map((item) => ({
@@ -233,7 +248,7 @@ const StockChart = (): JSX.Element => {
   }
 
   return (
-    <Box mt='112px' p={0} height='calc(100vh - 112px)' bgcolor={mode === 'dark' ? '#000' : '#fff'}>
+    <Box p={0} height='calc(100vh - 112px)' bgcolor={mode === 'dark' ? '#000' : '#fff'}>
       <ChartComponent highcharts={Highcharts} options={options} />
     </Box>
   )
