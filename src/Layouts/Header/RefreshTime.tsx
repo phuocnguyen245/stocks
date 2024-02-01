@@ -10,13 +10,16 @@ import {
 } from '@mui/material'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { Skeleton } from 'src/components/MUIComponents'
 import { useAlert, useModals } from 'src/hooks'
 import { useRefreshStocksMutation, useRefreshTimeQuery } from 'src/services/stocks.services'
+import { refetchStocks } from 'src/store/slices/stockSlice'
 
 const RefreshTime = (): JSX.Element => {
   const { open, show, hide } = useModals()
   const alert = useAlert()
+  const dispatch = useDispatch()
 
   const [refreshTime, setRefreshTime] = useState<string>()
 
@@ -28,8 +31,9 @@ const RefreshTime = (): JSX.Element => {
 
   useEffect(() => {
     if (date?.data) {
-      setRefreshTime(moment(date.data.date).utcOffset(420).format('HH:mm:ss'))
+      return setRefreshTime(moment(date.data.date).utcOffset(420).format('HH:mm DD/MM'))
     }
+    setRefreshTime(moment().utcOffset(420).format('HH:mm DD/MM'))
   }, [date])
 
   const onRefresh = async (): Promise<void> => {
@@ -44,6 +48,7 @@ const RefreshTime = (): JSX.Element => {
             .format('HH:mm DD/MM')
         )
         localStorage.setItem('refreshTime', response?.data.date)
+        dispatch(refetchStocks(true))
         hide()
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
