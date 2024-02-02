@@ -52,7 +52,6 @@ export interface ResponseType<T> {
   data?: T
   message?: ResponseMessage
   status?: number
-  error?: string
   subMessage?: string
 }
 

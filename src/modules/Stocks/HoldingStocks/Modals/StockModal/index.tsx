@@ -15,8 +15,8 @@ import { type ChangeEvent, memo, useEffect, useMemo, useRef, useState } from 're
 import { useForm } from 'react-hook-form'
 import type { Stock, Target } from 'src/Models'
 import { StockService, useCreateStockMutation } from 'src/services/stocks.services'
-import { useAppDispatch } from 'src/store'
-import { refetchStocks } from 'src/store/slices/stockSlice'
+import { useAppDispatch, useAppSelector } from 'src/store'
+import { onSellStock, refetchStocks } from 'src/store/slices/stockSlice'
 import schema from './schema'
 import { Select, Button } from 'src/components/MUIComponents'
 import { FormattedMessage } from 'react-intl'
@@ -52,10 +52,11 @@ interface TargetState {
 const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JSX.Element => {
   const textFieldRef = useRef(null)
   const dispatch = useAppDispatch()
+
+  const { sellStock } = useAppSelector((state) => state.Stocks)
   const [createStock, { isLoading }] = useCreateStockMutation()
   const alert = useAlert()
 
-  const { data } = useGetAssetQuery({})
   const init = { id: uuidV4(), name: '', price: 0, volume: 0 }
 
   const [target, setTarget] = useState<TargetState>({
@@ -87,8 +88,12 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
     } else {
       setValue('orderPrice', null)
     }
+    if (sellStock) {
+      setValue('code', sellStock.code)
+      setValue('volume', sellStock.volume)
+    }
     setValue('date', moment(Date.now()).toISOString())
-  }, [open, status])
+  }, [open, status, sellStock])
 
   const onChangeDate = (date: MomentInput): void => {
     setValue('date', moment(date).toISOString())
@@ -120,6 +125,11 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
     } catch (error: any) {
       alert({ message: error.data.message, variant: 'error' })
     }
+  }
+
+  const onCloseModal = (): void => {
+    dispatch(onSellStock(undefined))
+    handleClose()
   }
 
   const option = useMemo(() => {
@@ -197,8 +207,8 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
 
   return (
     <Dialog
-      open={open}
-      onClose={handleClose}
+      open={Boolean(sellStock) ?? open}
+      onClose={onCloseModal}
       onKeyUp={(e) => {
         if (e.key === 'Enter') {
           handleSubmit(handleSave)
@@ -209,7 +219,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
         <Box py={3} px={0} component='form' onSubmit={handleSubmit(handleSave)} id='stock-form'>
           <Box paddingBottom={2} paddingX={4}>
             <Typography>
-              {status === 1 ? (
+              {status === 1 && !stockData ? (
                 <FormattedMessage id='label.buying' />
               ) : (
                 <FormattedMessage id='label.selling' />
@@ -295,7 +305,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
               </Grid>
             </Grid>
 
-            {status === 1 && (
+            {status === 1 && !stockData && (
               <Box mt={0.5}>
                 <Typography mb={0.75}>Takes</Typography>
                 {target.take.map((item, index) => (
@@ -351,7 +361,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
               </Box>
             )}
 
-            {status === 1 && (
+            {status === 1 && !stockData && (
               <Box mt={0.5}>
                 <Typography mb={0.75}>Stops</Typography>
                 {target.stop.map((item, index) => (
@@ -412,7 +422,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
           </Box>
           <Divider />
           <Box textAlign='end' paddingX={4} paddingTop={3}>
-            <Button color='secondary' variant='contained' onClick={handleClose}>
+            <Button color='secondary' variant='contained' onClick={onCloseModal}>
               <FormattedMessage id='label.cancel' />
             </Button>
             <Button

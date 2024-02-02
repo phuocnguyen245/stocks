@@ -12,7 +12,7 @@ import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Skeleton } from 'src/components/MUIComponents'
-import { useAlert, useModals } from 'src/hooks'
+import { useAlert, useIsLogin, useModals } from 'src/hooks'
 import { useRefreshStocksMutation, useRefreshTimeQuery } from 'src/services/stocks.services'
 import { refetchStocks } from 'src/store/slices/stockSlice'
 
@@ -22,11 +22,13 @@ const RefreshTime = (): JSX.Element => {
   const dispatch = useDispatch()
 
   const [refreshTime, setRefreshTime] = useState<string>()
+  const isLogin = useIsLogin()
 
   const [refreshStocks] = useRefreshStocksMutation()
   const { data: date, isLoading } = useRefreshTimeQuery(undefined, {
     refetchOnMountOrArgChange: true,
-    pollingInterval: 60000
+    pollingInterval: 1000 * 60 * 10,
+    skip: !isLogin
   })
 
   useEffect(() => {
@@ -38,10 +40,10 @@ const RefreshTime = (): JSX.Element => {
 
   const onRefresh = async (): Promise<void> => {
     try {
-      const response = await refreshStocks('').unwrap()
+      const response = await refreshStocks().unwrap()
       if (response?.data) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        alert({ variant: 'success', message: (response.data as any)?.message })
+        alert({ variant: 'success', message: response?.message })
         setRefreshTime(
           moment(response?.data.date)
             .utcOffset(420)
@@ -59,15 +61,19 @@ const RefreshTime = (): JSX.Element => {
 
   const modals = (
     <Box px={2} py={1}>
-      <Typography>Do you want to refresh all stocks? </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }} gap={2}>
-        <Button variant='contained' color='info' onClick={hide}>
-          No
-        </Button>
-        <Button variant='contained' color='primary' onClick={onRefresh}>
-          Yes
-        </Button>
-      </Box>
+      {isLogin && (
+        <>
+          <Typography>Do you want to refresh all stocks? </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }} gap={2}>
+            <Button variant='contained' color='info' onClick={hide}>
+              No
+            </Button>
+            <Button variant='contained' color='primary' onClick={onRefresh}>
+              Yes
+            </Button>
+          </Box>
+        </>
+      )}
     </Box>
   )
 

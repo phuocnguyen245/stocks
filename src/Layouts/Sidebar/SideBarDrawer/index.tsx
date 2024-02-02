@@ -17,6 +17,7 @@ import { type SyntheticEvent, useEffect, useRef, useState, useLayoutEffect } fro
 import { type Board, type WatchList } from 'src/Models'
 import { useGetWatchListQuery } from 'src/services/stocks.services'
 import { drawerWidth } from '..'
+import { useAlert } from 'src/hooks'
 
 interface SideBarDrawerProps {
   open: boolean
@@ -25,23 +26,42 @@ interface SideBarDrawerProps {
 }
 const SideBarDrawer = ({ open, isLogin, toggle }: SideBarDrawerProps): JSX.Element => {
   const theme = useTheme()
+  const alert = useAlert()
   const watchListRef = useRef<HTMLDivElement | null>(null)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const { data: watchList } = useGetWatchListQuery(undefined, { skip: !isLogin })
+  const { data: watchList, refetch } = useGetWatchListQuery(undefined, { skip: !isLogin })
 
   const [data, setData] = useState<WatchList[]>([])
   const [expanded, setExpanded] = useState<number>(-1)
 
   useEffect(() => {
-    if (watchList?.data) {
-      setData(
-        [...watchList.data]
-          .sort((a, b) => a.displayIndex - b.displayIndex)
-          .map((item) => ({
-            ...item,
-            symbols: [...item.symbols].sort((a, b) => a.localeCompare(b))
-          }))
-      )
+    if (watchList) {
+      if (watchList?.data?.length) {
+        return setData(
+          [...watchList.data]
+            .sort((a, b) => a.displayIndex - b.displayIndex)
+            .map((item) => ({
+              ...item,
+              symbols: [...item.symbols].sort((a, b) => a.localeCompare(b))
+            }))
+        )
+      } else {
+        refetch()
+          .unwrap()
+          .then((data) => {
+            setData(
+              [...(data?.data ?? [])]
+                .sort((a, b) => a.displayIndex - b.displayIndex)
+                .map((item) => ({
+                  ...item,
+                  symbols: [...item.symbols].sort((a, b) => a.localeCompare(b))
+                }))
+            )
+          })
+          .catch(() => {
+            alert({ message: 'Error fetching Watch list', variant: 'error' })
+          })
+      }
     }
   }, [watchList])
 
@@ -144,6 +164,7 @@ const SideBarDrawer = ({ open, isLogin, toggle }: SideBarDrawerProps): JSX.Eleme
                       target='_blank'
                       style={{ color: 'unset', textDecoration: 'none' }}
                       sx={{
+                        transition: 'all 2s ease',
                         '& :hover': {
                           background: `${theme.palette.mode === 'dark' ? '#6e6e6e' : '#f8dffa'}`
                         }

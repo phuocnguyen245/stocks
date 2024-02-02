@@ -67,7 +67,8 @@ export const StockService = createApi({
         method: 'POST'
       })
     }),
-    refreshStocks: builder.mutation<ResponseType<{ date: string }>, any>({
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+    refreshStocks: builder.mutation<ResponseType<{ date: string }>, void>({
       query: () => ({
         url: '/stocks/refresh',
         method: 'POST'

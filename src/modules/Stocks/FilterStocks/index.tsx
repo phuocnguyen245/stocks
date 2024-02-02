@@ -1,5 +1,15 @@
 import { Check } from '@mui/icons-material'
-import { Box, Container, Grid, List, ListItem, Slider, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  List,
+  ListItem,
+  Slider,
+  Typography,
+  useTheme
+} from '@mui/material'
 import { useState } from 'react'
 import Helmet from 'src/components/Helmet'
 import { useDebounce } from 'src/hooks'
@@ -13,28 +23,26 @@ interface FilterStocksType {
   stoshRSI?: number[]
   mfi?: number[]
 }
-
+type Levels = 'Simple' | 'Intermediate' | 'Advanced' | 'Default'
 const technicalList = ['macd', 'rsi', 'stoch', 'stoshRSI', 'mfi'] as Array<keyof FilterStocksType>
-
+const filterLevels: Levels[] = ['Simple', 'Default', 'Intermediate', 'Advanced']
 const valuetext = (value: number): string => {
   return `${value}°C`
 }
 
+const defaultFilterLevels = {
+  macd: [-1, 1],
+  rsi: [0, 60],
+  stoch: [0, 60],
+  mfi: [0, 60],
+  stoshRSI: [0, 60]
+}
+
 const FilterStocks = (): JSX.Element => {
-  const [defaultFilter, setDefaultFilter] = useState<Array<keyof FilterStocksType>>([
-    'macd',
-    'rsi',
-    'stoch',
-    'stoshRSI',
-    'mfi'
-  ])
-  const [filter, setFilter] = useState<FilterStocksType>({
-    macd: [-1, 1],
-    rsi: [0, 30],
-    stoch: [0, 30],
-    mfi: [0, 30],
-    stoshRSI: [0, 30]
-  })
+  const theme = useTheme()
+  const [defaultFilter, setDefaultFilter] = useState<Array<keyof FilterStocksType>>(technicalList)
+  const [levels, setLevels] = useState<Levels | ''>('Default')
+  const [filter, setFilter] = useState<FilterStocksType>(defaultFilterLevels)
 
   const filterDebounce = useDebounce(filter, 1500)
 
@@ -48,10 +56,12 @@ const FilterStocks = (): JSX.Element => {
   ): void => {
     const target = event.target as HTMLDivElement
     const name = (target as HTMLInputElement).name
+    setLevels('')
     setFilter({ ...filter, [name as keyof FilterStocksType]: value as number[] })
   }
 
   const onSetDefaultFilter = (key: keyof FilterStocksType): void => {
+    setLevels('')
     setDefaultFilter((prev: Array<keyof FilterStocksType>) => {
       if (prev.includes(key)) {
         setFilter(() => ({ ...filter, [key]: key === 'macd' ? [-10, 10] : [0, 100] }))
@@ -62,17 +72,46 @@ const FilterStocks = (): JSX.Element => {
     })
   }
 
+  const onFilterLevel = (level: Levels): void => {
+    setLevels(level)
+    setDefaultFilter(technicalList)
+    switch (level) {
+      case 'Simple':
+        return setFilter(() =>
+          technicalList.map((item) => ({ [item]: [0, 100] })).reduce((a, b) => ({ ...a, ...b }))
+        )
+      case 'Default':
+        return setFilter(defaultFilterLevels)
+      case 'Intermediate':
+        return setFilter({
+          macd: [-1, 1],
+          rsi: [0, 50],
+          stoch: [0, 50],
+          mfi: [0, 50],
+          stoshRSI: [0, 50]
+        })
+      case 'Advanced':
+        return setFilter({
+          macd: [-1, 1],
+          rsi: [0, 30],
+          stoch: [0, 30],
+          mfi: [0, 30],
+          stoshRSI: [0, 30]
+        })
+    }
+  }
+
   return (
     <>
       <Helmet>
         <title>Filter Stocks</title>
       </Helmet>
       <Container sx={{ mt: 3, minHeight: 'calc(100vh - 112px)' }}>
-        <Grid container columnSpacing={2}>
-          <Grid item md={4}>
+        <Grid container columnSpacing={2} rowSpacing={2}>
+          <Grid item xs={12} sm={12} md={12} lg={4}>
             <List
               sx={{
-                bgcolor: '#f9f3fe',
+                bgcolor: theme.palette.mode === 'dark' ? 'grey.800' : 'primary.light',
                 p: 0,
                 borderRadius: 1,
                 overflow: 'hidden',
@@ -84,7 +123,13 @@ const FilterStocks = (): JSX.Element => {
                 return (
                   <ListItem onClick={() => onSetDefaultFilter(item)} key={item} sx={{ p: 0 }}>
                     <Box
-                      sx={{ bgcolor: isIncludes ? '#f8dffa' : 'transparent' }}
+                      sx={{
+                        bgcolor: isIncludes
+                          ? theme.palette.mode === 'dark'
+                            ? 'grey.500'
+                            : '#ebabef'
+                          : 'transparent'
+                      }}
                       width='100%'
                       px={3}
                       py={1}
@@ -92,7 +137,7 @@ const FilterStocks = (): JSX.Element => {
                       justifyContent='space-between'
                       alignItems='center'
                     >
-                      {item.toUpperCase()}
+                      <Typography>{item.toUpperCase()}</Typography>
                       {isIncludes && <Check />}
                     </Box>
                   </ListItem>
@@ -100,54 +145,92 @@ const FilterStocks = (): JSX.Element => {
               })}
             </List>
           </Grid>
-          <Grid item md={8} display='flex' gap={2}>
-            <List
-              sx={{
-                bgcolor: '#f9f3fe',
-                p: 0,
-                borderRadius: 1,
-                width: '100%',
-                boxShadow: 2
-              }}
-            >
-              {technicalList.map((item) => {
-                const isIncludes = defaultFilter.includes(item)
-                return (
-                  <ListItem
-                    key={item}
-                    sx={{
-                      width: '100%',
-                      height: '40px',
-                      px: 3
-                    }}
-                  >
-                    {isIncludes ? (
-                      <Grid container justifyContent='space-between'>
-                        <Grid item flex={1}>
-                          <Slider
-                            name={item}
-                            value={filter?.[item]}
-                            onChange={handleChange}
-                            onChangeCommitted={handleChange}
-                            valueLabelDisplay='auto'
-                            getAriaValueText={valuetext}
-                            min={item === 'macd' ? -10 : 0}
-                            max={item === 'macd' ? 10 : 100}
-                          />
-                        </Grid>
-                        <Grid item>
-                          <Typography width={120} textAlign='right'>
-                            ({filter?.[item]?.[0] ?? '0'}, {filter?.[item]?.[1] ?? '0'})
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    ) : (
-                      <></>
-                    )}
-                  </ListItem>
-                )
-              })}
-            </List>
+          <Grid item xs={12} sm={12} md={12} lg={8}>
+            <Grid container columnSpacing={2}>
+              <Grid item display='flex' flex={1}>
+                <List
+                  sx={{
+                    bgcolor: theme.palette.mode === 'dark' ? 'grey.800' : 'primary.light',
+                    py: 0,
+                    borderRadius: 1,
+                    width: '100%',
+                    boxShadow: 2
+                  }}
+                >
+                  {technicalList.map((item) => {
+                    const isIncludes = defaultFilter.includes(item)
+                    return (
+                      <ListItem
+                        key={item}
+                        sx={{
+                          width: '100%',
+                          height: '40px',
+                          px: 3
+                        }}
+                      >
+                        {isIncludes ? (
+                          <Grid container justifyContent='space-between'>
+                            <Grid item flex={1}>
+                              <Slider
+                                name={item}
+                                value={filter?.[item]}
+                                onChange={handleChange}
+                                onChangeCommitted={handleChange}
+                                valueLabelDisplay='auto'
+                                getAriaValueText={valuetext}
+                                min={item === 'macd' ? -10 : 0}
+                                max={item === 'macd' ? 10 : 100}
+                              />
+                            </Grid>
+                            <Grid item>
+                              <Typography width={120} textAlign='right'>
+                                ({filter?.[item]?.[0] ?? '0'}, {filter?.[item]?.[1] ?? '0'})
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        ) : (
+                          <></>
+                        )}
+                      </ListItem>
+                    )
+                  })}
+                </List>
+              </Grid>
+              <Grid item minWidth={130}>
+                <List
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    height: '100%',
+                    p: 1,
+                    borderRadius: 1,
+                    overflow: 'hidden',
+                    boxShadow: 2
+                  }}
+                >
+                  {filterLevels.map((item) => (
+                    <Button
+                      key={item}
+                      fullWidth
+                      variant='contained'
+                      sx={{
+                        bgcolor:
+                          item === levels
+                            ? theme.palette.mode === 'dark'
+                              ? 'grey.500'
+                              : '#ebabef'
+                            : 'transparent'
+                      }}
+                      onClick={() => onFilterLevel(item)}
+                    >
+                      <Typography color='text.primary'>{item}</Typography>
+                    </Button>
+                  ))}
+                </List>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
         <Box mt={2}>

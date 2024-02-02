@@ -1,4 +1,4 @@
-import { Switch, TextField, Typography } from '@mui/material'
+import { Button, Switch, TextField, Typography } from '@mui/material'
 import moment from 'moment'
 import React, { useCallback, useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
@@ -13,7 +13,7 @@ import {
   useGetCurrentStocksQuery
 } from 'src/services/stocks.services'
 import { useAppDispatch, useAppSelector } from 'src/store'
-import { refetchStocks } from 'src/store/slices/stockSlice'
+import { onSellStock, refetchStocks } from 'src/store/slices/stockSlice'
 import { countDays, formatVND, ratio } from 'src/utils'
 
 const CurrentStocks = (): JSX.Element => {
@@ -47,7 +47,7 @@ const CurrentStocks = (): JSX.Element => {
       setSubData(
         Object.values(currentStockData.data.data).map(
           (item: Stock) =>
-            item.stocks?.map((stock) => ({
+            item.stocks?.map((stock: Stock) => ({
               ...stock,
               t: countDays(stock.date)
             }))
@@ -197,6 +197,10 @@ const CurrentStocks = (): JSX.Element => {
     }
   ]
 
+  const onSell = (row: Stock): void => {
+    dispatch(onSellStock(row))
+  }
+
   const subTable: Array<TableHeaderBody<Stock>> = [
     {
       name: 'volume',
@@ -244,30 +248,19 @@ const CurrentStocks = (): JSX.Element => {
     },
     {
       name: '',
-      title: <FormattedMessage id='label.available' />,
+      title: <FormattedMessage id='label.sell' />,
       align: 'center',
       width: '100px',
       render: (row) => {
-        const options = {
-          available: {
-            type: 'success',
-            message: <FormattedMessage id='label.available' />
-          },
-          un: {
-            type: 'warning',
-            message: <FormattedMessage id='label.unavailable' />
-          }
-        }
-        const isAvailable = (row?.t ?? 0) >= 2.5 ? 'available' : 'un'
-
-        return (
-          <Label
-            type={options[`${isAvailable}`]?.type as LabelType}
-            whiteSpace='nowrap'
-            fontSize={14}
-          >
-            {options[`${isAvailable}`]?.message}
-          </Label>
+        const isAvailable = (row?.t ?? 0) >= 2.5
+        return isAvailable ? (
+          <Button variant='contained' onClick={() => onSell(row)}>
+            <Typography>
+              <FormattedMessage id='label.sell' />
+            </Typography>
+          </Button>
+        ) : (
+          <></>
         )
       }
     }

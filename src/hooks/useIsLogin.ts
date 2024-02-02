@@ -1,8 +1,8 @@
 import useLocalStorage from './useLocalStorage'
 
-const useIsLoggedIn = (): boolean => {
+const useIsLogin = (): boolean => {
   const [token] = useLocalStorage('tokens', null)
   return Boolean(token)
 }
 
-export default useIsLoggedIn
+export default useIsLogin
