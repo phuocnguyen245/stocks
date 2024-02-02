@@ -14,6 +14,7 @@ export const baseQuery = fetchBaseQuery({
       const { access } = tokenParse
       headers.set('Authorization', `Bearer ${access}`)
     }
+    headers.set('Access-Control-Allow-Origin', '*')
     return headers
   }
 })
