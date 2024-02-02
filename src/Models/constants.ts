@@ -1,5 +1,4 @@
-import { useTheme } from '@mui/material'
-import { type LabelType } from './index'
+import { type LabelType } from './index.d'
 const getColor = (type: LabelType): string => {
   const hexColors = {
     success: ' #f8fff9',
@@ -24,4 +23,4 @@ const getBgColor = (type: LabelType): string => {
   return hexColors[type]
 }
 
-export { getColor, getBgColor }
+export { getBgColor, getColor }

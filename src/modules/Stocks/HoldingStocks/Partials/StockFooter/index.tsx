@@ -1,7 +1,7 @@
 import { Box, Grid, Typography, useTheme, type Theme } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
-import type { LabelType, Asset } from 'src/models'
+import type { LabelType, Asset } from 'src/Models'
 import { Label, Skeleton } from 'src/components/MUIComponents'
 import { PaymentService } from 'src/services/payment.services'
 import { StockService } from 'src/services/stocks.services'

@@ -4,7 +4,7 @@ import { memo, useCallback, useEffect, useState } from 'react'
 import { Label } from 'src/components/MUIComponents'
 import { chartLabelOptions, type ChartLabelType } from '../../utils'
 import Chart from 'src/components/Chart'
-import type { MA as IMA } from 'src/models'
+import type { MA as IMA } from 'src/Models'
 import { log } from 'console'
 import { useTheme } from '@emotion/react'
 

@@ -14,7 +14,7 @@ import {
   useTheme
 } from '@mui/material'
 import { type SyntheticEvent, useEffect, useRef, useState, useLayoutEffect } from 'react'
-import { type Board, type WatchList } from 'src/models'
+import { type Board, type WatchList } from 'src/Models'
 import { useGetWatchListQuery } from 'src/services/stocks.services'
 import { drawerWidth } from '..'
 

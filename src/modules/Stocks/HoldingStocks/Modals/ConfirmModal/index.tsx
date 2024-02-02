@@ -2,7 +2,7 @@ import { Box, Button, Container, Dialog, Typography } from '@mui/material'
 import { memo, useState } from 'react'
 import type { ConfirmModal as ConfirmModalType } from '..'
 import { FormattedMessage } from 'react-intl'
-import { Target } from 'src/models'
+import { Target } from 'src/Models'
 
 interface ConfirmModalProps {
   modalStatus: ConfirmModalType

@@ -7,7 +7,7 @@ import { Label } from 'src/components/MUIComponents'
 import Table from 'src/components/Table'
 import type { DefaultPagination, TableHeaderBody } from 'src/components/Table/type'
 import { useAlert } from 'src/hooks'
-import type { Stock } from 'src/models'
+import type { Stock } from 'src/Models'
 import {
   useDeleteStockMutation,
   useGetStocksQuery,

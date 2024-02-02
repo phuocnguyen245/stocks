@@ -2,7 +2,7 @@ import { Box, Container, Paper, Typography } from '@mui/material'
 import { FormattedMessage } from 'react-intl'
 import Table from 'src/components/Table'
 import { type TableHeaderBody } from 'src/components/Table/type'
-import { type Indicator } from 'src/models'
+import { type Indicator } from 'src/Models'
 import { convertToDecimal } from 'src/utils'
 
 interface FilterResultProps {

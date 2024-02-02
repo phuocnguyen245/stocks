@@ -18,7 +18,7 @@ import NumberFormat from 'src/components/MUIComponents/NumberFormat'
 import { useAlert } from 'src/hooks'
 import { useCreatePaymentMutation, useUpdatePaymentMutation } from 'src/services/payment.services'
 import schema from './schema'
-import { type Payments } from 'src/models'
+import { type Payments } from 'src/Models'
 
 enum Type {
   BUY = 0,

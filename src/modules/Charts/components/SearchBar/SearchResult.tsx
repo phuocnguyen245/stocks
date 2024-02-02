@@ -1,7 +1,7 @@
 import { Box, Divider, Typography, useTheme } from '@mui/material'
 import { Fragment, memo, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
-import type { Board } from 'src/models'
+import type { Board } from 'src/Models'
 import { useGetBoardQuery } from 'src/services/stocks.services'
 
 const SearchResult = ({ search }: { search: string }): JSX.Element => {

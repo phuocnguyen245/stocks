@@ -6,7 +6,7 @@ import Chart from 'src/components/Chart'
 import { Label } from 'src/components/MUIComponents'
 import { useAppSelector } from 'src/store'
 import { chartLabelOptions, type ChartLabelType } from '../../utils'
-import type { Stoch } from 'src/models'
+import type { Stoch } from 'src/Models'
 
 interface Lines {
   k: number[]

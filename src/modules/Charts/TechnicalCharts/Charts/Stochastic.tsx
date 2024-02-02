@@ -4,7 +4,7 @@ import { memo, useEffect, useMemo, useState } from 'react'
 import Chart from 'src/components/Chart'
 import { Label } from 'src/components/MUIComponents'
 import { chartLabelOptions, type ChartLabelType } from '../../utils'
-import { type Stoch } from 'src/models'
+import { type Stoch } from 'src/Models'
 
 interface Signal {
   signal: ChartLabelType

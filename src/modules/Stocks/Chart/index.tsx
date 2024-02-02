@@ -1,7 +1,7 @@
 import type HighCharts from 'highcharts'
 import { useMemo } from 'react'
 import Charts from 'src/components/Chart'
-import type { Asset, ResponsePagination, ResponseType, Stock } from 'src/models'
+import type { Asset, ResponsePagination, ResponseType, Stock } from 'src/Models'
 
 interface ChartProps {
   currentData?: ResponseType<ResponsePagination<Stock[]>>
