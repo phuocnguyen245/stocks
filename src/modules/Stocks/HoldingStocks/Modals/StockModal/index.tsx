@@ -114,6 +114,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
       if (response.data) {
         reset()
         dispatch(refetchStocks(true))
+        dispatch(onSellStock(undefined))
         alert({ message: response.message, variant: 'success' })
         setTarget({
           take: [{ id: uuidV4(), name: '', price: 0, volume: 0 }],
