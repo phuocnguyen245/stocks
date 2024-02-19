@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import Paper from '@mui/material/Paper'
 import { useState } from 'react'
 import Helmet from 'src/components/Helmet'
@@ -17,7 +17,7 @@ const HoldingStocks = (): JSX.Element => {
   const openConfirmModal = (): void => setModalStatus({ ...modalStatus, open: true })
 
   return (
-    <Box height='100%' position='relative' minHeight='calc(100vh - 112px)' pt={0}>
+    <Box height='100%' position='relative' minHeight='calc(100vh - 112px)' pt={0} pb='112px'>
       <Helmet>
         <title>Stocks</title>
       </Helmet>
@@ -27,13 +27,15 @@ const HoldingStocks = (): JSX.Element => {
         modalStatus={modalStatus}
         onSetModalStatus={setModalStatus}
       />
-      <Box display='flex' gap={2} px={2}>
-        <Box flex={1}>
-          <StocksDetail />
-        </Box>
-        <Box flex={1.5} flexShrink='unset'>
-          <CurrentStocks />
-        </Box>
+      <Box px={2}>
+        <Grid container columnSpacing={2} rowGap={2}>
+          <Grid item xs={12} sm={12} md={12} lg={5}>
+            <StocksDetail />
+          </Grid>
+          <Grid item xs={12} sm={12} md={12} lg={7}>
+            <CurrentStocks />
+          </Grid>
+        </Grid>
       </Box>
       <StockFooter />
     </Box>

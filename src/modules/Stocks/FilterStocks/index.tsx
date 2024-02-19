@@ -32,10 +32,10 @@ const valuetext = (value: number): string => {
 
 const defaultFilterLevels = {
   macd: [-1, 1],
-  rsi: [0, 60],
-  stoch: [0, 60],
-  mfi: [0, 60],
-  stoshRSI: [0, 60]
+  rsi: [0, 55],
+  stoch: [0, 30],
+  mfi: [0, 50],
+  stoshRSI: [0, 30]
 }
 
 const FilterStocks = (): JSX.Element => {
@@ -233,7 +233,7 @@ const FilterStocks = (): JSX.Element => {
             </Grid>
           </Grid>
         </Grid>
-        <Box mt={2}>
+        <Box my={2}>
           <FilterResult data={data?.data ?? []} />
         </Box>
       </Container>

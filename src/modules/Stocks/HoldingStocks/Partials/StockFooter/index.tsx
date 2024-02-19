@@ -7,7 +7,7 @@ import { PaymentService } from 'src/services/payment.services'
 import { StockService } from 'src/services/stocks.services'
 import { useAppSelector } from 'src/store'
 import { convertToDecimal, formatVND } from 'src/utils'
-import Chart from '../../../Chart'
+import Chart from '../../../FilterStocks/Chart'
 
 const TableFooter = (): JSX.Element => {
   const theme: Theme = useTheme()

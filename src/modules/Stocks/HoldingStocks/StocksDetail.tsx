@@ -220,7 +220,7 @@ const StocksDetail = (): JSX.Element => {
     {
       name: 'status',
       title: <FormattedMessage id='label.status' />,
-      width: '50px',
+      width: '10%',
       render: (row) => {
         return (
           <>
