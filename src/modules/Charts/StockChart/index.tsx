@@ -11,6 +11,7 @@ import { useParams } from 'react-router-dom'
 import { useGetStockStatisticQuery } from 'src/services/stocks.services'
 import { useAppSelector } from 'src/store'
 import ChartComponent from 'src/modules/Charts/components/ChartComponent'
+import { drawerWidth } from 'src/Layouts/Sidebar'
 
 Indicators(Highcharts)
 DragPanes(Highcharts)
@@ -37,7 +38,7 @@ const StockChart = (): JSX.Element => {
   }, [stockStatistic])
 
   useEffect(() => {
-    const width = (isOpenSidebar as boolean) ? window.innerWidth - 340 : window.innerWidth
+    const width = (isOpenSidebar as boolean) ? window.innerWidth - drawerWidth : window.innerWidth
     const height = window.innerHeight - 112
     if (width && height) {
       setWindowSize({ width, height })
@@ -46,7 +47,7 @@ const StockChart = (): JSX.Element => {
 
   useEffect(() => {
     const onResize = (): void => {
-      const width = (isOpenSidebar as boolean) ? window.innerWidth - 340 : window.innerWidth
+      const width = (isOpenSidebar as boolean) ? window.innerWidth - drawerWidth : window.innerWidth
       const height = window.innerHeight - 112
       if (width && height) {
         setWindowSize({ width, height })

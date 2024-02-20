@@ -18,6 +18,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
   useTheme
 } from '@mui/material'
 import { Fragment, memo, useState } from 'react'
@@ -38,11 +39,12 @@ const Table = ({
   onSetPagination,
   onDelete,
   onEdit,
-  onView
+  onView,
+  ...props
 }: TableProps<any, any, any>): JSX.Element => {
   const [open, setOpen] = useState<string[]>([])
   const theme = useTheme()
-
+  const { sx, ...restProps } = props
   const onOpen = (id: string): void => {
     setOpen(() => {
       if (open.includes(id)) {
@@ -54,14 +56,20 @@ const Table = ({
 
   return (
     <Box boxShadow={2}>
-      <TableContainer component={Paper} sx={{ px: 2 }}>
+      <TableContainer component={Paper} sx={{ ...sx }} {...restProps}>
         <MUITable stickyHeader sx={{ position: 'relative' }} size='small'>
           <TableHead>
             <TableRow>
               {[...(subTable ? [{ name: '', title: '' }] : []), ...table].map(
                 ({ title, render, ...rest }: TableHeaderBody<unknown>, index) => (
                   <TableCell
-                    sx={{ whiteSpace: 'nowrap', padding: '8px' }}
+                    sx={{
+                      whiteSpace: 'nowrap',
+                      padding: '8px',
+                      bgcolor: 'primary.main',
+                      color: '#fff',
+                      paddingLeft: index === 0 ? '16px' : '8px'
+                    }}
                     {...rest}
                     key={`header-${rest.name as string}-${index}`}
                   >
@@ -70,7 +78,15 @@ const Table = ({
                 )
               )}
               {(onDelete ?? onEdit ?? onView) && (
-                <TableCell align='center' sx={{ whiteSpace: 'nowrap' }} width='10%'>
+                <TableCell
+                  align='center'
+                  sx={{
+                    whiteSpace: 'nowrap',
+                    bgcolor: 'primary.main',
+                    color: '#fff'
+                  }}
+                  width='10%'
+                >
                   <FormattedMessage id='label.actions' />
                 </TableCell>
               )}
@@ -102,7 +118,7 @@ const Table = ({
                       <TableCell
                         {...rest}
                         key={`${tableIndex}-${dataIndex}`}
-                        sx={{ padding: '8px' }}
+                        sx={{ padding: '8px', paddingLeft: tableIndex === 0 ? '16px' : '8px' }}
                       >
                         {render?.(row) ?? row[rest.name]}
                       </TableCell>

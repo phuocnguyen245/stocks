@@ -18,22 +18,22 @@ const TechnicalCharts = ({ code }: TechnicalChartProps): JSX.Element => {
   return (
     <Paper>
       <Grid container spacing={1.5} marginTop='12px' pb={3} px={3}>
-        <Grid item xs={4} pb={1.5}>
+        <Grid item xs={12} sm={6} md={6} lg={4} pb={1.5}>
           <MA data={data?.data?.ma} lastPrice={data?.data?.lastPrice ?? 0} />
         </Grid>
-        <Grid item xs={4} pb={1.5}>
+        <Grid item xs={12} sm={6} md={6} lg={4} pb={1.5}>
           <MACD data={data?.data?.macd} />
         </Grid>
-        <Grid item xs={4} pb={1.5}>
+        <Grid item xs={12} sm={6} md={6} lg={4} pb={1.5}>
           <RSI data={data?.data?.rsi} />
         </Grid>
-        <Grid item xs={4} pb={1.5}>
+        <Grid item xs={12} sm={6} md={6} lg={4} pb={1.5}>
           <Stochastic data={data?.data?.stoch} />
         </Grid>
-        <Grid item xs={4} pb={1.5}>
+        <Grid item xs={12} sm={6} md={6} lg={4} pb={1.5}>
           <StochasticRSI data={data?.data?.stochRSI} />
         </Grid>
-        <Grid item xs={4} pb={1.5}>
+        <Grid item xs={12} sm={6} md={6} lg={4} pb={1.5}>
           <MFI data={data?.data?.mfi} />
         </Grid>
       </Grid>

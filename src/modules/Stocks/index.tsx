@@ -1,8 +1,7 @@
-import { Box } from '@mui/material'
 import { FormattedMessage } from 'react-intl'
 import SwipeableTabs from 'src/components/SwipeableTabs'
-import HoldingStocks from './HoldingStocks'
 import FilterStocks from './FilterStocks'
+import HoldingStocks from './HoldingStocks'
 
 const Stocks = (): JSX.Element => {
   return (

@@ -43,7 +43,7 @@ const MA = ({ data, lastPrice }: MAProps): JSX.Element => {
         }
         const { type, message } = chartLabelOptions[signal]
         return (
-          <Label type={type} fontSize='14px'>
+          <Label type={type} fontSize='12px'>
             {message}
           </Label>
         )
@@ -132,42 +132,29 @@ const MA = ({ data, lastPrice }: MAProps): JSX.Element => {
       </Box>
       <Box display='flex' alignItems='center' flexWrap='wrap' gap={0.75} mb={1.5}>
         <Box display='flex' alignItems='center'>
-          <Typography component={'span'} variant='subtitle1'>
+          <Typography component={'span'} variant='subtitle1' fontSize={14}>
             MA10:
           </Typography>
           &nbsp;
           {renderLabel(lines?.ma10)}
         </Box>
         <Box display='flex' alignItems='center'>
-          <Typography component={'span'} variant='subtitle1'>
+          <Typography component={'span'} variant='subtitle1' fontSize={14}>
             MA20:
           </Typography>
           &nbsp;
           {renderLabel(lines?.ma20)}
         </Box>
         <Box display='flex' alignItems='center'>
-          <Typography component={'span'} variant='subtitle1'>
+          <Typography component={'span'} variant='subtitle1' fontSize={14}>
             MA50:
           </Typography>
           &nbsp;
           {renderLabel(lines?.ma50)}
         </Box>
+
         <Box display='flex' alignItems='center'>
-          <Typography component={'span'} variant='subtitle1'>
-            MA100:
-          </Typography>
-          &nbsp;
-          {renderLabel(lines?.ma100)}
-        </Box>
-        {/* <Box display='flex' alignItems='center'>
-          <Typography component={'span'} variant='subtitle1'>
-            MA150:
-          </Typography>
-          &nbsp;
-          {renderLabel(lines?.ma150)}
-        </Box> */}
-        <Box display='flex' alignItems='center'>
-          <Typography component={'span'} variant='subtitle1'>
+          <Typography component={'span'} variant='subtitle1' fontSize={14}>
             MA200:
           </Typography>
           &nbsp;

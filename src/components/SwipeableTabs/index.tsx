@@ -2,6 +2,7 @@ import { AppBar, Box, Paper, Tab, Tabs, Typography, useTheme } from '@mui/materi
 import React, { useState, type ReactNode, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import SwipeableViews from 'react-swipeable-views'
+import { drawerWidth } from 'src/Layouts/Sidebar'
 import { useAppSelector } from 'src/store'
 
 interface Components {
@@ -36,7 +37,7 @@ const SwipeableTabs = ({ components }: SwipeableTabsProps): JSX.Element => {
   const { pathname } = useLocation()
 
   const theme = useTheme()
-  const { isOpenSidebar } = useAppSelector((state) => state.Stocks)
+  const { isOpenSidebar, isMdWindow } = useAppSelector((state) => state.Stocks)
 
   const [value, setValue] = useState<number>(() => {
     if (components) {
@@ -59,15 +60,15 @@ const SwipeableTabs = ({ components }: SwipeableTabsProps): JSX.Element => {
   }
 
   return (
-    <Box borderRadius={0} mt={14}>
+    <Box borderRadius={0} mt={isMdWindow ? 13 : 14}>
       <Box
         sx={{
           boxShadow: ' rgba(0, 0, 0, 0.24) 0px 3px 8px'
         }}
         position='absolute'
         zIndex={1000}
-        width={`calc(100vw - ${isOpenSidebar ? '340px' : '0px'})`}
-        top={64}
+        width={`calc(100vw - ${!isMdWindow ? (isOpenSidebar ? drawerWidth : 0) : 0}px)`}
+        top={isMdWindow ? 52 : 64}
         bgcolor='text.primary'
       >
         <AppBar position='static'>

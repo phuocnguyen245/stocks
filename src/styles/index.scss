@@ -8,6 +8,10 @@ body {
 
 * {
   box-sizing: border-box;
+  font-size: 14px;
+  @media (min-width: 980px) {
+    font-size: 16px;
+  }
 }
 
 html {
@@ -58,4 +62,8 @@ html::-webkit-scrollbar-thumb {
       background-color: #ffd500;
     }
   }
+}
+
+.MuiInputLabel-asterisk {
+  color: #ff0000;
 }

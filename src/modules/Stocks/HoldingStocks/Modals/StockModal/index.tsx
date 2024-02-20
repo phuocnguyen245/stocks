@@ -1,4 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup'
+import { Add, Remove } from '@mui/icons-material'
 import {
   Box,
   Container,
@@ -11,20 +12,18 @@ import {
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import moment, { type MomentInput } from 'moment'
-import { type ChangeEvent, memo, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react'
 import { useForm } from 'react-hook-form'
+import { FormattedMessage } from 'react-intl'
 import type { Stock, Target } from 'src/Models'
+import { Button, Select } from 'src/components/MUIComponents'
+import { useAlert } from 'src/hooks'
 import { StockService, useCreateStockMutation } from 'src/services/stocks.services'
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { onSellStock, refetchStocks } from 'src/store/slices/stockSlice'
-import schema from './schema'
-import { Select, Button } from 'src/components/MUIComponents'
-import { FormattedMessage } from 'react-intl'
-import { useAlert } from 'src/hooks'
-import { v4 as uuidV4 } from 'uuid'
-import { Add, Remove } from '@mui/icons-material'
-import { useGetAssetQuery } from 'src/services/payment.services'
 import { convertToDecimal } from 'src/utils'
+import { v4 as uuidV4 } from 'uuid'
+import schema from './schema'
 interface FormBody {
   code: string
   volume: number
@@ -208,7 +207,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
 
   return (
     <Dialog
-      open={Boolean(sellStock) ?? open}
+      open={Boolean(sellStock) || open}
       onClose={onCloseModal}
       onKeyUp={(e) => {
         if (e.key === 'Enter') {
@@ -220,7 +219,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
         <Box py={3} px={0} component='form' onSubmit={handleSubmit(handleSave)} id='stock-form'>
           <Box paddingBottom={2} paddingX={4}>
             <Typography>
-              {status === 1 && !stockData ? (
+              {status === 1 ? (
                 <FormattedMessage id='label.buying' />
               ) : (
                 <FormattedMessage id='label.selling' />
@@ -249,19 +248,24 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
                 helperText={errors.code?.message}
               />
             ) : (
-              <Select
-                control={control}
-                name='code'
-                label={<FormattedMessage id='label.code' />}
-                options={option}
-              />
+              <Box pb={1}>
+                <Select
+                  control={control}
+                  name='code'
+                  label={<FormattedMessage id='label.code' />}
+                  options={option}
+                  required
+                />
+              </Box>
             )}
-            <DatePicker
-              label={<FormattedMessage id='label.date' />}
-              sx={{ width: '100%', margin: '8px 0' }}
-              defaultValue={moment(Date.now())}
-              onChange={onChangeDate}
-            />
+            <Box sx={{ width: '100%' }} py={1}>
+              <DatePicker
+                label={<FormattedMessage id='label.date' />}
+                defaultValue={moment(Date.now())}
+                onChange={onChangeDate}
+                sx={{ width: '100%' }}
+              />
+            </Box>
 
             <Grid container columnSpacing={0.75}>
               <Grid item md={6}>
@@ -306,7 +310,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
               </Grid>
             </Grid>
 
-            {status === 1 && !stockData && (
+            {status !== 1 && (
               <Box mt={0.5}>
                 <Typography mb={0.75}>Takes</Typography>
                 {target.take.map((item, index) => (
@@ -362,7 +366,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
               </Box>
             )}
 
-            {status === 1 && !stockData && (
+            {status !== 1 && (
               <Box mt={0.5}>
                 <Typography mb={0.75}>Stops</Typography>
                 {target.stop.map((item, index) => (

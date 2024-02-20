@@ -1,4 +1,4 @@
-import type { TableCellProps } from '@mui/material'
+import type { TableCellProps, TableContainerProps } from '@mui/material'
 import { type ReactNode, type SetStateAction } from 'react'
 
 interface DefaultPagination {
@@ -12,7 +12,7 @@ interface TableHeaderBody<T> extends TableCellProps {
   render?: (data: T) => JSX.Element
 }
 
-interface TableProps<T, Y, P> {
+interface TableProps<T, Y, P> extends TableContainerProps {
   data: T[]
   subData?: Y[]
   table: Array<TableHeaderBody<T>>

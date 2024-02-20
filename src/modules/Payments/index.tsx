@@ -9,6 +9,7 @@ import useModal from 'src/hooks/useModals'
 import { Label } from 'src/components/MUIComponents'
 import { formatVND } from 'src/utils'
 import Helmet from 'src/components/Helmet'
+import { FormattedMessage } from 'react-intl'
 
 const Payment = (): JSX.Element => {
   const [deletePayment] = useDeletePaymentMutation()
@@ -86,22 +87,13 @@ const Payment = (): JSX.Element => {
       <Helmet>
         <title>Payments</title>
       </Helmet>
-      <TableContainer component={Paper} sx={{ height: '100vh', borderRadius: 0 }}>
-        <Box
-          px={4}
-          pt={2}
-          pb={0}
-          pr={6}
-          display='flex'
-          alignItems='center'
-          gap={2}
-          justifyContent='flex-end'
-        >
+      <Container sx={{ height: '100vh', borderRadius: 0 }}>
+        <Box pt={2} pb={0} display='flex' alignItems='center' justifyContent='flex-end'>
           <Button variant='contained' onClick={toggle} sx={{ mt: 8 }}>
-            Created
+            <FormattedMessage id='label.create' />
           </Button>
         </Box>
-        <Container sx={{ p: 2 }}>
+        <Box sx={{ py: 2 }}>
           <Table
             data={data}
             table={table}
@@ -113,8 +105,8 @@ const Payment = (): JSX.Element => {
             onSetPagination={setPagination}
           />
           <PaymentsModal open={open} handleClose={toggle} refetch={refetch} editData={editData} />
-        </Container>
-      </TableContainer>
+        </Box>
+      </Container>
     </>
   )
 }

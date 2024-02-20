@@ -1,77 +1,139 @@
 import { Box, Container, Paper, Typography } from '@mui/material'
+import { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
+import { Label } from 'src/components/MUIComponents'
 import Table from 'src/components/Table'
-import { type TableHeaderBody } from 'src/components/Table/type'
-import { type Indicator } from 'src/Models'
+import type { DefaultPagination, TableHeaderBody } from 'src/components/Table/type'
+import { type LabelType, type Indicator } from 'src/Models'
 import { convertToDecimal } from 'src/utils'
 
 interface FilterResultProps {
   data: Indicator[]
 }
+
+const labelColor = (name: string, value: number): JSX.Element => {
+  let type: LabelType
+  switch (name) {
+    case 'rsi':
+      if (value < 30) {
+        type = 'primary'
+        break
+      } else if (value < 70) {
+        type = 'success'
+        break
+      }
+      type = 'error'
+      break
+    case 'macd':
+      if (value < 0) {
+        type = 'error'
+        break
+      }
+      type = 'success'
+      break
+    case 'stochRSI':
+    case 'stoch':
+    case 'mfi':
+      if (value < 30) {
+        type = 'primary'
+        break
+      } else if (value < 80) {
+        type = 'success'
+        break
+      }
+      type = 'error'
+      break
+
+    default:
+      type = 'error'
+      break
+  }
+  return <Label type={type}>{value}</Label>
+}
 const FilterResult = ({ data }: FilterResultProps): JSX.Element => {
+  const [pagination, setPagination] = useState<DefaultPagination>({
+    page: 0,
+    size: 10
+  })
   const table: Array<TableHeaderBody<Indicator>> = [
     {
       name: 'code',
       title: <FormattedMessage id='label.code' />,
+      align: 'center',
       width: '10%'
     },
     {
       name: 'result',
       title: 'RSI',
-      width: '10%',
+      width: '15%',
+      align: 'center',
       render: (row) => {
-        return <>{convertToDecimal(row.result.rsi)}</>
+        return <>{labelColor('rsi', convertToDecimal(row.result.rsi))}</>
       }
     },
     {
       name: 'result',
       title: 'MFI',
-      width: '10%',
+      width: '15%',
+      align: 'center',
       render: (row) => {
-        return <>{convertToDecimal(row.result.mfi)}</>
+        return <>{labelColor('mfi', convertToDecimal(row.result.mfi))}</>
       }
     },
     {
       name: 'result',
       title: 'MACD',
-      width: '10%',
+      width: '20%',
+      align: 'center',
       render: (row) => {
         return (
-          <>
-            <Typography>{convertToDecimal(row.result.macd.macd)}</Typography>
-            <Typography>{convertToDecimal(row.result.macd.signal)}</Typography>
-          </>
+          <Box display='flex' gap={1} justifyContent='center'>
+            {labelColor('macd', convertToDecimal(row.result.macd.macd))}
+            {labelColor('macd', convertToDecimal(row.result.macd.signal))}
+          </Box>
         )
       }
     },
     {
       name: 'result',
       title: 'Stoch',
-      width: '10%',
+      width: '20%',
+      align: 'center',
       render: (row) => {
         return (
-          <>
-            <Typography>{convertToDecimal(row.result.stoch.k)}</Typography>
-            <Typography>{convertToDecimal(row.result.stoch.d)}</Typography>
-          </>
+          <Box display='flex' gap={1} justifyContent='center'>
+            {labelColor('stoch', convertToDecimal(row.result.stoch.k))}
+            {labelColor('stoch', convertToDecimal(row.result.stoch.d))}
+          </Box>
         )
       }
     },
     {
       name: 'result',
       title: 'StochRSI',
-      width: '10%',
+      width: '20%',
+      align: 'center',
       render: (row) => {
         return (
-          <>
-            <Typography>{convertToDecimal(row.result.stochRSI.k)}</Typography>
-            <Typography>{convertToDecimal(row.result.stochRSI.d)}</Typography>
-          </>
+          <Box display='flex' gap={1} justifyContent='center'>
+            {labelColor('stochRSI', convertToDecimal(row.result.stochRSI.k))}
+            {labelColor('stochRSI', convertToDecimal(row.result.stochRSI.d))}
+          </Box>
         )
       }
     }
   ]
-  return <Table data={data} table={table} isLoading={false} totalItems={0} />
+  return (
+    <Table
+      data={data}
+      table={table}
+      isLoading={false}
+      sx={{ maxHeight: 500 }}
+      pagination={pagination}
+      onSetPagination={setPagination}
+      totalItems={data?.length ?? 0}
+    />
+  )
 }
 
 export default FilterResult

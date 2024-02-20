@@ -78,6 +78,15 @@ const onDarkTheme = (mode: 'dark' | 'light'): Theme => {
         900: '#1a202c'
       }
     },
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 600,
+        md: 900,
+        lg: 1200,
+        xl: 1536
+      }
+    },
     components: {
       MuiSwitch: {
         styleOverrides: {
