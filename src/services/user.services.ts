@@ -25,8 +25,28 @@ export const UserService = createApi({
       query: ({ _id }) => ({
         url: `/users/${_id}`
       })
+    }),
+    checkEmail: builder.mutation({
+      query: (body) => ({
+        url: '/users/send-mail',
+        method: 'POST',
+        body
+      })
+    }),
+    updatePassword: builder.mutation({
+      query: (body) => ({
+        url: '/users/password',
+        method: 'PUT',
+        body
+      })
     })
   })
 })
 
-export const { useLoginMutation, useRegisterMutation, useGetUserMutation } = UserService
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useGetUserMutation,
+  useCheckEmailMutation,
+  useUpdatePasswordMutation
+} = UserService

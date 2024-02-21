@@ -9,22 +9,22 @@ import {
   Grid,
   TextField,
   Typography,
-  styled,
-  useTheme
+  styled
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 import { Link } from 'react-router-dom'
-import { useRegisterMutation } from 'src/services/user.services'
-import schema from './schema'
 import { useAlert, useLocalStorage, useModals } from 'src/hooks'
+import { useRegisterMutation } from 'src/services/user.services'
 import AcceptModal from '../Modals/AcceptModal'
+import schema from './schema'
 
 interface FormBody {
   username: string
   password: string
   confirmPassword: string
   name: string
+  email: string
 }
 
 const Register = (): JSX.Element => {
@@ -80,6 +80,16 @@ const Register = (): JSX.Element => {
           {...register('username')}
           error={!!errors.username}
           helperText={errors.username?.message}
+        />
+        <TextField
+          margin='normal'
+          required
+          fullWidth
+          label='Email'
+          autoComplete='email'
+          {...register('email')}
+          error={!!errors.email}
+          helperText={errors.email?.message}
         />
         <TextField
           margin='normal'

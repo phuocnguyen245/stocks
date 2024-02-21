@@ -1,7 +1,6 @@
 import React, { Suspense, lazy } from 'react'
 import { Navigate, type RouteObject } from 'react-router-dom'
 import SuppedLoader from './components/SuspendLoader'
-import Register from './modules/Auth/Register'
 
 const PrivateRoute = ({
   element: Element,
@@ -42,9 +41,10 @@ const AuthLayout = Loader(lazy(async () => await import('src/modules/Auth/Layout
 const Stocks = Loader(lazy(async () => await import('src/modules/Stocks')))
 const Charts = Loader(lazy(async () => await import('src/modules/Charts')))
 const Payment = Loader(lazy(async () => await import('src/modules/Payments')))
-const FilterStocks = Loader(lazy(async () => await import('src/modules/Stocks/FilterStocks')))
-const HoldingStocks = Loader(lazy(async () => await import('src/modules/Stocks/HoldingStocks')))
 const Login = Loader(lazy(async () => await import('src/modules/Auth/Login')))
+const Register = Loader(lazy(async () => await import('src/modules/Auth/Register')))
+const ForgotPassword = Loader(lazy(async () => await import('src/modules/Auth/ForgotPassword')))
+const EnterEmail = Loader(lazy(async () => await import('src/modules/Auth/EnterEmail')))
 
 const routes: RouteObject[] = [
   {
@@ -93,6 +93,14 @@ const routes: RouteObject[] = [
           {
             path: '/register',
             element: <PublicRoute element={Register} />
+          },
+          {
+            path: '/email',
+            element: <PublicRoute element={EnterEmail} />
+          },
+          {
+            path: '/forgot-password',
+            element: <PublicRoute element={ForgotPassword} />
           }
         ]
       }

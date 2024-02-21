@@ -7,7 +7,6 @@ import {
   Checkbox,
   FormControlLabel,
   Grid,
-  Modal,
   TextField,
   Typography,
   styled
@@ -15,11 +14,11 @@ import {
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 import { Link } from 'react-router-dom'
-import { useLoginMutation } from 'src/services/user.services'
-import schema from './schema'
 import { useAlert, useLocalStorage } from 'src/hooks'
 import useModal from 'src/hooks/useModals'
+import { useLoginMutation } from 'src/services/user.services'
 import AcceptModal from '../Modals/AcceptModal'
+import schema from './schema'
 
 interface FormBody {
   username: string
@@ -111,7 +110,7 @@ const Login = (): JSX.Element => {
         </Button>
         <Grid container>
           <Grid item xs>
-            <CustomLink to='#'>Forgot password?</CustomLink>
+            <CustomLink to='/email'>Forgot password?</CustomLink>
           </Grid>
           <CustomLink to='/register'>Don&apos;t have an account? Sign Up</CustomLink>
         </Grid>

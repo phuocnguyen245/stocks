@@ -34,7 +34,7 @@ const labelColor = (name: string, value: number): JSX.Element => {
     case 'stochRSI':
     case 'stoch':
     case 'mfi':
-      if (value < 30) {
+      if (value < 20) {
         type = 'primary'
         break
       } else if (value < 80) {
