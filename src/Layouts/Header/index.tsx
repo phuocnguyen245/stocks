@@ -127,9 +127,25 @@ const Header = ({
       </HeaderNavigation>
       <HeaderSetting route={location.pathname}>
         <Grid container alignItems='center' flexWrap='nowrap' width='auto'>
-          <Grid item>
-            <Box
-              width={160}
+          {isLogin && (
+            <Grid item>
+              <Box
+                width={160}
+                sx={{
+                  [theme.breakpoints.down('md')]: {
+                    display:
+                      (location.pathname === '/login' || location.pathname === '/register') &&
+                      'none'
+                  }
+                }}
+              >
+                <SearchBar />
+              </Box>
+            </Grid>
+          )}
+          {isLogin && (
+            <Grid
+              item
               sx={{
                 [theme.breakpoints.down('md')]: {
                   display:
@@ -137,47 +153,39 @@ const Header = ({
                 }
               }}
             >
-              <SearchBar />
-            </Box>
-          </Grid>
-          <Grid
-            item
-            sx={{
-              [theme.breakpoints.down('md')]: {
-                display:
-                  (location.pathname === '/login' || location.pathname === '/register') && 'none'
-              }
-            }}
-          >
-            <RefreshTime />
-          </Grid>
+              <RefreshTime />
+            </Grid>
+          )}
+
           <Grid item>
             <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
           </Grid>
           <Grid item>
             <Languages languages={languages} onSetLanguages={onSetLanguages} />
           </Grid>
-          <Grid
-            item
-            mr={1}
-            sx={{
-              [theme.breakpoints.down('md')]: {
-                display:
-                  (location.pathname === '/login' || location.pathname === '/register') && 'none'
-              }
-            }}
-          >
-            <IconButton
-              onClick={onLogout}
+          {isLogin && (
+            <Grid
+              item
+              mr={1}
               sx={{
-                '&:hover': {
-                  color: 'primary.main'
+                [theme.breakpoints.down('md')]: {
+                  display:
+                    (location.pathname === '/login' || location.pathname === '/register') && 'none'
                 }
               }}
             >
-              <Logout />
-            </IconButton>
-          </Grid>
+              <IconButton
+                onClick={onLogout}
+                sx={{
+                  '&:hover': {
+                    color: 'primary.main'
+                  }
+                }}
+              >
+                <Logout />
+              </IconButton>
+            </Grid>
+          )}
         </Grid>
       </HeaderSetting>
     </HeaderContainer>

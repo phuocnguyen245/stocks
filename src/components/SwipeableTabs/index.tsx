@@ -1,5 +1,5 @@
-import { AppBar, Box, Paper, Tab, Tabs, Typography, useTheme } from '@mui/material'
-import React, { useState, type ReactNode, useEffect } from 'react'
+import { AppBar, Box, Paper, Tab, Tabs, useTheme } from '@mui/material'
+import React, { useMemo, useState, type ReactNode } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import SwipeableViews from 'react-swipeable-views'
 import { drawerWidth } from 'src/Layouts/Sidebar'
@@ -35,7 +35,6 @@ const CustomTabPanel = (props: TabPanelProps): JSX.Element => {
 const SwipeableTabs = ({ components }: SwipeableTabsProps): JSX.Element => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
-
   const theme = useTheme()
   const { isOpenSidebar, isMdWindow } = useAppSelector((state) => state.Stocks)
 
@@ -58,6 +57,27 @@ const SwipeableTabs = ({ components }: SwipeableTabsProps): JSX.Element => {
   const handleChangeIndex = (index: number): void => {
     setValue(index)
   }
+
+  const renderTabs = useMemo(() => {
+    const children = components.map((component, index) => (
+      <CustomTabPanel value={value} index={index} key={index}>
+        {component.component}
+      </CustomTabPanel>
+    ))
+    if (isMdWindow) {
+      return children
+    }
+    return (
+      <SwipeableViews
+        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+        index={value}
+        onChangeIndex={handleChangeIndex}
+        style={{ position: 'relative' }}
+      >
+        {children}
+      </SwipeableViews>
+    )
+  }, [isMdWindow, theme, components])
 
   return (
     <Box borderRadius={0} mt={isMdWindow ? 13 : 14}>
@@ -94,18 +114,7 @@ const SwipeableTabs = ({ components }: SwipeableTabsProps): JSX.Element => {
           </Tabs>
         </AppBar>
       </Box>
-      <SwipeableViews
-        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-        index={value}
-        onChangeIndex={handleChangeIndex}
-        style={{ position: 'relative' }}
-      >
-        {components.map((component, index) => (
-          <CustomTabPanel value={value} index={index} key={index}>
-            {component.component}
-          </CustomTabPanel>
-        ))}
-      </SwipeableViews>
+      {renderTabs}
     </Box>
   )
 }

@@ -42,6 +42,7 @@ const defaultFilterLevels = {
 const FilterStocks = (): JSX.Element => {
   const theme = useTheme()
   const isLg = useMediaQuery(theme.breakpoints.down('lg'))
+  const isMdWindow = useMediaQuery(theme.breakpoints.down('md'))
 
   const [defaultFilter, setDefaultFilter] = useState<Array<keyof FilterStocksType>>(technicalList)
   const [levels, setLevels] = useState<Levels | ''>('Default')
@@ -109,7 +110,7 @@ const FilterStocks = (): JSX.Element => {
       <Helmet>
         <title>Filter Stocks</title>
       </Helmet>
-      <Container sx={{ mt: 3 }}>
+      <Container sx={{ pt: isMdWindow ? 2 : 3 }}>
         <Grid container columnSpacing={2} rowSpacing={2}>
           <Grid item xs={6} sm={6} md={6} lg={4}>
             <List

@@ -75,7 +75,7 @@ const PersistentDrawerLeft = (): JSX.Element => {
       const isTypeBoolean = typeof isOpen === 'boolean'
       return isTypeBoolean ? isOpen : true
     }
-    return true
+    return false
   })
 
   const [darkMode, setDarkMode] = useState<'light' | 'dark'>(() => {
