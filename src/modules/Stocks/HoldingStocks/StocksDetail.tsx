@@ -224,22 +224,9 @@ const StocksDetail = (): JSX.Element => {
       render: (row) => {
         return (
           <>
-            {editData?._id === row._id ? (
-              <Switch
-                sx={{ height: '36px' }}
-                name='status'
-                color='secondary'
-                checked={row.status === 'Buy'}
-                onChange={(e) => onChangeRow(e)}
-              />
-            ) : (
-              <Label
-                type={row.status.toUpperCase() === 'BUY' ? 'success' : 'primary'}
-                fontSize={14}
-              >
-                {row.status}
-              </Label>
-            )}
+            <Label type={row.status.toUpperCase() === 'BUY' ? 'success' : 'primary'} fontSize={14}>
+              {row.status}
+            </Label>
           </>
         )
       }
@@ -252,7 +239,7 @@ const StocksDetail = (): JSX.Element => {
       table={table}
       isLoading={isLoading}
       totalItems={stocksData?.data?.totalItems ?? 0}
-      onDelete={onDelete}
+      // onDelete={onDelete}
       onEdit={onEdit}
       pagination={pagination}
       onSetPagination={setPagination}
