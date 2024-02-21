@@ -20,6 +20,7 @@ interface TabPanelProps {
 
 interface SwipeableTabsProps {
   components: Components[]
+  exceptionRoute?: string
 }
 
 const CustomTabPanel = (props: TabPanelProps): JSX.Element => {
@@ -32,7 +33,7 @@ const CustomTabPanel = (props: TabPanelProps): JSX.Element => {
   )
 }
 
-const SwipeableTabs = ({ components }: SwipeableTabsProps): JSX.Element => {
+const SwipeableTabs = ({ components, exceptionRoute }: SwipeableTabsProps): JSX.Element => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const theme = useTheme()
@@ -64,9 +65,11 @@ const SwipeableTabs = ({ components }: SwipeableTabsProps): JSX.Element => {
         {component.component}
       </CustomTabPanel>
     ))
-    if (isMdWindow) {
+
+    if (isMdWindow && exceptionRoute && exceptionRoute === pathname) {
       return children
     }
+
     return (
       <SwipeableViews
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
@@ -77,7 +80,7 @@ const SwipeableTabs = ({ components }: SwipeableTabsProps): JSX.Element => {
         {children}
       </SwipeableViews>
     )
-  }, [isMdWindow, theme, components])
+  }, [isMdWindow, theme, components, pathname, exceptionRoute, value])
 
   return (
     <Box borderRadius={0} mt={isMdWindow ? 13 : 14}>

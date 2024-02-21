@@ -1,5 +1,6 @@
 import { Box, Grid } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Helmet from 'src/components/Helmet'
 import CurrentStocks from 'src/modules/Stocks/HoldingStocks/CurrentStocks'
 import type { ConfirmModal as ConfirmModalType } from 'src/modules/Stocks/HoldingStocks/Modals/index'
@@ -9,6 +10,8 @@ import StocksDetail from 'src/modules/Stocks/HoldingStocks/StocksDetail'
 import { useAppSelector } from 'src/store'
 
 const HoldingStocks = (): JSX.Element => {
+  const navigate = useNavigate()
+
   const { isMdWindow } = useAppSelector((state) => state.Stocks)
   const [modalStatus, setModalStatus] = useState<ConfirmModalType>({
     isBuy: 1,
@@ -16,6 +19,10 @@ const HoldingStocks = (): JSX.Element => {
   })
 
   const openConfirmModal = (): void => setModalStatus({ ...modalStatus, open: true })
+
+  useEffect(() => {
+    navigate('/stocks')
+  }, [])
 
   return (
     <Box
