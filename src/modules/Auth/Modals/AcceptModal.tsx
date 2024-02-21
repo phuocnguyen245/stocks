@@ -107,7 +107,10 @@ const AcceptModal = ({ open, toggle }: ModalsProps): JSX.Element => {
           <Typography fontWeight={600} color={'primary.500'}>
             - Step 3:
           </Typography>
-          <Typography>Close the page and continue using the stock-tracking webapp.</Typography>
+          <Typography>
+            Close the Confirmation page, Confirmation popup and continue using the stock-tracking
+            webapp.
+          </Typography>
         </Box>
         <Box sx={{ mt: 1 }}>
           <Typography fontWeight={600} textAlign='center' color={'primary.main'}>
