@@ -17,7 +17,8 @@ import { useNavigate } from 'react-router'
 import { Link } from 'react-router-dom'
 import { useRegisterMutation } from 'src/services/user.services'
 import schema from './schema'
-import { useLocalStorage } from 'src/hooks'
+import { useAlert, useLocalStorage, useModals } from 'src/hooks'
+import AcceptModal from '../Modals/AcceptModal'
 
 interface FormBody {
   username: string
@@ -27,10 +28,11 @@ interface FormBody {
 }
 
 const Register = (): JSX.Element => {
-  const theme = useTheme()
   const navigate = useNavigate()
   const [onRegister] = useRegisterMutation()
   const [value, setLocalValue] = useLocalStorage('tokens', {})
+  const { open, toggle } = useModals()
+  const alert = useAlert()
   const {
     register,
     handleSubmit,
@@ -48,8 +50,14 @@ const Register = (): JSX.Element => {
         setLocalValue(response.data?.tokens)
         navigate('/stocks')
       }
-    } catch (error) {
-      console.log(error)
+      alert({ message: 'Register Successfully', variant: 'success' })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.status === 400) {
+        alert({ message: 'User already exists', variant: 'error' })
+      } else {
+        toggle()
+      }
     }
   }
 
@@ -125,6 +133,7 @@ const Register = (): JSX.Element => {
           <CustomLink to='/login'>Have an account? Sign In</CustomLink>
         </Grid>
       </Box>
+      <AcceptModal open={open} toggle={toggle} />
     </>
   )
 }

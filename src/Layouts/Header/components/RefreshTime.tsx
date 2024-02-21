@@ -1,20 +1,10 @@
 import { Sync } from '@mui/icons-material'
-import {
-  Box,
-  Button,
-  ClickAwayListener,
-  Divider,
-  IconButton,
-  Tooltip,
-  Typography,
-  useMediaQuery,
-  useTheme
-} from '@mui/material'
+import { Box, Button, ClickAwayListener, IconButton, Tooltip, Typography } from '@mui/material'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Skeleton } from 'src/components/MUIComponents'
-import { useAlert, useIsLogin, useModals } from 'src/hooks'
+import { useAlert, useModals } from 'src/hooks'
 import { useRefreshStocksMutation, useRefreshTimeQuery } from 'src/services/stocks.services'
 import { useAppSelector } from 'src/store'
 import { refetchStocks } from 'src/store/slices/stockSlice'
@@ -26,7 +16,7 @@ const RefreshTime = (): JSX.Element => {
   const dispatch = useDispatch()
 
   const [refreshTime, setRefreshTime] = useState<string>()
-  const isLogin = useIsLogin()
+  const { isLogin } = useAppSelector((state) => state.Stocks)
 
   const [refreshStocks] = useRefreshStocksMutation()
   const { data: date, isLoading } = useRefreshTimeQuery(undefined, {
