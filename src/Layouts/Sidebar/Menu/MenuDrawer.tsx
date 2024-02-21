@@ -48,6 +48,7 @@ const MenuDrawer = ({
     navigate('/login')
     localStorage.removeItem('user')
     localStorage.removeItem('tokens')
+    toggle()
   }
 
   return (

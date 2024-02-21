@@ -9,19 +9,17 @@ interface MenuProps {
   onOpenWatchList: () => void
   darkMode: 'dark' | 'light'
   languages: 'vi' | 'en'
-  isLogin: boolean
   onSetDarkMode: (value: React.SetStateAction<'dark' | 'light'>) => void
   onSetLanguages: (value: React.SetStateAction<'vi' | 'en'>) => void
 }
 const Menu = ({
   languages,
-  isLogin,
   darkMode,
   onSetLanguages,
   onSetDarkMode,
   onOpenWatchList
 }: MenuProps): JSX.Element => {
-  const { isMdWindow } = useAppSelector((state) => state.Stocks)
+  const { isMdWindow, isLogin } = useAppSelector((state) => state.Stocks)
 
   const { open: openMenu, toggle: onToggleMenu } = useModals()
   const { open: openAsset, toggle: onOpenAsset } = useModals()
@@ -32,6 +30,7 @@ const Menu = ({
     }
     return onOpenWatchList()
   }
+
   return (
     <>
       <IconButton

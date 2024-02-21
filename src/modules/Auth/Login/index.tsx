@@ -7,6 +7,7 @@ import {
   Checkbox,
   FormControlLabel,
   Grid,
+  Modal,
   TextField,
   Typography,
   styled
@@ -16,7 +17,9 @@ import { useNavigate } from 'react-router'
 import { Link } from 'react-router-dom'
 import { useLoginMutation } from 'src/services/user.services'
 import schema from './schema'
-import { useLocalStorage } from 'src/hooks'
+import { useAlert, useLocalStorage } from 'src/hooks'
+import useModal from 'src/hooks/useModals'
+import AcceptModal from '../Modals/AcceptModal'
 
 interface FormBody {
   username: string
@@ -27,6 +30,8 @@ const Login = (): JSX.Element => {
   const [value, setLocalValue] = useLocalStorage('tokens', {})
   const navigate = useNavigate()
   const [onLogin] = useLoginMutation()
+  const alert = useAlert()
+  const { open, toggle } = useModal()
   const {
     register,
     handleSubmit,
@@ -44,8 +49,14 @@ const Login = (): JSX.Element => {
         navigate('/stocks')
         reset()
       }
-    } catch (error) {
-      console.log(error)
+      alert({ message: 'Login successfully', variant: 'success' })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.status === 404) {
+        alert({ message: 'Username or password is not correct', variant: 'error' })
+      } else {
+        toggle()
+      }
     }
   }
 
@@ -105,6 +116,7 @@ const Login = (): JSX.Element => {
           <CustomLink to='/register'>Don&apos;t have an account? Sign Up</CustomLink>
         </Grid>
       </Box>
+      <AcceptModal open={open} toggle={toggle} />
     </>
   )
 }

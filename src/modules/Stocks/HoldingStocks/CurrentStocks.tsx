@@ -272,7 +272,7 @@ const CurrentStocks = (): JSX.Element => {
       table={table}
       isLoading={isLoading}
       totalItems={currentStockData?.data?.totalItems ?? 0}
-      // onDelete={onDelete}
+      onDelete={onDelete}
       // onEdit={onEdit}
       pagination={pagination}
       onSetPagination={setPagination}

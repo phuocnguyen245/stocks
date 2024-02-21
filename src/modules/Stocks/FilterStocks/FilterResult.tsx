@@ -1,12 +1,12 @@
 import { Box, Container, Paper, Typography } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { Label } from 'src/components/MUIComponents'
 import Table from 'src/components/Table'
 import type { DefaultPagination, TableHeaderBody } from 'src/components/Table/type'
 import { type LabelType, type Indicator } from 'src/Models'
 import { convertToDecimal } from 'src/utils'
-
+import { useNavigate } from 'react-router-dom'
 interface FilterResultProps {
   data: Indicator[]
 }
@@ -51,6 +51,8 @@ const labelColor = (name: string, value: number): JSX.Element => {
   return <Label type={type}>{value}</Label>
 }
 const FilterResult = ({ data }: FilterResultProps): JSX.Element => {
+  const navigate = useNavigate()
+
   const [pagination, setPagination] = useState<DefaultPagination>({
     page: 0,
     size: 10
@@ -123,6 +125,11 @@ const FilterResult = ({ data }: FilterResultProps): JSX.Element => {
       }
     }
   ]
+
+  useEffect(() => {
+    navigate('/stocks/filters')
+  }, [])
+
   return (
     <Table
       data={data}

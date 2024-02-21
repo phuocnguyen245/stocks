@@ -1,3 +1,4 @@
+import { Logout } from '@mui/icons-material'
 import {
   Box,
   Grid,
@@ -10,21 +11,19 @@ import {
   useTheme
 } from '@mui/material'
 import * as React from 'react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
+import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import SearchBar from 'src/components/SearchBar'
+import { onIsLogin, onMdWindow } from 'src/store/slices/stockSlice'
 import DarkModeSwitch from './components/DarkModeSwitch'
 import Languages from './components/Languages'
 import RefreshTime from './components/RefreshTime'
-import { useDispatch } from 'react-redux'
-import { onMdWindow } from 'src/store/slices/stockSlice'
-import { Logout } from '@mui/icons-material'
 
 export interface HeaderProps {
   darkMode: 'dark' | 'light'
   languages: 'vi' | 'en'
-  isLogin: boolean
   onSetDarkMode: (value: React.SetStateAction<'dark' | 'light'>) => void
   onSetLanguages: (value: React.SetStateAction<'vi' | 'en'>) => void
 }
@@ -32,7 +31,6 @@ export interface HeaderProps {
 const Header = ({
   darkMode,
   languages,
-  isLogin,
   onSetLanguages,
   onSetDarkMode
 }: HeaderProps): JSX.Element => {
@@ -43,6 +41,7 @@ const Header = ({
   const dispatch = useDispatch()
 
   const [value, setValue] = React.useState('1')
+  const [isLogin, setIsLogin] = useState(false)
   const location = useLocation()
   const handleChange = (event: React.SyntheticEvent, newValue: string): void => {
     setValue(newValue)
@@ -60,6 +59,21 @@ const Header = ({
   useEffect(() => {
     dispatch(onMdWindow(isMd))
   }, [])
+
+  useEffect(() => {
+    const tokensLocal = localStorage.getItem('tokens')
+
+    if (tokensLocal) {
+      const tokens = JSON.parse(tokensLocal)
+      const isLoggedIn = typeof tokens === 'object' && tokens !== null
+
+      dispatch(onIsLogin(isLoggedIn))
+      setIsLogin(isLoggedIn)
+    } else {
+      dispatch(onIsLogin(false))
+      setIsLogin(false)
+    }
+  }, [location])
 
   const onLogout = (): void => {
     navigate('/login')
@@ -111,34 +125,67 @@ const Header = ({
           />
         </Tabs>
       </HeaderNavigation>
-      <HeaderSetting>
+      <HeaderSetting route={location.pathname}>
         <Grid container alignItems='center' flexWrap='nowrap' width='auto'>
-          <Grid item>
-            <Box width={160}>
-              <SearchBar />
-            </Box>
-          </Grid>
-          <Grid item>
-            <RefreshTime />
-          </Grid>
+          {isLogin && (
+            <Grid item>
+              <Box
+                width={160}
+                sx={{
+                  [theme.breakpoints.down('md')]: {
+                    display:
+                      (location.pathname === '/login' || location.pathname === '/register') &&
+                      'none'
+                  }
+                }}
+              >
+                <SearchBar />
+              </Box>
+            </Grid>
+          )}
+          {isLogin && (
+            <Grid
+              item
+              sx={{
+                [theme.breakpoints.down('md')]: {
+                  display:
+                    (location.pathname === '/login' || location.pathname === '/register') && 'none'
+                }
+              }}
+            >
+              <RefreshTime />
+            </Grid>
+          )}
+
           <Grid item>
             <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
           </Grid>
           <Grid item>
             <Languages languages={languages} onSetLanguages={onSetLanguages} />
           </Grid>
-          <Grid item mr={1}>
-            <IconButton
-              onClick={onLogout}
+          {isLogin && (
+            <Grid
+              item
+              mr={1}
               sx={{
-                '&:hover': {
-                  color: 'primary.main'
+                [theme.breakpoints.down('md')]: {
+                  display:
+                    (location.pathname === '/login' || location.pathname === '/register') && 'none'
                 }
               }}
             >
-              <Logout />
-            </IconButton>
-          </Grid>
+              <IconButton
+                onClick={onLogout}
+                sx={{
+                  '&:hover': {
+                    color: 'primary.main'
+                  }
+                }}
+              >
+                <Logout />
+              </IconButton>
+            </Grid>
+          )}
         </Grid>
       </HeaderSetting>
     </HeaderContainer>
@@ -149,9 +196,9 @@ const HeaderContainer = styled(Paper)(({ theme }) => ({}))
 
 const HeaderNavigation = styled(Box)(({ theme }) => ({}))
 
-const HeaderSetting = styled(Box)(({ theme }) => ({
+const HeaderSetting = styled(Box)<{ route: string }>(({ theme, route }) => ({
   [theme.breakpoints.down('md')]: {
-    display: 'none'
+    display: route === '/login' || route === '/register' ? 'block' : 'none'
   }
 }))
 

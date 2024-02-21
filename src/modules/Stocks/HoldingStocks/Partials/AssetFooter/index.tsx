@@ -123,6 +123,7 @@ const AssetFooter = (): JSX.Element => {
       pb={isMdWindow ? 0 : 2}
       display='flex'
       alignItems='center'
+      justifyContent={isMdWindow ? 'unset' : 'center'}
       bgcolor={theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#f9f3fe'}
       boxShadow='rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px'
       sx={{ transition: 'all .2s ease-in-out' }}
@@ -151,7 +152,7 @@ const AssetFooter = (): JSX.Element => {
             </Grid>
           </Grid>
         </Grid>
-        <Divider sx={{ width: '100%' }} />
+        {isMdWindow && <Divider sx={{ width: '100%' }} />}
         <Grid item>
           <Grid container alignItems='center' pb={isMdWindow ? 2 : 0}>
             <Grid item>
@@ -167,7 +168,7 @@ const AssetFooter = (): JSX.Element => {
             </Grid>
           </Grid>
         </Grid>
-        <Divider sx={{ width: '100%' }} />
+        {isMdWindow && <Divider sx={{ width: '100%' }} />}
         <Grid item>
           <Grid container alignItems='center' pb={isMdWindow ? 2 : 0}>
             <Grid item>
@@ -183,7 +184,7 @@ const AssetFooter = (): JSX.Element => {
             </Grid>
           </Grid>
         </Grid>
-        <Divider sx={{ width: '100%' }} />
+        {isMdWindow && <Divider sx={{ width: '100%' }} />}
         <Grid item>
           <Grid container alignItems='center' pb={isMdWindow ? 2 : 0}>
             <Grid item>
@@ -203,7 +204,7 @@ const AssetFooter = (): JSX.Element => {
             </Grid>
           </Grid>
         </Grid>
-        <Divider sx={{ width: '100%' }} />
+        {isMdWindow && <Divider sx={{ width: '100%' }} />}
         <Grid item>
           <Grid container alignItems='center' pb={isMdWindow ? 2 : 0}>
             <Grid item>
@@ -223,7 +224,7 @@ const AssetFooter = (): JSX.Element => {
             </Grid>
           </Grid>
         </Grid>
-        <Divider sx={{ width: '100%' }} />
+        {isMdWindow && <Divider sx={{ width: '100%' }} />}
         <Grid item>
           <Grid container alignItems='center' pb={isMdWindow ? 2 : 0}>
             <Grid item>

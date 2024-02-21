@@ -6,6 +6,7 @@ import HoldingStocks from './HoldingStocks'
 const Stocks = (): JSX.Element => {
   return (
     <SwipeableTabs
+      exceptionRoute='/stocks'
       components={[
         {
           title: <FormattedMessage id='title.holding.stocks' />,

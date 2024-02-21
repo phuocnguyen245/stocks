@@ -268,7 +268,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
             </Box>
 
             <Grid container columnSpacing={0.75}>
-              <Grid item md={6}>
+              <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
                   label={<FormattedMessage id='label.volume' />}
@@ -282,7 +282,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
                   helperText={errors.volume?.message}
                 />
               </Grid>
-              <Grid item md={6}>
+              <Grid item xs={12} md={6}>
                 {status === 1 ? (
                   <TextField
                     fullWidth
@@ -310,7 +310,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
               </Grid>
             </Grid>
 
-            {status !== 1 && (
+            {status === 1 && (
               <Box mt={0.5}>
                 <Typography mb={0.75}>Takes</Typography>
                 {target.take.map((item, index) => (
@@ -321,8 +321,9 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
                     alignItems='center'
                     justifyContent='space-between'
                     columnSpacing={0.75}
+                    rowSpacing={2}
                   >
-                    <Grid item>
+                    <Grid item xs={12} md={5.5}>
                       <TextField
                         fullWidth
                         label='Volume'
@@ -333,7 +334,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
                         inputProps={{ step: '0.1' }}
                       />
                     </Grid>
-                    <Grid item>
+                    <Grid item xs={10} md={5.5}>
                       <TextField
                         fullWidth
                         label='Price'
@@ -344,7 +345,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
                         inputProps={{ step: '0.1' }}
                       />
                     </Grid>
-                    <Grid item>
+                    <Grid item xs={2} md={1}>
                       {index === 0 ? (
                         <IconButton
                           sx={{ bgcolor: index === 0 ? 'primary.main' : 'error.main', p: 0 }}
@@ -366,7 +367,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
               </Box>
             )}
 
-            {status !== 1 && (
+            {status === 1 && (
               <Box mt={0.5}>
                 <Typography mb={0.75}>Stops</Typography>
                 {target.stop.map((item, index) => (
@@ -377,8 +378,9 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
                     alignItems='center'
                     justifyContent='space-between'
                     columnSpacing={0.75}
+                    rowSpacing={2}
                   >
-                    <Grid item md={6}>
+                    <Grid item xs={12} md={6}>
                       <TextField
                         fullWidth
                         label='Volume'
@@ -390,7 +392,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
                         disabled
                       />
                     </Grid>
-                    <Grid item md={6}>
+                    <Grid item xs={12} md={6}>
                       <TextField
                         fullWidth
                         label='Price'

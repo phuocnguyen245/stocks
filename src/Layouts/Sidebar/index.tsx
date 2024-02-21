@@ -67,6 +67,7 @@ const AppBar = styled(MuiAppBar, {
 const PersistentDrawerLeft = (): JSX.Element => {
   const dispatch = useDispatch()
   const isLogin = useIsLogin()
+
   const [openWatchList, setOpenWatchList] = useState(() => {
     const openLocal = localStorage.getItem('isOpenDrawer')
     if (typeof openLocal === 'string' && (openLocal === 'true' || openLocal === 'false')) {
@@ -74,7 +75,7 @@ const PersistentDrawerLeft = (): JSX.Element => {
       const isTypeBoolean = typeof isOpen === 'boolean'
       return isTypeBoolean ? isOpen : true
     }
-    return true
+    return false
   })
 
   const [darkMode, setDarkMode] = useState<'light' | 'dark'>(() => {
@@ -125,11 +126,9 @@ const PersistentDrawerLeft = (): JSX.Element => {
                 onSetDarkMode={setDarkMode}
                 languages={languages}
                 onSetLanguages={setLanguages}
-                isLogin={isLogin}
               />
               <Menu
                 onOpenWatchList={toggle}
-                isLogin={isLogin}
                 darkMode={darkMode}
                 onSetDarkMode={setDarkMode}
                 languages={languages}

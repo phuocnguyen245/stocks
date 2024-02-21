@@ -8,6 +8,7 @@ interface StockState {
   sellStock?: Stock
   mode: 'dark' | 'light' | null
   isMdWindow: boolean
+  isLogin: boolean | null
 }
 
 // Define the initial state using that type
@@ -17,7 +18,8 @@ const initialState: StockState = {
   isOpenSidebar: false,
   sellStock: undefined,
   mode: null,
-  isMdWindow: false
+  isMdWindow: false,
+  isLogin: null
 }
 
 export const stockSlice = createSlice({
@@ -41,10 +43,20 @@ export const stockSlice = createSlice({
     },
     onMdWindow: (state, action) => {
       state.isMdWindow = action.payload
+    },
+    onIsLogin: (state, action) => {
+      state.isLogin = action.payload
     }
   }
 })
 
-export const { refetchStocks, getRSI, setOpenSidebar, setMode, onSellStock, onMdWindow } =
-  stockSlice.actions
+export const {
+  refetchStocks,
+  getRSI,
+  setOpenSidebar,
+  setMode,
+  onSellStock,
+  onMdWindow,
+  onIsLogin
+} = stockSlice.actions
 export default stockSlice.reducer
