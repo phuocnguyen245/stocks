@@ -73,7 +73,7 @@ const AcceptModal = ({ open, toggle }: ModalsProps): JSX.Element => {
           <Typography>
             Access the website (We will redirect you to that page in a new tab.)
           </Typography>
-          <a href='https://167.172.69.166/api/v1/confirm-api' target='_blank' rel='noreferrer'>
+          <a href='https://167.172.69.166/api/v1/api-confirmation' target='_blank' rel='noreferrer'>
             <Typography
               sx={{
                 transition: 'all 0.5s ease',
@@ -82,7 +82,7 @@ const AcceptModal = ({ open, toggle }: ModalsProps): JSX.Element => {
                 }
               }}
             >
-              https://167.172.69.166/api/v1/confirm-api
+              https://167.172.69.166/api/v1/api-confirmation
             </Typography>
           </a>
         </Box>
