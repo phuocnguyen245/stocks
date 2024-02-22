@@ -5,16 +5,16 @@ import Switch from '@mui/material/Switch'
 import { memo, type ChangeEvent } from 'react'
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
-  width: 76,
+  width: 64,
   height: 34,
   padding: 7,
   '& .MuiSwitch-switchBase': {
     margin: 1,
     padding: 0,
-    transform: 'translateX(6px)',
+    transform: 'translate(0px, 2px)',
     '&.Mui-checked': {
       color: '#fff',
-      transform: 'translateX(36px)',
+      transform: 'translateX(32px)',
       '& .MuiSwitch-thumb:before': {
         backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
           '#fff'
@@ -28,8 +28,8 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   },
   '& .MuiSwitch-thumb': {
     backgroundColor: theme.palette.mode === 'dark' ? '#003892' : '#ffd500',
-    width: 32,
-    height: 32,
+    width: 28,
+    height: 28,
     '&::before': {
       content: "''",
       position: 'absolute',

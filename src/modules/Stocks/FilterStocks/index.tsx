@@ -6,6 +6,7 @@ import {
   Grid,
   List,
   ListItem,
+  Paper,
   Slider,
   Typography,
   useMediaQuery,
@@ -110,7 +111,14 @@ const FilterStocks = (): JSX.Element => {
       <Helmet>
         <title>Filter Stocks</title>
       </Helmet>
-      <Container sx={{ pt: isMdWindow ? 2 : 3 }}>
+      <Container
+        component={Paper}
+        sx={{
+          pt: isMdWindow ? 2 : 3,
+          minHeight: 'calc(100vh - 112px)',
+          boxShadow: 'none'
+        }}
+      >
         <Grid container columnSpacing={2} rowSpacing={2}>
           <Grid item xs={6} sm={6} md={6} lg={4}>
             <List

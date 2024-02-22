@@ -1,6 +1,7 @@
 import { Box, TablePagination } from '@mui/material'
 import React, { memo, type MouseEvent, type SetStateAction } from 'react'
 import { type DefaultPagination as IPagination } from './type'
+import { useAppSelector } from 'src/store'
 
 interface PaginationProps {
   pagination: IPagination
@@ -8,6 +9,7 @@ interface PaginationProps {
   onSetPagination: (value: SetStateAction<IPagination>) => void
 }
 const Pagination = ({ pagination, totalItems, onSetPagination }: PaginationProps): JSX.Element => {
+  const { isMdWindow } = useAppSelector((state) => state.Stocks)
   const handleChangePage = (event: MouseEvent<HTMLButtonElement> | null, newPage: number): void => {
     onSetPagination((prev) => ({ ...prev, page: newPage }))
   }
@@ -19,17 +21,26 @@ const Pagination = ({ pagination, totalItems, onSetPagination }: PaginationProps
   }
 
   return (
-    <Box sx={{ width: '100%', maxWidth: '100%' }}>
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: '100%',
+        display: 'flex',
+        justifyContent: 'flex-end',
+        '& .MuiTableCell-root': {
+          borderBottom: 'none'
+        }
+      }}
+    >
       <TablePagination
-        component='div'
         count={totalItems}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         page={pagination.page}
         rowsPerPage={pagination.size}
         rowsPerPageOptions={[5, 10, 25, 30]}
-        showLastButton
-        showFirstButton
+        showLastButton={!isMdWindow}
+        showFirstButton={!isMdWindow}
       />
     </Box>
   )

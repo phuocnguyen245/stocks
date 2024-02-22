@@ -16,6 +16,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { refetchStocks } from 'src/store/slices/stockSlice'
 import { countDays } from 'src/utils'
+import FilteredStocks from './FilteredStocks'
 
 const StocksDetail = (): JSX.Element => {
   const dispatch = useAppDispatch()
@@ -43,6 +44,8 @@ const StocksDetail = (): JSX.Element => {
         t: countDays(item.date)
       }))
       setData(data)
+    } else {
+      setData([] as Stock[])
     }
   }, [stocksData])
 
@@ -234,16 +237,19 @@ const StocksDetail = (): JSX.Element => {
   ]
 
   return (
-    <Table
-      data={data}
-      table={table}
-      isLoading={isLoading}
-      totalItems={stocksData?.data?.totalItems ?? 0}
-      // onDelete={onDelete}
-      onEdit={onEdit}
-      pagination={pagination}
-      onSetPagination={setPagination}
-    />
+    <>
+      <FilteredStocks onSetPagination={setPagination} />
+      <Table
+        data={data}
+        table={table}
+        isLoading={isLoading}
+        totalItems={stocksData?.data?.totalItems ?? 0}
+        onDelete={onDelete}
+        onEdit={onEdit}
+        pagination={pagination}
+        onSetPagination={setPagination}
+      />
+    </>
   )
 }
 

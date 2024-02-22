@@ -36,20 +36,27 @@ const HoldingStocks = (): JSX.Element => {
         <title>Stocks</title>
       </Helmet>
 
-      <StockHeader
-        openConfirmModal={openConfirmModal}
-        modalStatus={modalStatus}
-        onSetModalStatus={setModalStatus}
-      />
-      <Box px={2}>
-        <Grid container columnSpacing={2} rowGap={2}>
-          <Grid item xs={12} sm={12} md={12} lg={5} order={isMdWindow ? 2 : 1}>
-            <StocksDetail />
-          </Grid>
-          <Grid item xs={12} sm={12} md={12} lg={7} order={isMdWindow ? 1 : 2}>
-            <CurrentStocks />
+      <Box>
+        <Grid container columnSpacing={2} rowGap={2} justifyContent='center'>
+          <Grid item xs={12} sm={12} md={12} lg={5.5}></Grid>
+          <Grid item xs={12} sm={12} md={12} lg={5.5}>
+            <StockHeader
+              openConfirmModal={openConfirmModal}
+              modalStatus={modalStatus}
+              onSetModalStatus={setModalStatus}
+            />
           </Grid>
         </Grid>
+        <Box px={isMdWindow ? 2 : 0}>
+          <Grid container columnSpacing={2} rowGap={2} justifyContent='center'>
+            <Grid item xs={12} sm={12} md={12} lg={5.5} order={isMdWindow ? 2 : 1}>
+              <StocksDetail />
+            </Grid>
+            <Grid item xs={12} sm={12} md={12} lg={5.5} order={isMdWindow ? 1 : 2}>
+              <CurrentStocks />
+            </Grid>
+          </Grid>
+        </Box>
       </Box>
       {!isMdWindow && <StockFooter />}
     </Box>

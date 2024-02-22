@@ -49,7 +49,7 @@ const StockHeader = ({
       {isMdWindow ? (
         <Container sx={{ width: '100%', textAlign: 'right', py: 1 }}>{children}</Container>
       ) : (
-        <Box sx={{ width: '100%', textAlign: 'right', py: 2, px: 2 }}>{children}</Box>
+        <Box sx={{ width: '100%', textAlign: 'right', py: 2 }}>{children}</Box>
       )}
     </>
   )

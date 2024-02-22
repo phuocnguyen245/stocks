@@ -15,6 +15,8 @@ import {
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { onSellStock, refetchStocks } from 'src/store/slices/stockSlice'
 import { countDays, formatVND, ratio } from 'src/utils'
+import FilterStocks from '../../FilterStocks'
+import FilteredStocks from '../StocksDetail/FilteredStocks'
 
 const CurrentStocks = (): JSX.Element => {
   const [deleteCurrentStock] = useDeleteCurrentStockMutation()
@@ -267,19 +269,22 @@ const CurrentStocks = (): JSX.Element => {
   ]
 
   return (
-    <Table
-      data={data}
-      table={table}
-      isLoading={isLoading}
-      totalItems={currentStockData?.data?.totalItems ?? 0}
-      // onDelete={onDelete}
-      // onEdit={onEdit}
-      pagination={pagination}
-      onSetPagination={setPagination}
-      onView={onView}
-      subTable={subTable}
-      subData={subData}
-    />
+    <>
+      <FilteredStocks />
+      <Table
+        data={data}
+        table={table}
+        isLoading={isLoading}
+        totalItems={currentStockData?.data?.totalItems ?? 0}
+        onDelete={onDelete}
+        // onEdit={onEdit}
+        pagination={pagination}
+        onSetPagination={setPagination}
+        onView={onView}
+        subTable={subTable}
+        subData={subData}
+      />
+    </>
   )
 }
 
