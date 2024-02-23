@@ -1,12 +1,12 @@
-import { Box, Container, Paper, Typography } from '@mui/material'
+import { Box, Button, IconButton, Link } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
+import { useNavigate } from 'react-router-dom'
+import { type Indicator, type LabelType } from 'src/Models'
 import { Label } from 'src/components/MUIComponents'
 import Table from 'src/components/Table'
 import type { DefaultPagination, TableHeaderBody } from 'src/components/Table/type'
-import { type LabelType, type Indicator } from 'src/Models'
 import { convertToDecimal } from 'src/utils'
-import { useNavigate } from 'react-router-dom'
 interface FilterResultProps {
   data: Indicator[]
 }
@@ -62,7 +62,18 @@ const FilterResult = ({ data }: FilterResultProps): JSX.Element => {
       name: 'code',
       title: <FormattedMessage id='label.code' />,
       align: 'center',
-      width: '10%'
+      width: '10%',
+      render: (row) => {
+        return (
+          <Link
+            href={`/stocks/${row.code}`}
+            target='_blank'
+            sx={{ color: 'primary.main', textDecoration: 'none' }}
+          >
+            <Button>{row.code}</Button>
+          </Link>
+        )
+      }
     },
     {
       name: 'result',

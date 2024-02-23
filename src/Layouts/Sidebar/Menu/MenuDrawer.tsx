@@ -61,7 +61,7 @@ const MenuDrawer = ({
           {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
         </DrawerHeader>
         <Divider />
-        <List>
+        <List sx={{ py: 0 }}>
           <ListItem sx={{ cursor: 'pointer' }} onClick={onOpen}>
             <Typography variant='h6' fontWeight={600}>
               Watch List
@@ -75,7 +75,7 @@ const MenuDrawer = ({
           </ListItem>
           <Divider />
           <ListItem>
-            <SearchBar />
+            <SearchBar open={open} />
           </ListItem>
           <Divider />
           <ListItem sx={{ display: 'flex', gap: 2 }}>

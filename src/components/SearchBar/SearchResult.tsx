@@ -1,14 +1,17 @@
 import { Box, Divider, Typography, useTheme } from '@mui/material'
 import { Fragment, memo, useEffect, useRef, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 import type { Board } from 'src/Models'
 import { useGetBoardQuery } from 'src/services/stocks.services'
 
-const SearchResult = ({ search }: { search: string }): JSX.Element => {
+interface SearchResultProps {
+  search: string
+  isMd: boolean
+}
+const SearchResult = ({ search, isMd }: SearchResultProps): JSX.Element => {
   const theme = useTheme()
   const boxRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
-  const location = useLocation()
 
   const [data, setData] = useState<Board[]>([])
   const [pagination, setPagination] = useState({
@@ -31,14 +34,14 @@ const SearchResult = ({ search }: { search: string }): JSX.Element => {
       setData([])
       setTotalItems(0)
     }
-  }, [boardData])
 
-  useEffect(() => {
-    if (search) {
+    if (!search) {
+      setPagination((prev) => ({ ...prev, page: 0, search: '' }))
+      return setData([])
+    } else {
       setPagination((prev) => ({ ...prev, page: 0, search }))
     }
-    setData([])
-  }, [search])
+  }, [boardData, search])
 
   useEffect(() => {
     if (data.length) {
@@ -74,9 +77,9 @@ const SearchResult = ({ search }: { search: string }): JSX.Element => {
     <Box
       bgcolor={theme.palette.mode === 'dark' ? '#3c3c3c' : '#f9f3fe'}
       borderRadius={2}
-      width='400px'
-      maxWidth='400px'
-      maxHeight='460px'
+      width={isMd ? '100%' : '414px'}
+      maxWidth={isMd ? '100%' : '400px'}
+      maxHeight={isMd ? '414px' : '414px'}
       sx={{
         overflowY: 'auto',
         overflowX: 'hidden'

@@ -100,8 +100,21 @@ const onDarkTheme = (mode: 'dark' | 'light'): Theme => {
       MuiTextField: {
         styleOverrides: {
           root: {
-            '& label': {
-              color: mode === 'dark' ? '#fff' : '#000'
+            '& .MuiInputBase-root': {
+              '&:hover': {
+                fieldset: {
+                  borderColor: '#A020F0'
+                }
+              }
+            }
+          }
+        }
+      },
+      MuiFormControl: {
+        styleOverrides: {
+          root: {
+            '& .MuiFormLabel-root': {
+              color: 'rgba(0, 0, 0, 0.6)'
             }
           }
         }
