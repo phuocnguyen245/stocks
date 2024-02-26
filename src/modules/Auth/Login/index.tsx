@@ -53,6 +53,8 @@ const Login = (): JSX.Element => {
     } catch (error: any) {
       if (error.status === 404) {
         alert({ message: 'Username or password is not correct', variant: 'error' })
+      } else if (error.status === 'FETCH_ERROR') {
+        alert({ message: JSON.stringify(error), variant: 'error' })
       } else {
         toggle()
       }

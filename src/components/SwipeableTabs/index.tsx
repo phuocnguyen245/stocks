@@ -66,7 +66,7 @@ const SwipeableTabs = ({ components, exceptionRoute }: SwipeableTabsProps): JSX.
       </CustomTabPanel>
     ))
 
-    if (isMdWindow && exceptionRoute && exceptionRoute === pathname) {
+    if (isMdWindow) {
       return children
     }
 

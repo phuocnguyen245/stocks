@@ -142,7 +142,7 @@ const FilteredStocks = ({ onSetPagination }: FilteredStocksProps): JSX.Element =
           rowSpacing={1}
           width='100%'
         >
-          <Grid item>
+          <Grid item xs={isMdWindow ? 12 : 'auto'}>
             <Grid container columnSpacing={1}>
               <Grid item xs={6}>
                 <DatePicker

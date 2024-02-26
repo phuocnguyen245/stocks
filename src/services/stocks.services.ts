@@ -37,6 +37,13 @@ export const StockService = createApi({
         url: '/stocks/watch-lists'
       })
     }),
+    updateWatchList: builder.mutation<ResponseType<WatchList[]>, any>({
+      query: (body) => ({
+        url: '/stocks/watch-lists',
+        body,
+        method: 'POST'
+      })
+    }),
     getBoard: builder.query<ResponseType<ResponsePagination<Board[]>>, any>({
       query: ({ search, ...rest }) => ({
         url: `/stocks/board?search=${search}`,
@@ -109,5 +116,6 @@ export const {
   useDeleteCurrentStockMutation,
   useGetWatchListQuery,
   useGetRecommendedQuery,
-  useRefreshTimeQuery
+  useRefreshTimeQuery,
+  useUpdateWatchListMutation
 } = StockService
