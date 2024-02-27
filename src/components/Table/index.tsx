@@ -1,11 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Delete,
-  Edit,
-  KeyboardArrowDown,
-  KeyboardArrowUp,
-  RemoveRedEyeSharp
-} from '@mui/icons-material'
+import { Edit, KeyboardArrowDown, KeyboardArrowUp, RemoveRedEyeSharp } from '@mui/icons-material'
 import {
   Box,
   Button,
@@ -25,12 +19,13 @@ import { Fragment, memo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import EmptyResult from 'src/asset/imgs/empty-result.jpg'
 import { Loader } from 'src/components/MUIComponents'
+import DeletePopover from './DeletePopover'
 import Pagination from './Pagination'
 import type { TableHeaderBody, TableProps } from './type'
 const Table = ({
   data,
   table,
-  isLoading = false,
+  isLoading,
   totalItems,
   pagination,
   subTable,
@@ -42,7 +37,9 @@ const Table = ({
   ...props
 }: TableProps<any, any, any>): JSX.Element => {
   const [open, setOpen] = useState<string[]>([])
+
   const theme = useTheme()
+
   const { sx, ...restProps } = props
   const onOpen = (id: string): void => {
     setOpen(() => {
@@ -54,7 +51,7 @@ const Table = ({
   }
 
   return (
-    <Box boxShadow={2} borderRadius={1} overflow='hidden'>
+    <Box boxShadow={2} borderRadius={1}>
       <TableContainer
         component={Paper}
         sx={{ ...sx, boxShadow: 'none', borderRadius: 0 }}
@@ -158,15 +155,14 @@ const Table = ({
                                 <Edit />
                               </Button>
                             )}
-                            {onDelete && row.status === 'Buy' && (
-                              <Button
-                                sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                                onClick={() => {
-                                  onDelete(row)
-                                }}
-                              >
-                                <Delete color='error' />
-                              </Button>
+                            {onDelete && (
+                              <Box position='relative'>
+                                <DeletePopover
+                                  row={row}
+                                  onDelete={onDelete}
+                                  isLoading={isLoading}
+                                />
+                              </Box>
                             )}
                           </Box>
                         </TableCell>

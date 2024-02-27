@@ -33,7 +33,7 @@ const StocksDetail = (): JSX.Element => {
 
   const {
     data: stocksData,
-    isLoading,
+    isFetching,
     refetch
   } = useGetStocksQuery({ ...pagination }, { refetchOnMountOrArgChange: true })
 
@@ -242,7 +242,7 @@ const StocksDetail = (): JSX.Element => {
       <Table
         data={data}
         table={table}
-        isLoading={isLoading}
+        isLoading={isFetching}
         totalItems={stocksData?.data?.totalItems ?? 0}
         onDelete={onDelete}
         onEdit={onEdit}

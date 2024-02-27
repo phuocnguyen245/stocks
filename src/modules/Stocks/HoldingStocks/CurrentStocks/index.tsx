@@ -1,4 +1,4 @@
-import { Box, Button, Switch, TextField, Typography } from '@mui/material'
+import { Box, Button, TextField, Typography } from '@mui/material'
 import moment from 'moment'
 import React, { useCallback, useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
@@ -15,7 +15,6 @@ import {
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { onSellStock, refetchStocks } from 'src/store/slices/stockSlice'
 import { countDays, formatVND, ratio } from 'src/utils'
-import FilterStocks from '../../FilterStocks'
 import FilteredStocks from '../StocksDetail/FilteredStocks'
 
 const CurrentStocks = (): JSX.Element => {
@@ -33,7 +32,7 @@ const CurrentStocks = (): JSX.Element => {
 
   const {
     data: currentStockData,
-    isLoading,
+    isFetching,
     refetch
   } = useGetCurrentStocksQuery({}, { refetchOnMountOrArgChange: true })
 
@@ -218,28 +217,28 @@ const CurrentStocks = (): JSX.Element => {
       name: '',
       title: 'Take 1',
       render: (row) => {
-        return <>{row.take[0].price}</>
+        return <>{row?.take?.[0]?.price}</>
       }
     },
     {
       name: '',
       title: 'Take 2',
       render: (row) => {
-        return <>{row.take[1]?.price || 0}</>
+        return <>{row?.take?.[1]?.price || 0}</>
       }
     },
     {
       name: '',
       title: 'Stop 1',
       render: (row) => {
-        return <>{row.stop[0]?.price || 0}</>
+        return <>{row?.stop?.[0]?.price || 0}</>
       }
     },
     {
       name: '',
       title: 'Stop 2',
       render: (row) => {
-        return <>{row.stop[1]?.price || 0}</>
+        return <>{row?.stop?.[1]?.price || 0}</>
       }
     },
     {
@@ -268,7 +267,7 @@ const CurrentStocks = (): JSX.Element => {
       <Table
         data={data}
         table={table}
-        isLoading={isLoading}
+        isLoading={isFetching}
         totalItems={currentStockData?.data?.totalItems ?? 0}
         onDelete={onDelete}
         // onEdit={onEdit}
