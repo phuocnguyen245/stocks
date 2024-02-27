@@ -22,12 +22,11 @@ import {
   useTheme
 } from '@mui/material'
 import { Fragment, memo, useState } from 'react'
-import { FormattedMessage } from 'react-intl'
 import { Link } from 'react-router-dom'
+import EmptyResult from 'src/asset/imgs/empty-result.jpg'
 import { Loader } from 'src/components/MUIComponents'
 import Pagination from './Pagination'
 import type { TableHeaderBody, TableProps } from './type'
-import EmptyResult from 'src/asset/imgs/empty-result.jpg'
 const Table = ({
   data,
   table,
@@ -233,7 +232,7 @@ const Table = ({
                 )
               })}
               {isLoading && (
-                <TableCell sx={{ minHeight: '80px !important', display: 'block' }}>
+                <TableCell sx={{ display: 'block' }}>
                   <Loader />
                 </TableCell>
               )}

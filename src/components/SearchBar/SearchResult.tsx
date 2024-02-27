@@ -23,8 +23,16 @@ const SearchResult = ({ search, isMd }: SearchResultProps): JSX.Element => {
 
   const { data: boardData } = useGetBoardQuery(
     { ...pagination },
-    { refetchOnMountOrArgChange: true, skip: !pagination.search }
+    { refetchOnMountOrArgChange: true, skip: !search }
   )
+
+  useEffect(() => {
+    setData([])
+    setPagination((prev) => {
+      const newPagination = { ...prev, page: 0, search: search || '' }
+      return newPagination
+    })
+  }, [search])
 
   useEffect(() => {
     if (boardData?.data?.data?.length) {
@@ -34,14 +42,7 @@ const SearchResult = ({ search, isMd }: SearchResultProps): JSX.Element => {
       setData([])
       setTotalItems(0)
     }
-
-    if (!search) {
-      setPagination((prev) => ({ ...prev, page: 0, search: '' }))
-      return setData([])
-    } else {
-      setPagination((prev) => ({ ...prev, page: 0, search }))
-    }
-  }, [boardData, search])
+  }, [boardData])
 
   useEffect(() => {
     if (data.length) {

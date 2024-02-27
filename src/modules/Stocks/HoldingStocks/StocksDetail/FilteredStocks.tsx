@@ -1,6 +1,5 @@
 import { Search } from '@mui/icons-material'
 import {
-  Box,
   FormControl,
   Grid,
   IconButton,
@@ -11,10 +10,11 @@ import {
   Select,
   type SelectChangeEvent
 } from '@mui/material'
-import { DatePicker, PickerChangeHandlerContext } from '@mui/x-date-pickers'
+import { DatePicker } from '@mui/x-date-pickers'
 import moment, { type MomentInput } from 'moment'
-import { type SetStateAction, useState, useEffect } from 'react'
+import { useState, type ChangeEvent, type SetStateAction, useEffect } from 'react'
 import { type DefaultPagination } from 'src/components/Table/type'
+import { useDebounce } from 'src/hooks'
 import { useAppSelector } from 'src/store'
 
 interface FilterProps {
@@ -26,7 +26,10 @@ interface FilterProps {
 interface FilteredStocksProps {
   onSetPagination?: (value: SetStateAction<DefaultPagination>) => void
 }
-interface PaginationWithFilter extends FilterProps, DefaultPagination {}
+interface PaginationWithFilter extends FilterProps, DefaultPagination {
+  search?: string
+}
+
 const FilteredStocks = ({ onSetPagination }: FilteredStocksProps): JSX.Element => {
   const { isMdWindow } = useAppSelector((state) => state.Stocks)
   const [filter, setFilter] = useState<FilterProps>({
@@ -34,8 +37,25 @@ const FilteredStocks = ({ onSetPagination }: FilteredStocksProps): JSX.Element =
     from: '',
     to: ''
   })
+  const [search, setSearch] = useState('')
+  const searchDebounce = useDebounce(search, 600)
 
-  const onFilter = (e: SelectChangeEvent, type: keyof PaginationWithFilter): void => {
+  useEffect(() => {
+    if (onSetPagination) {
+      onSetPagination((prev) => {
+        const newPagination = {
+          ...prev,
+          search: searchDebounce
+        }
+        return newPagination
+      })
+    }
+  }, [searchDebounce, onSetPagination])
+
+  const onFilter = (
+    e: SelectChangeEvent | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    type: keyof PaginationWithFilter
+  ): void => {
     const value = e.target.value
     setFilter((prev) => ({ ...prev, [type]: value }))
     onSetPagination &&
@@ -111,8 +131,16 @@ const FilteredStocks = ({ onSetPagination }: FilteredStocksProps): JSX.Element =
               variant='outlined'
               size='small'
             >
-              <InputLabel>Search ...</InputLabel>
+              <InputLabel>Code ...</InputLabel>
               <OutlinedInput
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                inputProps={{ maxLength: 3 }}
+                sx={{
+                  '& input': {
+                    textTransform: 'uppercase'
+                  }
+                }}
                 endAdornment={
                   <InputAdornment position='end'>
                     <IconButton edge='end'>
@@ -120,7 +148,7 @@ const FilteredStocks = ({ onSetPagination }: FilteredStocksProps): JSX.Element =
                     </IconButton>
                   </InputAdornment>
                 }
-                label='Search'
+                label='Code'
               />
             </FormControl>
           </Grid>

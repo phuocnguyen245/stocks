@@ -1,4 +1,4 @@
-import { Button, Switch, TextField, Typography } from '@mui/material'
+import { Box, Button, Switch, TextField, Typography } from '@mui/material'
 import moment from 'moment'
 import React, { useCallback, useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
@@ -141,23 +141,19 @@ const CurrentStocks = (): JSX.Element => {
   const table: Array<TableHeaderBody<Stock>> = [
     {
       name: 'code',
-      title: <FormattedMessage id='label.code' />,
-      width: '10%'
+      title: <FormattedMessage id='label.code' />
     },
     {
       name: 'volume',
-      title: <FormattedMessage id='label.volume' />,
-      width: '15%'
+      title: <FormattedMessage id='label.volume' />
     },
     {
       name: 'averagePrice',
-      title: <FormattedMessage id='label.average' />,
-      width: '15%'
+      title: <FormattedMessage id='label.average' />
     },
     {
       name: 'marketPrice',
       title: <FormattedMessage id='label.market.price' />,
-      width: '15%',
       render: (row) => (
         <>
           {editData?.code?.toUpperCase() === row?.code?.toUpperCase() ? (
@@ -187,14 +183,12 @@ const CurrentStocks = (): JSX.Element => {
     {
       name: 'ratio',
       title: <FormattedMessage id='label.profit.loss' />,
-      width: '10%',
-      render: (row) => <>{renderLabel(Number(row?.ratio) * 100)}</>
+      render: (row) => <Box width={80}>{renderLabel(Number(row?.ratio) * 100)}</Box>
     },
     {
       name: 'investedValue',
       title: <FormattedMessage id='label.profit.loss.value' />,
       align: 'left',
-      width: '20%',
       render: (row) => <> {renderLabel(Number(row.investedValue?.toFixed(2)), 'gain')}</>
     }
   ]
