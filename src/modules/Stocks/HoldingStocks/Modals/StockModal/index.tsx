@@ -16,6 +16,7 @@ import { memo, useEffect, useMemo, useRef, useState, type ChangeEvent } from 're
 import { useForm } from 'react-hook-form'
 import { FormattedMessage } from 'react-intl'
 import type { Stock, Target } from 'src/Models'
+import InfinitySelectCode from 'src/components/InfilitySelectCode'
 import { Button, Select } from 'src/components/MUIComponents'
 import { useAlert } from 'src/hooks'
 import { StockService, useCreateStockMutation } from 'src/services/stocks.services'
@@ -62,6 +63,15 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
     take: [{ id: uuidV4(), name: '', price: 0, volume: 0 }],
     stop: [{ id: uuidV4(), name: '', price: 0, volume: 0 }]
   })
+  const [tradingStatus, setTradingStatus] = useState(0)
+
+  useEffect(() => {
+    status && setTradingStatus(status)
+  }, [status])
+
+  useEffect(() => {
+    sellStock && setTradingStatus(0)
+  }, [sellStock])
 
   const {
     register,
@@ -90,12 +100,19 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
     if (sellStock) {
       setValue('code', sellStock.code)
       setValue('volume', sellStock.volume)
+      setValue('orderPrice', null)
     }
     setValue('date', moment(Date.now()).toISOString())
   }, [open, status, sellStock])
 
   const onChangeDate = (date: MomentInput): void => {
     setValue('date', moment(date).toISOString())
+  }
+
+  const onCloseModal = (): void => {
+    handleClose()
+    handleClose()
+    dispatch(onSellStock(null))
   }
 
   const handleSave = async (value: FormBody): Promise<void> => {
@@ -105,10 +122,10 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
         code: code.toUpperCase(),
         volume,
         date: getValues('date'),
-        ...(status === 1 ? { orderPrice } : { sellPrice }),
-        status: status === 1 ? 'Buy' : 'Sell',
-        take: target.take,
-        stop: target.stop
+        ...(tradingStatus === 1 ? { orderPrice } : { sellPrice }),
+        status: tradingStatus === 1 ? 'Buy' : 'Sell',
+        ...(tradingStatus === 1 && { take: target.take }),
+        ...(tradingStatus === 1 && { stop: target.stop })
       }).unwrap()
       if (response.data) {
         reset()
@@ -119,7 +136,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
           take: [{ id: uuidV4(), name: '', price: 0, volume: 0 }],
           stop: [{ id: uuidV4(), name: '', price: 0, volume: 0 }]
         })
-        return addData({ ...response.data })
+        return onCloseModal()
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -127,13 +144,8 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
     }
   }
 
-  const onCloseModal = (): void => {
-    dispatch(onSellStock(undefined))
-    handleClose()
-  }
-
   const option = useMemo(() => {
-    if (status === 0) {
+    if (tradingStatus === 0) {
       if (stockData?.data?.data?.length) {
         return stockData?.data?.data?.map((stock: Stock) => ({
           id: stock._id,
@@ -144,7 +156,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
       return []
     }
     return []
-  }, [status])
+  }, [tradingStatus])
 
   const onAddTakeOrStop = (type: keyof TargetState): void => {
     return setTarget((prev) => ({ ...prev, [type]: [...prev[type], init] }))
@@ -219,34 +231,16 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
         <Box py={3} px={0} component='form' onSubmit={handleSubmit(handleSave)} id='stock-form'>
           <Box paddingBottom={2} paddingX={4}>
             <Typography>
-              {status === 1 ? (
-                <FormattedMessage id='label.buying' />
-              ) : (
-                <FormattedMessage id='label.selling' />
-              )}
+              {tradingStatus === 1 && !sellStock && <FormattedMessage id='label.buying' />}
+              {(tradingStatus === 0 || sellStock) && <FormattedMessage id='label.selling' />}
               &nbsp;
               <FormattedMessage id='label.stock' />
             </Typography>
           </Box>
           <Divider />
           <Box paddingX={4} paddingY={2} component='form'>
-            {status === 1 ? (
-              <TextField
-                fullWidth
-                label={<FormattedMessage id='label.code' />}
-                autoFocus
-                inputRef={textFieldRef}
-                inputProps={{
-                  autoFocus: true,
-                  maxLength: 3,
-                  style: { textTransform: 'uppercase' }
-                }}
-                required
-                sx={{ margin: '8px 0' }}
-                {...register('code')}
-                error={!!errors.code}
-                helperText={errors.code?.message}
-              />
+            {tradingStatus === 1 ? (
+              <InfinitySelectCode onSetData={setValue} />
             ) : (
               <Box pb={1}>
                 <Select
@@ -264,6 +258,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
                 defaultValue={moment(Date.now())}
                 onChange={onChangeDate}
                 sx={{ width: '100%' }}
+                slotProps={{ textField: { fullWidth: true } }}
               />
             </Box>
 
@@ -283,12 +278,13 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
                 />
               </Grid>
               <Grid item xs={12} md={6}>
-                {status === 1 ? (
+                {tradingStatus === 1 ? (
                   <TextField
                     fullWidth
                     label={<FormattedMessage id='label.order.price' />}
                     type='number'
                     required
+                    inputProps={{ min: 0 }}
                     sx={{ margin: '8px 0' }}
                     {...register('orderPrice')}
                     onChange={onChangeInput}
@@ -310,14 +306,14 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
               </Grid>
             </Grid>
 
-            {status === 1 && (
+            {tradingStatus === 1 && (
               <Box mt={0.5}>
                 <Typography mb={0.75}>Takes</Typography>
                 {target.take.map((item, index) => (
                   <Grid
                     container
                     key={item.id}
-                    pb={1}
+                    pb={1.5}
                     alignItems='center'
                     justifyContent='space-between'
                     columnSpacing={0.75}
@@ -367,18 +363,17 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
               </Box>
             )}
 
-            {status === 1 && (
+            {tradingStatus === 1 && (
               <Box mt={0.5}>
                 <Typography mb={0.75}>Stops</Typography>
                 {target.stop.map((item, index) => (
                   <Grid
                     container
                     key={item.id}
-                    pb={1}
+                    pb={1.5}
                     alignItems='center'
                     justifyContent='space-between'
                     columnSpacing={0.75}
-                    rowSpacing={2}
                   >
                     <Grid item xs={12} md={6}>
                       <TextField
@@ -404,24 +399,6 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
                         disabled
                       />
                     </Grid>
-                    {/* <Grid item>
-                      <IconButton
-                        sx={{ bgcolor: index === 0 ? 'primary.main' : 'error.main', p: 0 }}
-                      >
-                        {index === 0 ? (
-                          <Add
-                            color='inherit'
-                            onClick={() => onAddTakeOrStop('stop')}
-                            sx={{ width: '32px', height: '32px' }}
-                          />
-                        ) : (
-                          <Remove
-                            onClick={() => onRemoveTakeOrStop('stop', item.id)}
-                            sx={{ width: '32px', height: '32px' }}
-                          />
-                        )}
-                      </IconButton>
-                    </Grid> */}
                   </Grid>
                 ))}
               </Box>

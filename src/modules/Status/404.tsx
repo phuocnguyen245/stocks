@@ -1,5 +1,5 @@
 import { Box, Container } from '@mui/material'
-import Status404Img from 'src/asset/imgs/status404.jpg'
+import Status404Img from 'src/asset/imgs/status404.svg'
 import Helmet from 'src/components/Helmet'
 
 const Status404 = (): JSX.Element => {

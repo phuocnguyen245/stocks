@@ -22,6 +22,7 @@ const Pagination = ({ pagination, totalItems, onSetPagination }: PaginationProps
 
   return (
     <Box
+      boxShadow='inset 0px 2px 0px -0px #CCC'
       sx={{
         width: '100%',
         maxWidth: '100%',

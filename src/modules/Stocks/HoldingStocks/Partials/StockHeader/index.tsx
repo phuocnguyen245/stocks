@@ -19,10 +19,10 @@ const StockHeader = ({
   openConfirmModal
 }: StockHeaderProps): JSX.Element => {
   const { isMdWindow } = useAppSelector((state) => state.Stocks)
-  const onStockModal = useModal()
+  const { toggle, hide, show, open } = useModal()
 
   const addData = (): void => {
-    onStockModal.toggle()
+    show()
   }
 
   const children = (
@@ -30,24 +30,15 @@ const StockHeader = ({
       <Button variant='contained' onClick={openConfirmModal}>
         <FormattedMessage id='label.create' />
       </Button>
-      <ConfirmModal
-        modalStatus={modalStatus}
-        onSetModalStatus={onSetModalStatus}
-        toggle={onStockModal.toggle}
-      />
-      <StockModal
-        open={onStockModal.open}
-        handleClose={onStockModal.toggle}
-        addData={addData}
-        status={modalStatus.isBuy}
-      />
+      <ConfirmModal modalStatus={modalStatus} onSetModalStatus={onSetModalStatus} toggle={toggle} />
+      <StockModal open={open} handleClose={hide} addData={addData} status={modalStatus.isBuy} />
     </>
   )
 
   return (
     <>
       {isMdWindow ? (
-        <Container sx={{ width: '100%', textAlign: 'right', py: 1 }}>{children}</Container>
+        <Container sx={{ width: '100%', textAlign: 'right', py: 1, px: 0 }}>{children}</Container>
       ) : (
         <Box sx={{ width: '100%', textAlign: 'right', py: 2 }}>{children}</Box>
       )}

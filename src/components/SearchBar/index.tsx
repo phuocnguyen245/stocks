@@ -1,13 +1,17 @@
-import { Box, TextField, type BoxProps } from '@mui/material'
-import { useState, type ChangeEvent, useRef, useLayoutEffect, useEffect } from 'react'
-import { useDebounce } from 'src/hooks'
-import SearchResult from './SearchResult'
 import Search from '@mui/icons-material/Search'
+import { Box, TextField, type BoxProps, type TextFieldProps } from '@mui/material'
+import { useEffect, useRef, useState, type ChangeEvent } from 'react'
+import { useDebounce } from 'src/hooks'
 import { useAppSelector } from 'src/store'
+import SearchResult from './SearchResult'
 
 interface SearchBarProps extends BoxProps {
   open?: boolean
+  inputProps?: TextFieldProps
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setValue?: (name: any, value: string) => void
 }
+
 const SearchBar = (props: SearchBarProps): JSX.Element => {
   const { isMdWindow } = useAppSelector((state) => state.Stocks)
   const searchBoxRef = useRef<HTMLDivElement | null>(null)
@@ -49,23 +53,30 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
           ]}
           name='volume'
           value={search}
-          onChange={onChange}
-          placeholder='Stocks...'
+          placeholder='Code...'
           InputProps={{
             endAdornment: <Search />,
             fullWidth: true
           }}
+          {...props.inputProps}
+          onChange={onChange}
         />
       </Box>
+
       <Box
         position={isMdWindow ? 'fixed' : 'absolute'}
         left={isMdWindow ? '50%' : '0'}
-        sx={{ transform: 'translate(-50%, 0)' }}
+        sx={{ transform: isMdWindow ? 'translate(-50%, 0)' : 'translate(0, 0)' }}
         top={isMdWindow ? topDistance : '110%'}
         width={isMdWindow ? '90%' : '400px'}
         zIndex={1000}
       >
-        <SearchResult search={debouncedSearchTerm} isMd={isMdWindow} />
+        <SearchResult
+          search={debouncedSearchTerm}
+          isMd={isMdWindow}
+          isTextField={Boolean(props.inputProps)}
+          setValue={props?.setValue}
+        />
       </Box>
     </Box>
   )

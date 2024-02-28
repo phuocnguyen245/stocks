@@ -157,7 +157,7 @@ const PaymentModal = ({ open, editData, refetch, handleClose }: PaymentModalProp
               defaultValue={moment(Date.now())}
               onChange={onChangeDate}
             />
-            <NumberFormat {...materialUiTextFieldProps} TextField={TextField} />
+            <NumberFormat {...materialUiTextFieldProps} />
             <Box display='flex' alignItems='center'>
               <Typography>Type:</Typography>
               <Switch

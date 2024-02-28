@@ -1,25 +1,26 @@
-import { type TextFieldProps } from '@mui/material'
-import { forwardRef, type ComponentType } from 'react'
+import { TextField, type TextFieldProps } from '@mui/material'
 import { NumericFormat, type NumericFormatProps as NFP } from 'react-number-format'
 
-interface NumberFormatProps extends NFP {
-  TextField?: ComponentType<TextFieldProps>
+interface NumberFormatCustomProps extends NFP {
+  textFieldProps?: TextFieldProps
 }
 
-const NumberFormatCustom = forwardRef((props: NumberFormatProps, ref) => {
-  const { TextField: CustomTextField, ...otherProps } = props
+const NumberFormatCustom = (props: NumberFormatCustomProps): JSX.Element => {
+  const { ...otherProps } = props
+
+  const CustomTextFieldNumeric = (props: TextFieldProps): JSX.Element => {
+    return <TextField {...props} />
+  }
 
   return (
     <NumericFormat
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      customInput={CustomTextField as any}
+      customInput={CustomTextFieldNumeric as any}
       thousandSeparator=','
       decimalSeparator='.'
       {...otherProps}
     />
   )
-})
-
-NumberFormatCustom.displayName = 'NumberFormatCustom'
+}
 
 export default NumberFormatCustom

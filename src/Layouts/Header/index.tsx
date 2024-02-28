@@ -89,7 +89,8 @@ const Header = ({
         left: 0,
         display: 'flex',
         justifyContent: 'space-between',
-        height: 52
+        height: 52,
+        gap: '4px'
       }}
     >
       <HeaderNavigation flex={1} ml={isMd ? 0 : 4}>

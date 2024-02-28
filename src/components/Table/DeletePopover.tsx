@@ -26,8 +26,17 @@ const DeletePopover = ({ row, isLoading, onDelete }: DeletePopoverProps): JSX.El
   }
 
   useEffect(() => {
-    console.log(isLoading, popoverOpen, isLoading && popoverOpen)
-    isLoading && popoverOpen ? setIsLoadingDelete(true) : setIsLoadingDelete(false)
+    if (isLoadingDelete) {
+      if (popoverOpen) {
+        if (isLoading) {
+          hide()
+        } else {
+          setIsLoadingDelete(true)
+        }
+      } else {
+        setIsLoadingDelete(false)
+      }
+    }
   }, [isLoading, popoverOpen])
 
   return (

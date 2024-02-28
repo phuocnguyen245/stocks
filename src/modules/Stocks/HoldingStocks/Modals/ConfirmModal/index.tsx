@@ -44,9 +44,9 @@ const ConfirmModal = ({
             >
               <FormattedMessage id='label.buying' />
             </Button>
-            <Button variant='contained' onClick={onOpenSellingModal}>
+            {/* <Button variant='contained' onClick={onOpenSellingModal}>
               <FormattedMessage id='label.selling' />
-            </Button>
+            </Button> */}
           </Box>
         </Box>
       </Container>

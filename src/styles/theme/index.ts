@@ -103,9 +103,12 @@ const onDarkTheme = (mode: 'dark' | 'light'): Theme => {
             '& .MuiInputBase-root': {
               '&:hover': {
                 fieldset: {
-                  borderColor: '#A020F0'
+                  borderColor: mode === 'light' ? '#A020F0' : '#b641ff'
                 }
               }
+            },
+            '& .MuiFormLabel-root': {
+              color: mode === 'dark' ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0,0, 0.6)'
             }
           }
         }
@@ -114,7 +117,14 @@ const onDarkTheme = (mode: 'dark' | 'light'): Theme => {
         styleOverrides: {
           root: {
             '& .MuiFormLabel-root': {
-              color: 'rgba(0, 0, 0, 0.6)'
+              color: mode === 'dark' ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)'
+            },
+            '& .MuiInputBase-root': {
+              '&:hover': {
+                fieldset: {
+                  borderColor: mode === 'light' ? '#A020F0' : '#b641ff'
+                }
+              }
             }
           }
         }

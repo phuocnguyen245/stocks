@@ -7,8 +7,12 @@ import { useGetBoardQuery } from 'src/services/stocks.services'
 interface SearchResultProps {
   search: string
   isMd: boolean
+  isTextField?: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setValue?: (name: string, value: string) => void
 }
-const SearchResult = ({ search, isMd }: SearchResultProps): JSX.Element => {
+
+const SearchResult = ({ setValue, isTextField, search, isMd }: SearchResultProps): JSX.Element => {
   const theme = useTheme()
   const boxRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
@@ -71,7 +75,13 @@ const SearchResult = ({ search, isMd }: SearchResultProps): JSX.Element => {
   }
 
   const onClickBoard = (code: string): void => {
-    navigate(`/stocks/${code.toLowerCase()}`, { replace: true })
+    if (isTextField) {
+      if (setValue) {
+        setValue('code', code)
+        return setData([])
+      }
+    }
+    return navigate(`/stocks/${code.toLowerCase()}`, { replace: true })
   }
 
   return (

@@ -243,11 +243,12 @@ const Table = ({
             justifyContent='center'
             alignItems='center'
             flexDirection='column'
+            p={2}
           >
             <img
               style={{
-                width: '64px',
-                height: '64px',
+                width: '56px',
+                height: '56px',
                 maxWidth: '100%',
                 maxHeight: '100%'
               }}

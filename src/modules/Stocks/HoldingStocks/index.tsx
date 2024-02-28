@@ -31,6 +31,7 @@ const HoldingStocks = (): JSX.Element => {
       minHeight='calc(100vh - 112px)'
       pt={0}
       pb={isMdWindow ? 4 : '112px'}
+      px={2}
     >
       <Helmet>
         <title>Stocks</title>
@@ -47,7 +48,7 @@ const HoldingStocks = (): JSX.Element => {
             />
           </Grid>
         </Grid>
-        <Box px={isMdWindow ? 2 : 0}>
+        <Box>
           <Grid container columnSpacing={2} rowGap={2} justifyContent='center'>
             <Grid item xs={12} sm={12} md={12} lg={5.5} order={isMdWindow ? 2 : 1}>
               <StocksDetail />
