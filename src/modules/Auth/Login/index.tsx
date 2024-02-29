@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { LockOutlined } from '@mui/icons-material'
+import { LockOutlined, LoginOutlined } from '@mui/icons-material'
 import {
   Avatar,
   Box,
@@ -19,6 +19,7 @@ import useModal from 'src/hooks/useModals'
 import { useLoginMutation } from 'src/services/user.services'
 import AcceptModal from '../Modals/AcceptModal'
 import schema from './schema'
+import { FormattedMessage } from 'react-intl'
 
 interface FormBody {
   username: string
@@ -67,14 +68,14 @@ const Login = (): JSX.Element => {
         <LockOutlined color='action' />
       </Avatar>
       <Typography component='h1' variant='h5'>
-        Sign in
+        <FormattedMessage id='label.sign.in' />
       </Typography>
       <Box component='form' noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
         <TextField
           margin='normal'
           required
           fullWidth
-          label='Username'
+          label={<FormattedMessage id='label.username' />}
           autoComplete='username'
           autoFocus
           {...register('username')}
@@ -85,7 +86,7 @@ const Login = (): JSX.Element => {
           margin='normal'
           required
           fullWidth
-          label='Password'
+          label={<FormattedMessage id='label.password' />}
           type='password'
           autoComplete='current-password'
           {...register('password')}
@@ -105,16 +106,24 @@ const Login = (): JSX.Element => {
               defaultChecked
             />
           }
-          label='Remember me'
+          label={<FormattedMessage id='label.remember.me' />}
         />
         <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-          <Typography fontWeight={600}>Sign In</Typography>
+          <LoginOutlined />
+          <Typography fontWeight={600} ml={1}>
+            <FormattedMessage id='label.sign.in' />
+          </Typography>
         </Button>
         <Grid container>
           <Grid item xs>
-            <CustomLink to='/email'>Forgot password?</CustomLink>
+            <CustomLink to='/email'>
+              <FormattedMessage id='label.forgot.password' />?
+            </CustomLink>
           </Grid>
-          <CustomLink to='/register'>Don&apos;t have an account? Sign Up</CustomLink>
+          <CustomLink to='/register'>
+            <FormattedMessage id='text.dont.have.an.account' />? &nbsp;
+            <FormattedMessage id='label.sign.up' />
+          </CustomLink>
         </Grid>
       </Box>
       <AcceptModal open={open} toggle={toggle} />
@@ -125,8 +134,8 @@ const Login = (): JSX.Element => {
 export default Login
 
 const CustomLink = styled(Link)(({ theme }) => ({
-  color: theme.palette.text.primary,
+  color: theme.palette.primary.main,
   '&:hover': {
-    color: theme.palette.primary.main
+    color: theme.palette.primary.dark
   }
 }))

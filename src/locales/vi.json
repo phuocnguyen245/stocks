@@ -9,6 +9,7 @@
   "title.filter.stocks": "Bộ lọc Cổ phiếu",
 
   "label.stocks": "Mã cổ phiếu",
+  "label.payment": "Thanh toán",
   "label.stock": "Cổ phiếu",
   "label.code": "Mã",
   "label.add.stock": "Thêm Cổ phiếu",
@@ -39,6 +40,22 @@
   "label.cancel": "Huỷ",
   "label.order.price": "Giá đặt",
   "label.selling.price": "Giá bán",
+  "label.sign.in": "Đăng nhập",
+  "label.sign.up": "Đăng ký",
+  "label.username": "Tên người dùng",
+  "label.email": "Email",
+  "label.name": "Tên",
+  "label.password": "Mật khẩu",
+  "label.confirm.password": "Xác nhận mật khẩu",
+  "label.remember.me": "Ghi nhớ đăng nhập",
+  "label.forgot.password": "Quên mật khẩu",
+  "label.submit": "Gửi",
+  "label.enter.email": "Nhập email",
+  "label.go.back": "Trở lại",
+  "label.type": "Loại",
+  "label.balance": "Số tiền",
 
+  "text.dont.have.an.account": "Chưa có tài khoản",
+  "text.have.an.account": "Đã có tài khoản",
   "text.which.status.do.you.want.to.create": "Bạn muốn tạo trạng thái nào?"
 }

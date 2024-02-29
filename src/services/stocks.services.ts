@@ -7,7 +7,8 @@ import type {
   Stock,
   WatchList,
   Indicator,
-  Board
+  Board,
+  RecommendedStocks
 } from '../Models'
 
 export const StockService = createApi({
@@ -50,7 +51,7 @@ export const StockService = createApi({
         params: { ...rest }
       })
     }),
-    getRecommended: builder.query<ResponseType<Indicator[]>, any>({
+    getRecommended: builder.query<ResponseType<RecommendedStocks[]>, any>({
       query: (params) => ({
         url: `stocks/recommended?q=${params}`
       })

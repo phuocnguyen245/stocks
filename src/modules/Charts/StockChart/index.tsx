@@ -12,6 +12,7 @@ import { useGetStockStatisticQuery } from 'src/services/stocks.services'
 import { useAppSelector } from 'src/store'
 import ChartComponent from 'src/modules/Charts/components/ChartComponent'
 import { drawerWidth } from 'src/Layouts/Sidebar'
+import Helmet from 'src/components/Helmet'
 
 Indicators(Highcharts)
 DragPanes(Highcharts)
@@ -250,6 +251,7 @@ const StockChart = (): JSX.Element => {
 
   return (
     <Box p={0} height='calc(100vh - 112px)' bgcolor={mode === 'dark' ? '#000' : '#fff'}>
+      <Helmet title='title.charts' />
       <ChartComponent highcharts={Highcharts} options={options} />
     </Box>
   )

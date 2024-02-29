@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { LockOutlined } from '@mui/icons-material'
+import { HowToRegOutlined, Login } from '@mui/icons-material'
 import {
   Avatar,
   Box,
@@ -12,6 +12,7 @@ import {
   styled
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
+import { FormattedMessage } from 'react-intl'
 import { useNavigate } from 'react-router'
 import { Link } from 'react-router-dom'
 import { useAlert, useLocalStorage, useModals } from 'src/hooks'
@@ -64,17 +65,17 @@ const Register = (): JSX.Element => {
   return (
     <>
       <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-        <LockOutlined color='action' />
+        <HowToRegOutlined color='action' />
       </Avatar>
       <Typography component='h1' variant='h5'>
-        Sign Up
+        <FormattedMessage id='label.sign.up' />
       </Typography>
       <Box component='form' noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
         <TextField
           margin='normal'
           required
           fullWidth
-          label='Username'
+          label={<FormattedMessage id='label.username' />}
           autoComplete='username'
           autoFocus
           {...register('username')}
@@ -85,7 +86,7 @@ const Register = (): JSX.Element => {
           margin='normal'
           required
           fullWidth
-          label='Email'
+          label={<FormattedMessage id='label.email' />}
           autoComplete='email'
           {...register('email')}
           error={!!errors.email}
@@ -95,7 +96,7 @@ const Register = (): JSX.Element => {
           margin='normal'
           required
           fullWidth
-          label='Name'
+          label={<FormattedMessage id='label.name' />}
           autoComplete='current-password'
           {...register('name')}
           error={!!errors.name}
@@ -105,7 +106,7 @@ const Register = (): JSX.Element => {
           margin='normal'
           required
           fullWidth
-          label='Password'
+          label={<FormattedMessage id='label.password' />}
           type='password'
           {...register('password')}
           error={!!errors.password}
@@ -115,7 +116,7 @@ const Register = (): JSX.Element => {
           margin='normal'
           required
           fullWidth
-          label='Confirm Password'
+          label={<FormattedMessage id='label.confirm.password' />}
           type='password'
           {...register('confirmPassword')}
           error={!!errors.confirmPassword}
@@ -134,13 +135,19 @@ const Register = (): JSX.Element => {
               defaultChecked
             />
           }
-          label='Remember me'
+          label={<FormattedMessage id='label.remember.me' />}
         />
         <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-          <Typography fontWeight={600}>Sign Up</Typography>
+          <Login />
+          <Typography fontWeight={600} ml={1}>
+            <FormattedMessage id='label.sign.up' />
+          </Typography>
         </Button>
         <Grid container justifyContent='flex-end'>
-          <CustomLink to='/login'>Have an account? Sign In</CustomLink>
+          <CustomLink to='/login'>
+            <FormattedMessage id='text.have.an.account' />? &nbsp;
+            <FormattedMessage id='label.sign.in' />
+          </CustomLink>
         </Grid>
       </Box>
       <AcceptModal open={open} toggle={toggle} />

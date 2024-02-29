@@ -1,17 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { yupResolver } from '@hookform/resolvers/yup'
-import { LockOutlined } from '@mui/icons-material'
-import { Avatar, Box, Button, TextField, Typography } from '@mui/material'
+import { Email, Send } from '@mui/icons-material'
+import { Avatar, Box, Button, TextField, Typography, styled } from '@mui/material'
 import { useForm } from 'react-hook-form'
+import { FormattedMessage } from 'react-intl'
 import { useAlert, useModals } from 'src/hooks'
 import { useCheckEmailMutation } from 'src/services/user.services'
 import AcceptModal from '../Modals/AcceptModal'
 import schema from './schema'
-
+import { Link, useNavigate } from 'react-router-dom'
 interface FormBody {
   email: string
 }
 
 const EnterEmail = (): JSX.Element => {
+  const navigate = useNavigate()
   const [checkEmail] = useCheckEmailMutation()
   const { open, toggle } = useModals()
   const alert = useAlert()
@@ -42,10 +45,10 @@ const EnterEmail = (): JSX.Element => {
   return (
     <>
       <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-        <LockOutlined color='action' />
+        <Email color='action' />
       </Avatar>
       <Typography component='h1' variant='h5'>
-        Enter Email
+        <FormattedMessage id='label.enter.email' />
       </Typography>
       <Box component='form' noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
         <TextField
@@ -58,8 +61,22 @@ const EnterEmail = (): JSX.Element => {
           helperText={errors.email?.message}
         />
         <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-          <Typography fontWeight={600}>Submit</Typography>
+          <Send />
+          <Typography fontWeight={600} ml={1}>
+            <FormattedMessage id='label.submit' />
+          </Typography>
         </Button>
+        <Box width='100%' textAlign='right'>
+          <CustomLink
+            to={'..'}
+            onClick={(e) => {
+              e.preventDefault()
+              navigate(-1)
+            }}
+          >
+            <FormattedMessage id='label.go.back' />
+          </CustomLink>
+        </Box>
       </Box>
       <AcceptModal open={open} toggle={toggle} />
     </>
@@ -67,3 +84,9 @@ const EnterEmail = (): JSX.Element => {
 }
 
 export default EnterEmail
+const CustomLink = styled(Link)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  '&:hover': {
+    color: theme.palette.primary.dark
+  }
+}))

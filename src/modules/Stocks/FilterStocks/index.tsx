@@ -12,13 +12,12 @@ import {
   useMediaQuery,
   useTheme
 } from '@mui/material'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import Helmet from 'src/components/Helmet'
 import { useDebounce } from 'src/hooks'
 import FilterResult from 'src/modules/Stocks/FilterStocks/FilterResult'
-import { useGetRecommendedQuery } from 'src/services/stocks.services'
 
-interface FilterStocksType {
+export interface FilterStocksType {
   macd?: number[]
   rsi?: number[]
   stoch?: number[]
@@ -50,10 +49,6 @@ const FilterStocks = (): JSX.Element => {
   const [filter, setFilter] = useState<FilterStocksType>(defaultFilterLevels)
 
   const filterDebounce = useDebounce(filter, 1500)
-
-  const { data } = useGetRecommendedQuery(JSON.stringify(filterDebounce), {
-    refetchOnMountOrArgChange: true
-  })
 
   const handleChange = (
     event: Event | React.SyntheticEvent<Element, Event>,
@@ -108,9 +103,8 @@ const FilterStocks = (): JSX.Element => {
 
   return (
     <>
-      <Helmet>
-        <title>Filter Stocks</title>
-      </Helmet>
+      <Helmet title='title.filter.stocks' />
+
       <Container
         component={Paper}
         sx={{
@@ -242,11 +236,11 @@ const FilterStocks = (): JSX.Element => {
           </Grid>
         </Grid>
         <Box my={2}>
-          <FilterResult data={data?.data ?? []} />
+          <FilterResult filterDebounce={filterDebounce} />
         </Box>
       </Container>
     </>
   )
 }
 
-export default FilterStocks
+export default memo(FilterStocks)

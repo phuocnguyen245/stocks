@@ -20,7 +20,7 @@ const Languages = ({ languages, onSetLanguages }: LanguageProps): JSX.Element =>
   }
   return (
     <Box>
-      <FormControl sx={{ width: 'max-content' }}>
+      <FormControl sx={{ width: 'max-content' }} size='small'>
         <Select
           labelId='language'
           value={languages as '' | HTMLInputElement | undefined}

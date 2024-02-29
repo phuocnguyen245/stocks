@@ -19,6 +19,7 @@ import { useAlert } from 'src/hooks'
 import { useCreatePaymentMutation, useUpdatePaymentMutation } from 'src/services/payment.services'
 import schema from './schema'
 import { type Payments } from 'src/Models'
+import { FormattedMessage } from 'react-intl'
 
 enum Type {
   BUY = 0,
@@ -90,7 +91,7 @@ const PaymentModal = ({ open, editData, refetch, handleClose }: PaymentModalProp
     error: !!errors?.balance,
     helperText: errors.balance?.message,
     fullWidth: true,
-    label: 'Balance',
+    label: <FormattedMessage id='label.balance' />,
     sx: { margin: '8px 0' },
     ...register('balance'),
     onChange: (e: ChangeEvent<HTMLInputElement>) => {
@@ -136,13 +137,15 @@ const PaymentModal = ({ open, editData, refetch, handleClose }: PaymentModalProp
       <Container maxWidth='sm' sx={{ padding: '0 !important' }}>
         <Box py={3} px={0} component='form' onSubmit={handleSubmit(handleSave)} id='stock-form'>
           <Box paddingBottom={2} paddingX={4}>
-            <Typography>Payment</Typography>
+            <Typography>
+              <FormattedMessage id='label.payment' />
+            </Typography>
           </Box>
           <Divider />
           <Box paddingX={4} paddingY={2} component='form'>
             <TextField
               fullWidth
-              label='Name'
+              label={<FormattedMessage id='label.name' />}
               autoFocus
               inputRef={textFieldRef}
               required
@@ -152,14 +155,16 @@ const PaymentModal = ({ open, editData, refetch, handleClose }: PaymentModalProp
               helperText={errors.name?.message}
             />
             <DatePicker
-              label='Date'
+              label={<FormattedMessage id='label.date' />}
               sx={{ width: '100%', margin: '8px 0' }}
               defaultValue={moment(Date.now())}
               onChange={onChangeDate}
             />
             <NumberFormat {...materialUiTextFieldProps} />
             <Box display='flex' alignItems='center'>
-              <Typography>Type:</Typography>
+              <Typography>
+                <FormattedMessage id='label.type' />:
+              </Typography>
               <Switch
                 checked={checked}
                 required
@@ -172,7 +177,7 @@ const PaymentModal = ({ open, editData, refetch, handleClose }: PaymentModalProp
           <Divider />
           <Box textAlign='end' paddingX={4} paddingTop={3}>
             <Button color='warning' variant='contained' onClick={handleClose}>
-              Cancel
+              <FormattedMessage id='label.cancel' />
             </Button>
             <Button
               variant='contained'
@@ -181,7 +186,7 @@ const PaymentModal = ({ open, editData, refetch, handleClose }: PaymentModalProp
               form='stock-form'
               autoFocus
             >
-              Save
+              <FormattedMessage id='label.save' />
             </Button>
           </Box>
         </Box>

@@ -9,9 +9,10 @@ import useModal from 'src/hooks/useModals'
 import { Label } from 'src/components/MUIComponents'
 import { formatVND } from 'src/utils'
 import Helmet from 'src/components/Helmet'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 const Payment = (): JSX.Element => {
+  const intl = useIntl()
   const [deletePayment] = useDeletePaymentMutation()
   const { open, toggle } = useModal()
 
@@ -51,11 +52,11 @@ const Payment = (): JSX.Element => {
   const table: Array<TableHeaderBody<Payments>> = [
     {
       name: 'name',
-      title: 'Name'
+      title: <FormattedMessage id='label.name' />
     },
     {
       name: 'type',
-      title: 'Type',
+      title: <FormattedMessage id='label.type' />,
       render: (row) => {
         const options = {
           0: {
@@ -77,16 +78,15 @@ const Payment = (): JSX.Element => {
     },
     {
       name: 'balance',
-      title: 'Balance',
+      title: <FormattedMessage id='label.balance' />,
       render: (row) => <Typography>{formatVND(row.balance)}</Typography>
     }
   ]
 
   return (
     <>
-      <Helmet>
-        <title>Payments</title>
-      </Helmet>
+      <Helmet title='title.payments' />
+
       <Container sx={{ height: '100vh', borderRadius: 0 }}>
         <Box pt={2} pb={0} display='flex' alignItems='center' justifyContent='flex-end'>
           <Button variant='contained' onClick={toggle} sx={{ mt: 8 }}>

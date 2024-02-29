@@ -1,5 +1,5 @@
 import { Box, Grid } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Helmet from 'src/components/Helmet'
 import CurrentStocks from 'src/modules/Stocks/HoldingStocks/CurrentStocks'
@@ -33,9 +33,7 @@ const HoldingStocks = (): JSX.Element => {
       pb={isMdWindow ? 4 : '112px'}
       px={2}
     >
-      <Helmet>
-        <title>Stocks</title>
-      </Helmet>
+      <Helmet title='label.stocks' />
 
       <Box>
         <Grid container columnSpacing={2} rowGap={2} justifyContent='center'>
@@ -63,4 +61,4 @@ const HoldingStocks = (): JSX.Element => {
     </Box>
   )
 }
-export default HoldingStocks
+export default memo(HoldingStocks)

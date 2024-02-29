@@ -99,7 +99,7 @@ const SearchResult = ({ setValue, isTextField, search, isMd }: SearchResultProps
       ref={boxRef}
     >
       {data.map((item) => (
-        <Fragment key={item.liveboard.Symbol}>
+        <Fragment key={item.symbol}>
           <Box
             py={1.5}
             px={2}
@@ -109,11 +109,11 @@ const SearchResult = ({ setValue, isTextField, search, isMd }: SearchResultProps
                 background: `${theme.palette.mode === 'dark' ? '#6e6e6e' : '#f8dffa'}`
               }
             }}
-            onClick={() => onClickBoard(item.liveboard.Symbol)}
+            onClick={() => onClickBoard(item.symbol)}
           >
             <Box display='flex' justifyContent='space-between' alignItems='center' mb={0.25}>
-              <Typography fontWeight={600}>{item.liveboard.Symbol}</Typography>
-              <Typography fontWeight={600}>{item.liveboard.Close}</Typography>
+              <Typography fontWeight={600}>{item.symbol}</Typography>
+              <Typography fontWeight={600}>{item.close}</Typography>
             </Box>
             <Box display='flex' justifyContent='space-between' alignItems='center' gap={0.75}>
               <Typography
@@ -123,7 +123,7 @@ const SearchResult = ({ setValue, isTextField, search, isMd }: SearchResultProps
                 overflow='hidden'
                 fontSize={14}
               >
-                {item.CompanyName}
+                {item.companyName}
               </Typography>
               <Typography
                 width={80}
@@ -133,13 +133,13 @@ const SearchResult = ({ setValue, isTextField, search, isMd }: SearchResultProps
                 fontSize={14}
                 sx={{
                   color:
-                    item.liveboard.ChangePercent > 0
+                    item.changePercent > 0
                       ? 'success.main'
-                      : item.liveboard.ChangePercent < 0
+                      : item.changePercent < 0
                         ? 'error.main'
                         : 'warning.main'
                 }}
-              >{`${item.liveboard.Change} / ${item.liveboard.ChangePercent}%`}</Typography>
+              >{`${item.change} / ${item.changePercent}%`}</Typography>
             </Box>
           </Box>
           <Divider />

@@ -127,7 +127,14 @@ const Header = ({
         </Tabs>
       </HeaderNavigation>
       <HeaderSetting route={location.pathname}>
-        <Grid container alignItems='center' flexWrap='nowrap' width='auto'>
+        <Grid
+          container
+          alignItems='center'
+          flexWrap='nowrap'
+          width='auto'
+          columnSpacing={0.5}
+          height='100%'
+        >
           {isLogin && (
             <Grid item>
               <Box
@@ -159,11 +166,12 @@ const Header = ({
           )}
 
           <Grid item>
-            <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
-          </Grid>
-          <Grid item>
             <Languages languages={languages} onSetLanguages={onSetLanguages} />
           </Grid>
+          <Grid item>
+            <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
+          </Grid>
+
           {isLogin && (
             <Grid
               item
@@ -178,6 +186,7 @@ const Header = ({
               <IconButton
                 onClick={onLogout}
                 sx={{
+                  p: 1,
                   '&:hover': {
                     color: 'primary.main'
                   }

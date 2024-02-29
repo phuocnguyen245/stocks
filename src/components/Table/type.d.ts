@@ -4,6 +4,9 @@ import { type ReactNode, type SetStateAction } from 'react'
 interface DefaultPagination {
   page: number
   size: number
+  search?: string
+  sortBy?: string
+  sortDirection?: 'asc' | 'desc' | undefined
 }
 interface TableHeaderBody<T> extends TableCellProps {
   name: keyof T | ''
@@ -24,6 +27,7 @@ interface TableProps<T, Y, P> extends TableContainerProps {
   onDelete?: (value: T) => void
   onEdit?: (value: T) => void
   onView?: (value: T) => void
+  onSort?: (value: DefaultPagination) => void
 }
 
 export type { DefaultPagination, TableHeaderBody, TableProps }

@@ -10,9 +10,9 @@ interface InfinitySelectCodeProps {
 }
 
 const InfinitySelectCode = ({ onSetData }: InfinitySelectCodeProps): JSX.Element => {
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState<string | undefined>(undefined)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [value, setValue] = useState<any>()
+  const [value, setValue] = useState<any>(null)
   const debouncedSearchTerm = useDebounce(search, 500)
 
   const [data, setData] = useState<Board[]>([])
@@ -35,7 +35,7 @@ const InfinitySelectCode = ({ onSetData }: InfinitySelectCodeProps): JSX.Element
   useEffect(() => {
     setData([])
     setPagination((prev) => {
-      const newPagination = { ...prev, page: 0, search: debouncedSearchTerm || '' }
+      const newPagination = { ...prev, page: 0, search: debouncedSearchTerm ?? '' }
       return newPagination
     })
   }, [debouncedSearchTerm])
@@ -65,39 +65,40 @@ const InfinitySelectCode = ({ onSetData }: InfinitySelectCodeProps): JSX.Element
   }
 
   const options = useMemo(() => {
-    return data.map((item) => ({ label: item.liveboard.Symbol, name: item.liveboard.Symbol }))
+    if (data) {
+      return data?.map((item) => ({ label: item.symbol, name: item.symbol }))
+    }
+    return []
   }, [data])
 
   return (
-    <>
-      <Autocomplete
-        disablePortal
-        options={options}
-        ListboxProps={{
-          onScroll
-        }}
-        sx={{ mb: 1 }}
-        fullWidth
-        value={value}
-        onChange={(event: unknown, newValue) => {
-          setValue(newValue)
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label='Code'
-            onChange={(e) => setSearch(e.target.value)}
-            sx={{
-              textTransform: value?.name ? 'uppercase' : 'none',
-              '& label': {
-                textTransform: 'none'
-              }
-            }}
-            required
-          />
-        )}
-      />
-    </>
+    <Autocomplete
+      disablePortal
+      defaultValue={null}
+      options={options}
+      ListboxProps={{
+        onScroll
+      }}
+      sx={{
+        mb: 1,
+        '& .MuiInputBase-input': {
+          textTransform: 'uppercase'
+        },
+        '& label': {
+          textTransform: 'none'
+        }
+      }}
+      fullWidth
+      value={value || null}
+      onChange={(_: unknown, newValue) => {
+        setValue(newValue)
+      }}
+      inputValue={search}
+      onInputChange={(_, newInputValue) => {
+        setSearch(newInputValue)
+      }}
+      renderInput={(params) => <TextField {...params} label='Code' required />}
+    />
   )
 }
 

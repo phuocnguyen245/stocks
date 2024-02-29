@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams } from 'react-router'
 import Helmet from 'src/components/Helmet'
 import SwipeableTabs from 'src/components/SwipeableTabs'
@@ -11,9 +11,6 @@ const Charts = (): JSX.Element => {
 
   return (
     <>
-      <Helmet>
-        <title>Stocks</title>
-      </Helmet>
       <SwipeableTabs
         components={[
           { title: <FormattedMessage id='title.stock.chart' />, component: <StockChart /> },

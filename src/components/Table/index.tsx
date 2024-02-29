@@ -12,6 +12,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TableSortLabel,
   Typography,
   useTheme
 } from '@mui/material'
@@ -34,6 +35,7 @@ const Table = ({
   onDelete,
   onEdit,
   onView,
+  onSort,
   ...props
 }: TableProps<any, any, any>): JSX.Element => {
   const [open, setOpen] = useState<string[]>([])
@@ -50,6 +52,28 @@ const Table = ({
     })
   }
 
+  const createSortHandler = (name: string) => (event: React.MouseEvent<unknown>) => {
+    if (onSort) {
+      if (pagination) {
+        let direction: 'asc' | 'desc' | undefined
+        if (pagination?.sortDirection === 'asc') {
+          direction = 'desc'
+        } else if (pagination?.sortDirection === 'desc') {
+          direction = undefined
+        } else {
+          direction = 'asc'
+        }
+        const newPagination = {
+          ...pagination,
+          sortBy: direction ? name : '',
+          sortDirection: direction
+        }
+        return onSort(newPagination)
+      }
+      return onSort(pagination)
+    }
+  }
+
   return (
     <Box boxShadow={2} borderRadius={1}>
       <TableContainer
@@ -61,7 +85,7 @@ const Table = ({
           <TableHead>
             <TableRow>
               {[...(subTable ? [{ name: '', title: '' }] : []), ...table].map(
-                ({ title, render, ...rest }: TableHeaderBody<unknown>, index) => (
+                ({ title, name, render, ...rest }: TableHeaderBody<unknown>, index) => (
                   <TableCell
                     sx={{
                       whiteSpace: 'nowrap',
@@ -72,9 +96,15 @@ const Table = ({
                       fontWeight: 600
                     }}
                     {...rest}
-                    key={`header-${rest.name as string}-${index}`}
+                    key={`header-${name as string}-${index}`}
                   >
-                    {title}
+                    <TableSortLabel
+                      active={pagination?.sortBy === name}
+                      direction={pagination?.sortBy === name ? pagination?.sortDirection : 'asc'}
+                      onClick={createSortHandler(name)}
+                    >
+                      {title}
+                    </TableSortLabel>
                   </TableCell>
                 )
               )}

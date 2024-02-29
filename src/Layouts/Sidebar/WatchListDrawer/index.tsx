@@ -9,6 +9,7 @@ import {
   Drawer,
   IconButton,
   Link,
+  Tooltip,
   Typography,
   styled,
   useTheme
@@ -30,7 +31,7 @@ const WatchListDrawer = ({ open, isLogin, toggle }: WatchListDrawerProps): JSX.E
   const alert = useAlert()
   const watchListRef = useRef<HTMLDivElement | null>(null)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const { data: watchList, refetch } = useGetWatchListQuery(undefined, { skip: !isLogin })
+  const { data: watchList, refetch } = useGetWatchListQuery(undefined, { skip: !isLogin || !open })
 
   const [data, setData] = useState<WatchList[]>([])
   const [expanded, setExpanded] = useState<number>(-1)
@@ -71,8 +72,7 @@ const WatchListDrawer = ({ open, isLogin, toggle }: WatchListDrawerProps): JSX.E
     timeoutRef.current = setTimeout(() => {
       if (watchListRef?.current) {
         if (expanded !== -1) {
-          watchListRef.current.style.scrollBehavior = 'smooth'
-          return watchListRef.current.scroll(0, expanded * 48)
+          return watchListRef.current.scroll(0, (expanded - 1) * 48)
         }
       }
     }, 300)
@@ -111,7 +111,7 @@ const WatchListDrawer = ({ open, isLogin, toggle }: WatchListDrawerProps): JSX.E
           </DrawerHeader>
           <Divider />
           <Box
-            sx={{ height: 'calc(100vh - 112px)', overflowY: 'auto' }}
+            sx={{ height: 'calc(100vh - 112px)', overflowY: 'auto', scrollBehavior: 'smooth' }}
             className='watch-list'
             ref={watchListRef}
           >
@@ -162,8 +162,8 @@ const WatchListDrawer = ({ open, isLogin, toggle }: WatchListDrawerProps): JSX.E
                   >
                     {item?.stocks?.map((stock: Board, index) => (
                       <Link
-                        href={`/stocks/${stock.liveboard.Symbol}`}
-                        key={stock.liveboard.Symbol}
+                        href={`/stocks/${stock.symbol}`}
+                        key={stock.symbol}
                         target='_blank'
                         style={{ color: 'unset', textDecoration: 'none' }}
                         sx={{
@@ -180,8 +180,20 @@ const WatchListDrawer = ({ open, isLogin, toggle }: WatchListDrawerProps): JSX.E
                             alignItems='center'
                             mb={0.25}
                           >
-                            <Typography fontWeight={600}>{stock.liveboard.Symbol}</Typography>
-                            <Typography fontWeight={600}>{stock.liveboard.Close}</Typography>
+                            <Typography fontWeight={600}>{stock.symbol}</Typography>
+                            <Typography
+                              fontWeight={600}
+                              sx={{
+                                color:
+                                  stock.changePercent > 0
+                                    ? 'success.main'
+                                    : stock.changePercent < 0
+                                      ? 'error.main'
+                                      : 'warning.main'
+                              }}
+                            >
+                              {stock.close}
+                            </Typography>
                           </Box>
                           <Box
                             display='flex'
@@ -189,15 +201,19 @@ const WatchListDrawer = ({ open, isLogin, toggle }: WatchListDrawerProps): JSX.E
                             alignItems='center'
                             gap={0.75}
                           >
-                            <Typography
-                              flex={1}
-                              textOverflow='ellipsis'
-                              whiteSpace='nowrap'
-                              overflow='hidden'
-                              fontSize={14}
-                            >
-                              {stock.CompanyName}
-                            </Typography>
+                            <Tooltip title={stock.companyName} arrow>
+                              <Typography
+                                flex={1}
+                                textOverflow='ellipsis'
+                                whiteSpace='nowrap'
+                                overflow='hidden'
+                                fontSize={14}
+                                typography={stock.companyName}
+                              >
+                                {stock.companyName}
+                              </Typography>
+                            </Tooltip>
+
                             <Typography
                               width={80}
                               textAlign='right'
@@ -206,13 +222,13 @@ const WatchListDrawer = ({ open, isLogin, toggle }: WatchListDrawerProps): JSX.E
                               fontSize={14}
                               sx={{
                                 color:
-                                  stock.liveboard.ChangePercent > 0
+                                  stock.changePercent > 0
                                     ? 'success.main'
-                                    : stock.liveboard.ChangePercent < 0
+                                    : stock.changePercent < 0
                                       ? 'error.main'
                                       : 'warning.main'
                               }}
-                            >{`${stock.liveboard.Change} / ${stock.liveboard.ChangePercent}%`}</Typography>
+                            >{`${stock.change} / ${stock.changePercent}%`}</Typography>
                           </Box>
                         </Box>
                         {index !== item.stocks.length - 1 && <Divider />}

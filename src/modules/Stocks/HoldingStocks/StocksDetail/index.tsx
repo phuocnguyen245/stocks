@@ -28,7 +28,10 @@ const StocksDetail = (): JSX.Element => {
   const [editData, setEditData] = useState<Stock>()
   const [pagination, setPagination] = useState<DefaultPagination>({
     page: 0,
-    size: 10
+    size: 10,
+    search: '',
+    sortBy: '',
+    sortDirection: undefined
   })
 
   const {
@@ -236,6 +239,10 @@ const StocksDetail = (): JSX.Element => {
     }
   ]
 
+  const onSort = (pagination: DefaultPagination): void => {
+    setPagination(pagination)
+  }
+
   return (
     <>
       <FilteredStocks onSetPagination={setPagination} />
@@ -248,6 +255,7 @@ const StocksDetail = (): JSX.Element => {
         onEdit={onEdit}
         pagination={pagination}
         onSetPagination={setPagination}
+        onSort={onSort}
       />
     </>
   )

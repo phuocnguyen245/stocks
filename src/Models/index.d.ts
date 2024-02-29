@@ -112,22 +112,25 @@ interface Indicator {
   stochRSI: Stoch
   lastPrice: number
   code: string
-  result: {
-    macd: {
-      macd: number
-      signal: number
-    }
-    mfi: number
-    rsi: nnumber
-    stoch: {
-      k: number
-      d: number
-    }
-    stochRSI: {
-      k: number
-      d: number
-    }
+}
+
+interface RecommendedStocks {
+  macd: {
+    macd: number
+    signal: number
   }
+  mfi: number
+  rsi: nnumber
+  stoch: {
+    k: number
+    d: number
+  }
+  stochRSI: {
+    k: number
+    d: number
+  }
+  code: string
+  lastPrice: string
 }
 
 interface Liveboard {
@@ -171,14 +174,11 @@ interface Liveboard {
 }
 
 interface Board {
-  liveboard: Liveboard
-  SectorID: string
-  FinancialTag: string
-  CompanyName: string
-  SubSectorID: string
-  WeightListing: number
-  WeightCirculation: number
-  Commodities: string
+  symbol: string
+  companyName: string
+  close: number
+  change: number
+  changePercent: number
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -204,5 +204,6 @@ export type {
   User,
   UserWithToken,
   ErrorResponse1,
-  Target
+  Target,
+  RecommendedStocks
 }

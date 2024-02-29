@@ -66,7 +66,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
   const [tradingStatus, setTradingStatus] = useState(0)
 
   useEffect(() => {
-    status && setTradingStatus(status)
+    setTradingStatus(status)
   }, [status])
 
   useEffect(() => {

@@ -9,6 +9,7 @@
   "title.filter.stocks": "Filter Stocks",
 
   "label.stocks": "Stocks",
+  "label.payment": "Payment",
   "label.stock": "Stock",
   "label.code": "Code",
   "label.add.stock": "Add Stock",
@@ -39,6 +40,22 @@
   "label.cancel": "Cancel",
   "label.order.price": "Order Price",
   "label.selling.price": "Selling Price",
+  "label.sign.in": "Sign In",
+  "label.sign.up": "Sign Up",
+  "label.username": "Username",
+  "label.email": "Email",
+  "label.name": "Name",
+  "label.password": "Password",
+  "label.confirm.password": "Confirm Password",
+  "label.remember.me": "Remember me",
+  "label.forgot.password": "Forgot password",
+  "label.submit": "Submit",
+  "label.enter.email": "Enter your email",
+  "label.go.back": "Go back",
+  "label.type": "Type",
+  "label.balance": "Balance",
 
+  "text.dont.have.an.account": "Don't have an account",
+  "text.have.an.account": "Have an account?",
   "text.which.status.do.you.want.to.create": "Which status do you want to create?"
 }

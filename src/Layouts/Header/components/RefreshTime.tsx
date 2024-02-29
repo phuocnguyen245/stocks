@@ -10,13 +10,12 @@ import { useAppSelector } from 'src/store'
 import { refetchStocks } from 'src/store/slices/stockSlice'
 
 const RefreshTime = (): JSX.Element => {
-  const { isMdWindow } = useAppSelector((state) => state.Stocks)
+  const { isMdWindow, isLogin } = useAppSelector((state) => state.Stocks)
   const { open, show, hide } = useModals()
   const alert = useAlert()
   const dispatch = useDispatch()
 
   const [refreshTime, setRefreshTime] = useState<string>()
-  const { isLogin } = useAppSelector((state) => state.Stocks)
 
   const [refreshStocks] = useRefreshStocksMutation()
   const { data: date, isLoading } = useRefreshTimeQuery(undefined, {
@@ -76,7 +75,7 @@ const RefreshTime = (): JSX.Element => {
       alignItems='center'
       justifyContent='space-between'
       display='flex'
-      marginRight={isMdWindow ? 0 : 2}
+      marginRight={isMdWindow ? 0 : 1}
     >
       <Box order={isMdWindow ? 2 : 1}>
         <ClickAwayListener onClickAway={hide}>
@@ -113,7 +112,6 @@ const RefreshTime = (): JSX.Element => {
         />
       </Box>
       <Typography
-        ml={0.25}
         whiteSpace='nowrap'
         display={isLoading ? 'none' : 'block'}
         order={isMdWindow ? 1 : 2}

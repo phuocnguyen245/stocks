@@ -2,6 +2,7 @@ import { FormattedMessage } from 'react-intl'
 import SwipeableTabs from 'src/components/SwipeableTabs'
 import FilterStocks from './FilterStocks'
 import HoldingStocks from './HoldingStocks'
+import { memo } from 'react'
 
 const Stocks = (): JSX.Element => {
   return (
@@ -26,4 +27,4 @@ const Stocks = (): JSX.Element => {
     />
   )
 }
-export default Stocks
+export default memo(Stocks)

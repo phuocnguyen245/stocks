@@ -7,6 +7,7 @@ import MFI from './Charts/MFI'
 import RSI from './Charts/RSI'
 import Stochastic from './Charts/Stochastic'
 import StochasticRSI from './Charts/StochasticRSI'
+import Helmet from 'src/components/Helmet'
 
 interface TechnicalChartProps {
   code: string
@@ -17,6 +18,7 @@ const TechnicalCharts = ({ code }: TechnicalChartProps): JSX.Element => {
 
   return (
     <Paper>
+      <Helmet title='title.technical.chart' />
       <Grid container spacing={1.5} marginTop='12px' pb={3} px={3}>
         <Grid item xs={12} sm={6} md={6} lg={4} pb={1.5}>
           <MA data={data?.data?.ma} lastPrice={data?.data?.lastPrice ?? 0} />

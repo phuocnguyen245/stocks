@@ -1,14 +1,16 @@
-import { Box, Button, IconButton, Link } from '@mui/material'
+import { Box, Button, Link } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { useNavigate } from 'react-router-dom'
-import { type Indicator, type LabelType } from 'src/Models'
+import { type RecommendedStocks, type Indicator, type LabelType } from 'src/Models'
 import { Label } from 'src/components/MUIComponents'
 import Table from 'src/components/Table'
 import type { DefaultPagination, TableHeaderBody } from 'src/components/Table/type'
+import { useGetRecommendedQuery } from 'src/services/stocks.services'
 import { convertToDecimal } from 'src/utils'
+import { type FilterStocksType } from '.'
 interface FilterResultProps {
-  data: Indicator[]
+  filterDebounce: FilterStocksType
 }
 
 const labelColor = (name: string, value: number): JSX.Element => {
@@ -50,14 +52,60 @@ const labelColor = (name: string, value: number): JSX.Element => {
   }
   return <Label type={type}>{value}</Label>
 }
-const FilterResult = ({ data }: FilterResultProps): JSX.Element => {
+const FilterResult = ({ filterDebounce }: FilterResultProps): JSX.Element => {
   const navigate = useNavigate()
+  const { data: recommendedData } = useGetRecommendedQuery(JSON.stringify(filterDebounce), {
+    refetchOnMountOrArgChange: true
+  })
 
+  const [data, setData] = useState<RecommendedStocks[]>([])
   const [pagination, setPagination] = useState<DefaultPagination>({
     page: 0,
     size: 10
   })
-  const table: Array<TableHeaderBody<Indicator>> = [
+
+  useEffect(() => {
+    if (pagination?.sortBy) {
+      setData((prev) => {
+        if (pagination.sortDirection === 'asc' || pagination.sortDirection === 'desc') {
+          return [...prev]
+            .sort((a, b) => {
+              const key = pagination.sortBy as keyof RecommendedStocks
+              let comparisonValueA = 0
+              let comparisonValueB = 0
+              if (key === 'rsi' || key === 'mfi') {
+                comparisonValueA = a[key]
+                comparisonValueB = b[key]
+              } else if (key === 'macd') {
+                comparisonValueA = a[key].macd
+                comparisonValueB = b[key].macd
+              } else if (key === 'stoch' || key === 'stochRSI') {
+                comparisonValueA = a[key].k
+                comparisonValueB = b[key].k
+              }
+
+              if (pagination.sortDirection === 'asc') {
+                return Number(comparisonValueA) - Number(comparisonValueB)
+              } else {
+                return Number(comparisonValueB) - Number(comparisonValueA)
+              }
+            })
+            .slice()
+        }
+        return prev
+      })
+    }
+  }, [pagination])
+
+  useEffect(() => {
+    navigate('/stocks/filters')
+  }, [])
+
+  useEffect(() => {
+    setData(recommendedData?.data ?? [])
+  }, [recommendedData])
+
+  const table: Array<TableHeaderBody<RecommendedStocks>> = [
     {
       name: 'code',
       title: <FormattedMessage id='label.code' />,
@@ -76,80 +124,81 @@ const FilterResult = ({ data }: FilterResultProps): JSX.Element => {
       }
     },
     {
-      name: 'result',
+      name: 'rsi',
       title: 'RSI',
       width: '15%',
       align: 'center',
       render: (row) => {
-        return <>{labelColor('rsi', convertToDecimal(row.result.rsi))}</>
+        return <>{labelColor('rsi', convertToDecimal(row.rsi))}</>
       }
     },
     {
-      name: 'result',
+      name: 'mfi',
       title: 'MFI',
       width: '15%',
       align: 'center',
       render: (row) => {
-        return <>{labelColor('mfi', convertToDecimal(row.result.mfi))}</>
+        return <>{labelColor('mfi', convertToDecimal(row.mfi))}</>
       }
     },
     {
-      name: 'result',
+      name: 'macd',
       title: 'MACD',
       width: '20%',
       align: 'center',
       render: (row) => {
         return (
           <Box display='flex' gap={1} justifyContent='center'>
-            {labelColor('macd', convertToDecimal(row.result.macd.macd))}
-            {labelColor('macd', convertToDecimal(row.result.macd.signal))}
+            {labelColor('macd', convertToDecimal(row.macd.macd))}
+            {labelColor('macd', convertToDecimal(row.macd.signal))}
           </Box>
         )
       }
     },
     {
-      name: 'result',
+      name: 'stoch',
       title: 'Stoch',
       width: '20%',
       align: 'center',
       render: (row) => {
         return (
           <Box display='flex' gap={1} justifyContent='center'>
-            {labelColor('stoch', convertToDecimal(row.result.stoch.k))}
-            {labelColor('stoch', convertToDecimal(row.result.stoch.d))}
+            {labelColor('stoch', convertToDecimal(row.stoch.k))}
+            {labelColor('stoch', convertToDecimal(row.stoch.d))}
           </Box>
         )
       }
     },
     {
-      name: 'result',
+      name: 'stochRSI',
       title: 'StochRSI',
       width: '20%',
       align: 'center',
       render: (row) => {
         return (
           <Box display='flex' gap={1} justifyContent='center'>
-            {labelColor('stochRSI', convertToDecimal(row.result.stochRSI.k))}
-            {labelColor('stochRSI', convertToDecimal(row.result.stochRSI.d))}
+            {labelColor('stochRSI', convertToDecimal(row.stochRSI.k))}
+            {labelColor('stochRSI', convertToDecimal(row.stochRSI.d))}
           </Box>
         )
       }
     }
   ]
 
-  useEffect(() => {
-    navigate('/stocks/filters')
-  }, [])
+  const onSort = (pagination: DefaultPagination): void => {
+    setPagination(pagination)
+  }
 
   return (
     <Table
-      data={data}
+      data={data ?? []}
       table={table}
       isLoading={false}
       sx={{ maxHeight: 500 }}
       pagination={pagination}
       onSetPagination={setPagination}
       totalItems={data?.length ?? 0}
+      onSort={onSort}
     />
   )
 }

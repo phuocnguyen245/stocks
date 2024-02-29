@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { LockOutlined } from '@mui/icons-material'
+import { LockOutlined, Password, Send } from '@mui/icons-material'
 import { Avatar, Box, Button, TextField, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
@@ -8,7 +8,7 @@ import { useAlert, useModals } from 'src/hooks'
 import { useUpdatePasswordMutation } from 'src/services/user.services'
 import AcceptModal from '../Modals/AcceptModal'
 import schema from './schema'
-
+import { FormattedMessage } from 'react-intl'
 interface FormBody {
   password: string
   confirmPassword: string
@@ -60,17 +60,17 @@ const ForgotPassword = (): JSX.Element => {
   return (
     <>
       <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-        <LockOutlined color='action' />
+        <Password color='action' />
       </Avatar>
       <Typography component='h1' variant='h5'>
-        Forgot Password
+        <FormattedMessage id='label.forgot.password' />
       </Typography>
       <Box component='form' noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
         <TextField
           margin='normal'
           required
           fullWidth
-          label='Password'
+          label={<FormattedMessage id='label.password' />}
           type='password'
           {...register('password')}
           error={!!errors.password}
@@ -80,14 +80,17 @@ const ForgotPassword = (): JSX.Element => {
           margin='normal'
           required
           fullWidth
-          label='Confirm Password'
+          label={<FormattedMessage id='label.confirm.password' />}
           type='password'
           {...register('confirmPassword')}
           error={!!errors.confirmPassword}
           helperText={errors.confirmPassword?.message}
         />
         <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-          <Typography fontWeight={600}>Submit</Typography>
+          <Send />
+          <Typography fontWeight={600} ml={1}>
+            <FormattedMessage id='label.submit' />
+          </Typography>
         </Button>
       </Box>
       <AcceptModal open={open} toggle={toggle} />

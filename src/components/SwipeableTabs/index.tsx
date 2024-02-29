@@ -1,5 +1,5 @@
 import { AppBar, Box, Paper, Tab, Tabs, useTheme } from '@mui/material'
-import React, { useMemo, useState, type ReactNode } from 'react'
+import React, { useMemo, useState, type ReactNode, memo } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import SwipeableViews from 'react-swipeable-views'
 import { drawerWidth } from 'src/Layouts/Sidebar'
@@ -122,4 +122,4 @@ const SwipeableTabs = ({ components, exceptionRoute }: SwipeableTabsProps): JSX.
   )
 }
 
-export default SwipeableTabs
+export default memo(SwipeableTabs)
