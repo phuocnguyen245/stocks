@@ -1,15 +1,5 @@
-import { ChevronLeft, ChevronRight, Logout, Search } from '@mui/icons-material'
-import {
-  Box,
-  Divider,
-  Drawer,
-  IconButton,
-  List,
-  ListItem,
-  Typography,
-  styled,
-  useTheme
-} from '@mui/material'
+import { ChevronLeft, ChevronRight, Logout } from '@mui/icons-material'
+import { Box, Divider, Drawer, List, ListItem, Typography, styled, useTheme } from '@mui/material'
 import { useNavigate } from 'react-router'
 import DarkModeSwitch from 'src/Layouts/Header/components/DarkModeSwitch'
 import Languages from 'src/Layouts/Header/components/Languages'
@@ -52,7 +42,7 @@ const MenuDrawer = ({
   }
 
   return (
-    <Drawer variant='persistent' anchor='right' open={open} onClose={toggle}>
+    <Drawer variant='persistent' anchor='left' open={open} onClose={toggle}>
       <Box sx={{ overflowY: 'hidden' }} boxShadow={3}>
         <DrawerHeader onClick={toggle} sx={{ cursor: 'pointer' }}>
           <Typography pl={2} fontWeight={600}>

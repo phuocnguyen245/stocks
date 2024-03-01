@@ -53,25 +53,24 @@ const Table = ({
   }
 
   const createSortHandler = (name: string) => (event: React.MouseEvent<unknown>) => {
-    if (onSort) {
-      if (pagination) {
-        let direction: 'asc' | 'desc' | undefined
-        if (pagination?.sortDirection === 'asc') {
-          direction = 'desc'
-        } else if (pagination?.sortDirection === 'desc') {
-          direction = undefined
-        } else {
-          direction = 'asc'
-        }
-        const newPagination = {
-          ...pagination,
-          sortBy: direction ? name : '',
-          sortDirection: direction
-        }
-        return onSort(newPagination)
-      }
-      return onSort(pagination)
+    if (!onSort || !pagination) return
+
+    const isSameSortBy = pagination.sortBy === name
+    let direction: 'asc' | 'desc' | undefined
+
+    if (isSameSortBy) {
+      direction = pagination.sortDirection === 'asc' ? 'desc' : 'asc'
+    } else {
+      direction = 'asc'
     }
+
+    const newPagination = {
+      ...pagination,
+      sortBy: isSameSortBy ? (direction ? name : '') : name,
+      sortDirection: direction
+    }
+
+    onSort(newPagination)
   }
 
   return (
@@ -257,11 +256,7 @@ const Table = ({
                   </Fragment>
                 )
               })}
-              {isLoading && (
-                <TableCell sx={{ display: 'block' }}>
-                  <Loader />
-                </TableCell>
-              )}
+              {isLoading && <Loader />}
             </TableBody>
           )}
         </MUITable>

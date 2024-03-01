@@ -22,7 +22,7 @@ const StocksDetail = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const { isRefetchStock } = useAppSelector((state) => state.Stocks)
   const [updateStocks] = useUpdateStockMutation()
-  const [deleteStocks] = useDeleteStockMutation()
+  const [deleteStocks, { isLoading }] = useDeleteStockMutation()
   const alert = useAlert()
   const [data, setData] = useState<Stock[]>([])
   const [editData, setEditData] = useState<Stock>()
@@ -249,7 +249,7 @@ const StocksDetail = (): JSX.Element => {
       <Table
         data={data}
         table={table}
-        isLoading={isFetching}
+        isLoading={isFetching || isLoading}
         totalItems={stocksData?.data?.totalItems ?? 0}
         onDelete={onDelete}
         onEdit={onEdit}

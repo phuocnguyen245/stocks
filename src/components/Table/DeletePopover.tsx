@@ -26,18 +26,24 @@ const DeletePopover = ({ row, isLoading, onDelete }: DeletePopoverProps): JSX.El
   }
 
   useEffect(() => {
-    if (isLoadingDelete) {
-      if (popoverOpen) {
-        if (isLoading) {
-          hide()
-        } else {
-          setIsLoadingDelete(true)
-        }
-      } else {
-        setIsLoadingDelete(false)
+    if (popoverOpen) {
+      if (isLoading) {
+        setIsLoadingDelete(true)
       }
+    } else {
+      setIsLoadingDelete(false)
     }
   }, [isLoading, popoverOpen])
+
+  useEffect(() => {
+    if (popoverOpen) {
+      if (isLoading) {
+        if (isLoadingDelete) {
+          hide()
+        }
+      }
+    }
+  }, [popoverOpen, isLoadingDelete, isLoading])
 
   return (
     <Tooltip

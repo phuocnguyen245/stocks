@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Add, Remove } from '@mui/icons-material'
 import {
@@ -49,15 +50,15 @@ interface TargetState {
   stop: TargetItem[]
 }
 
-const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JSX.Element => {
+const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element => {
+  const init = { id: uuidV4(), name: '', price: 0, volume: 0 }
   const textFieldRef = useRef(null)
   const dispatch = useAppDispatch()
+  const alert = useAlert()
 
   const { sellStock } = useAppSelector((state) => state.Stocks)
   const [createStock, { isLoading }] = useCreateStockMutation()
-  const alert = useAlert()
-
-  const init = { id: uuidV4(), name: '', price: 0, volume: 0 }
+  const { data: stockData } = StockService.useGetCurrentStocksQuery({})
 
   const [target, setTarget] = useState<TargetState>({
     take: [{ id: uuidV4(), name: '', price: 0, volume: 0 }],
@@ -79,13 +80,12 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
     getValues,
     handleSubmit,
     reset,
+    watch,
     control,
     formState: { errors }
   } = useForm({
     resolver: yupResolver(schema)
   })
-
-  const { data: stockData } = StockService.useGetCurrentStocksQuery({})
 
   useEffect(() => {
     if (open && textFieldRef.current) {
@@ -185,37 +185,36 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
     }))
   }
 
-  const onChangeInput = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-    const name = e.target.name
-    const value = Number(e.target.value)
-    setValue(name as keyof FormBody, value)
-    const targetVolume = getValues('volume') ?? 0
-    const targetPrice = getValues('orderPrice') ?? 0
-    setTarget({
-      stop: [
-        {
-          id: uuidV4(),
-          name: '',
-          price: convertToDecimal(((targetPrice ?? 0) * 96) / 100),
-          volume: targetVolume / 2
-        },
-        {
-          id: uuidV4(),
-          name: '',
-          price: convertToDecimal(((targetPrice ?? 0) * 92) / 100),
-          volume: targetVolume
-        }
-      ],
-      take: [
-        {
-          id: uuidV4(),
-          name: '',
-          price: convertToDecimal(((targetPrice ?? 0) * 104) / 100),
-          volume: targetVolume
-        }
-      ]
+  useEffect(() => {
+    watch(({ volume, orderPrice }) => {
+      const targetVolume = volume ?? 0
+      const targetPrice = orderPrice ?? 0
+      setTarget({
+        stop: [
+          {
+            id: uuidV4(),
+            name: '',
+            price: convertToDecimal(((targetPrice ?? 0) * 96) / 100),
+            volume: targetVolume / 2
+          },
+          {
+            id: uuidV4(),
+            name: '',
+            price: convertToDecimal(((targetPrice ?? 0) * 92) / 100),
+            volume: targetVolume
+          }
+        ],
+        take: [
+          {
+            id: uuidV4(),
+            name: '',
+            price: convertToDecimal(((targetPrice ?? 0) * 104) / 100),
+            volume: targetVolume
+          }
+        ]
+      })
     })
-  }
+  }, [watch])
 
   return (
     <Dialog
@@ -272,7 +271,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
                   required
                   sx={{ margin: '8px 0' }}
                   {...register('volume')}
-                  onChange={onChangeInput}
+                  onChange={(e) => setValue('volume', parseInt(e.target.value, 10))}
                   error={!!errors.volume}
                   helperText={errors.volume?.message}
                 />
@@ -287,7 +286,6 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
                     inputProps={{ min: 0 }}
                     sx={{ margin: '8px 0' }}
                     {...register('orderPrice')}
-                    onChange={onChangeInput}
                     error={!!errors?.orderPrice}
                     helperText={errors.orderPrice?.message}
                   />
@@ -338,7 +336,7 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
                         value={item.price}
                         onChange={(e) => onChange(e, 'take', item.id)}
                         type='number'
-                        inputProps={{ step: '0.1' }}
+                        inputProps={{ step: '0.0' }}
                       />
                     </Grid>
                     <Grid item xs={2} md={1}>
@@ -380,10 +378,10 @@ const StockModal = ({ open, status, handleClose, addData }: StockModalProps): JS
                         fullWidth
                         label='Volume'
                         name='volume'
-                        value={item.volume}
+                        value={parseInt(String(item.volume))}
                         onChange={(e) => onChange(e, 'stop', item.id)}
                         type='number'
-                        inputProps={{ step: '0.1' }}
+                        inputProps={{ step: '1' }}
                         disabled
                       />
                     </Grid>
