@@ -86,7 +86,8 @@ const SwipeableTabs = ({ components, exceptionRoute }: SwipeableTabsProps): JSX.
     <Box borderRadius={0} mt={isMdWindow ? 13 : 14}>
       <Box
         sx={{
-          boxShadow: ' rgba(0, 0, 0, 0.24) 0px 3px 8px'
+          boxShadow: ' rgba(0, 0, 0, 0.24) 0px 3px 8px',
+          transition: 'all .2s ease'
         }}
         position='absolute'
         zIndex={1000}

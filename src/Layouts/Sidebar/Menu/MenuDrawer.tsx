@@ -1,10 +1,19 @@
-import { ChevronLeft, ChevronRight, Logout } from '@mui/icons-material'
-import { Box, Divider, Drawer, List, ListItem, Typography, styled, useTheme } from '@mui/material'
+import {
+  AttachMoney,
+  CandlestickChart,
+  Checklist,
+  ChevronLeft,
+  ChevronRight,
+  Logout,
+  Payment,
+  ShowChart
+} from '@mui/icons-material'
+import { Box, Divider, Drawer, Grid, Typography, styled, useTheme } from '@mui/material'
+import { FormattedMessage } from 'react-intl'
 import { useNavigate } from 'react-router'
 import DarkModeSwitch from 'src/Layouts/Header/components/DarkModeSwitch'
 import Languages from 'src/Layouts/Header/components/Languages'
 import RefreshTime from 'src/Layouts/Header/components/RefreshTime'
-import SearchBar from 'src/components/SearchBar'
 
 interface MenuDrawerProps {
   open: boolean
@@ -30,8 +39,8 @@ const MenuDrawer = ({
   const navigate = useNavigate()
 
   const onOpen = (): void => {
-    onOpenWatchList()
-    toggle()
+    // onOpenWatchList()
+    // toggle()
   }
 
   const onLogout = (): void => {
@@ -42,70 +51,174 @@ const MenuDrawer = ({
   }
 
   return (
-    <Drawer variant='persistent' anchor='left' open={open} onClose={toggle}>
-      <Box sx={{ overflowY: 'hidden' }} boxShadow={3}>
-        <DrawerHeader onClick={toggle} sx={{ cursor: 'pointer' }}>
-          <Typography pl={2} fontWeight={600}>
-            Menu
-          </Typography>
-          {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
-        </DrawerHeader>
-        <Divider />
-        <List sx={{ py: 0 }}>
-          <ListItem sx={{ cursor: 'pointer' }} onClick={onOpen}>
-            <Typography variant='h6' fontWeight={600}>
-              Watch List
+    <Drawer
+      variant='persistent'
+      anchor='left'
+      open={open}
+      onClose={toggle}
+      sx={{
+        '& .MuiPaper-root': {
+          width: 280,
+          height: 'calc(100vh)'
+        }
+      }}
+    >
+      <Box boxShadow={3} width='100%' height='100%'>
+        <Box height='max-content'>
+          <DrawerHeader onClick={toggle} sx={{ cursor: 'pointer' }}>
+            <Typography pl={2} fontWeight={600}>
+              Stock Tracking
             </Typography>
-          </ListItem>
+            {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
+          </DrawerHeader>
           <Divider />
-          <ListItem sx={{ cursor: 'pointer' }} onClick={onOpenAsset}>
-            <Typography variant='h6' fontWeight={600}>
-              Asset
-            </Typography>
-          </ListItem>
-          <Divider />
-          <ListItem>
+        </Box>
+        <Box height='calc(100% - 66px)'>
+          <Grid
+            container
+            sx={{
+              py: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              height: '100%'
+            }}
+          >
+            <Grid item flex={1}>
+              <Grid
+                item
+                sx={{
+                  cursor: 'pointer',
+                  gap: 1,
+                  display: 'flex',
+                  height: 64,
+                  alignItems: 'center',
+                  px: 2
+                }}
+                onClick={onOpen}
+              >
+                <ShowChart sx={{ color: 'primary.main', width: 28, height: 28 }} />
+                <Typography variant='h6' fontWeight={600}>
+                  <FormattedMessage id='title.stocks' />
+                </Typography>
+              </Grid>
+              <Divider />
+              <Box
+                sx={{
+                  cursor: 'pointer',
+                  gap: 1,
+                  display: 'flex',
+                  height: 64,
+                  alignItems: 'center',
+                  px: 2
+                }}
+                onClick={onOpen}
+              >
+                <CandlestickChart sx={{ color: 'primary.main', width: 28, height: 28 }} />
+                <Typography variant='h6' fontWeight={600}>
+                  <FormattedMessage id='title.charts' />
+                </Typography>
+              </Box>
+              <Divider />
+              <Box
+                sx={{
+                  cursor: 'pointer',
+                  gap: 1,
+                  display: 'flex',
+                  height: 64,
+                  alignItems: 'center',
+                  px: 2
+                }}
+                onClick={onOpen}
+              >
+                <Payment sx={{ color: 'primary.main', width: 28, height: 28 }} />
+                <Typography variant='h6' fontWeight={600}>
+                  <FormattedMessage id='title.payments' />
+                </Typography>
+              </Box>
+              <Divider />
+              <Box
+                sx={{
+                  cursor: 'pointer',
+                  gap: 1,
+                  display: 'flex',
+                  height: 64,
+                  alignItems: 'center',
+                  px: 2
+                }}
+                onClick={onOpen}
+              >
+                <Checklist sx={{ color: 'primary.main', width: 28, height: 28 }} />
+                <Typography variant='h6' fontWeight={600}>
+                  Watch List
+                </Typography>
+              </Box>
+              <Divider />
+              <Box
+                sx={{
+                  cursor: 'pointer',
+                  gap: 1,
+                  display: 'flex',
+                  height: 64,
+                  alignItems: 'center',
+                  px: 2
+                }}
+                onClick={onOpenAsset}
+              >
+                <AttachMoney sx={{ color: 'primary.main', width: 28, height: 28 }} />
+                <Typography variant='h6' fontWeight={600}>
+                  Asset
+                </Typography>
+              </Box>
+              <Divider />
+              {/* <Box>
             <SearchBar open={open} />
-          </ListItem>
-          <Divider />
-          <ListItem sx={{ display: 'flex', gap: 2 }}>
-            <Typography>Refreshed Time:</Typography>
-            <RefreshTime />
-          </ListItem>
-          <Divider />
-          <ListItem
-            sx={{
-              display: 'flex',
-              gap: 4,
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%'
-            }}
-          >
-            <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
-            <Languages languages={languages} onSetLanguages={onSetLanguages} />
-          </ListItem>
-          <Divider />
-          <ListItem
-            sx={{
-              display: 'flex',
-              gap: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
-              cursor: 'pointer',
-              '&:hover': {
-                color: 'primary.main'
-              },
-              transition: 'color 0.3s ease'
-            }}
-            onClick={onLogout}
-          >
-            <Typography fontWeight={600}>Logout</Typography>
-            <Logout />
-          </ListItem>
-          <Divider />
-        </List>
+          </Box> */}
+              <Divider />
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                <Typography>Refreshed Time:</Typography>
+                <RefreshTime />
+              </Box>
+              <Divider />
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 4,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '100%'
+                }}
+              >
+                <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
+                <Languages languages={languages} onSetLanguages={onSetLanguages} />
+              </Box>
+              <Divider />
+            </Grid>
+
+            <Grid item>
+              <Divider />
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '100%',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    color: 'primary.main'
+                  },
+                  height: 64,
+                  transition: 'color 0.3s ease'
+                }}
+                onClick={onLogout}
+              >
+                <Typography fontWeight={600}>Logout</Typography>
+                <Logout />
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
       </Box>
     </Drawer>
   )

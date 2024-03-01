@@ -117,7 +117,8 @@ const AssetFooter = (): JSX.Element => {
   return (
     <Box
       position={isMdWindow ? 'relative' : 'fixed'}
-      width={`calc(100vw - ${!isMdWindow ? (isOpenSidebar ? '340px' : '0px') : '20vw'})`}
+      width={`calc(100vw - ${!isMdWindow ? (isOpenSidebar ? '260px' : '0px') : '20vw'})`}
+      ml={'-20px'}
       bottom={0}
       py={2}
       pb={isMdWindow ? 0 : 2}

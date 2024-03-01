@@ -6,13 +6,15 @@ import { useAppSelector } from 'src/store'
 import AssetDrawer from '../AssetDrawer'
 
 interface MenuProps {
-  onOpenWatchList: () => void
-  darkMode: 'dark' | 'light'
+  open: boolean
   languages: 'vi' | 'en'
+  darkMode: 'dark' | 'light'
+  onOpenWatchList: () => void
   onSetDarkMode: (value: React.SetStateAction<'dark' | 'light'>) => void
   onSetLanguages: (value: React.SetStateAction<'vi' | 'en'>) => void
 }
 const Menu = ({
+  open,
   languages,
   darkMode,
   onSetLanguages,
@@ -21,13 +23,12 @@ const Menu = ({
 }: MenuProps): JSX.Element => {
   const { isMdWindow, isLogin } = useAppSelector((state) => state.Stocks)
 
-  const { open: openMenu, toggle: onToggleMenu } = useModals()
   const { open: openAsset, toggle: onOpenAsset } = useModals()
 
   const onOpenDrawer = (): void => {
-    if (isMdWindow) {
-      return onToggleMenu()
-    }
+    // if (isMdWindow) {
+    //   return onToggleMenu()
+    // }
     return onOpenWatchList()
   }
 
@@ -37,15 +38,15 @@ const Menu = ({
         color='inherit'
         onClick={onOpenDrawer}
         edge='start'
-        sx={{ ml: 2, display: isLogin ? 'block' : 'none' }}
+        sx={{ mr: 2, display: isLogin ? 'block' : 'none' }}
       >
         <MenuIcon />
       </IconButton>
       <MenuDrawer
-        open={openMenu}
+        open={open}
         darkMode={darkMode}
         languages={languages}
-        toggle={onToggleMenu}
+        toggle={onOpenWatchList}
         onOpenAsset={onOpenAsset}
         onSetDarkMode={onSetDarkMode}
         onSetLanguages={onSetLanguages}

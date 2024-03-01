@@ -20,7 +20,7 @@ import Header from '../Header'
 import Menu from './Menu'
 import WatchListDrawer from './WatchListDrawer'
 
-export const drawerWidth = 340
+export const drawerWidth = 280
 
 const Main = styled('main', {
   shouldForwardProp: (prop) => prop !== 'open' && prop !== 'isLogin'
@@ -34,13 +34,13 @@ const Main = styled('main', {
     easing: theme.transitions.easing.easeInOut,
     duration: '0,2s'
   }),
-  marginRight: isLogin ? `-${drawerWidth}px` : 0,
+  marginLeft: 0,
   ...(open && {
     transition: theme.transitions.create('all', {
       easing: theme.transitions.easing.easeInOut,
       duration: '0,2s'
     }),
-    marginRight: 0
+    marginLeft: isLogin ? `${drawerWidth}px` : 0
   })
 }))
 
@@ -56,10 +56,11 @@ const AppBar = styled(MuiAppBar, {
   width: '100%',
   ...(open && {
     width: isLogin ? `calc(100% - ${drawerWidth}px)` : '100%',
-    marginRight: isLogin ? `${drawerWidth}px` : '0',
+    marginLeft: isLogin ? `${drawerWidth}px` : '0',
+
     [theme.breakpoints.down('md')]: {
       width: '100%',
-      marginRight: 0
+      marginLeft: 100
     }
   })
 }))
@@ -121,14 +122,15 @@ const PersistentDrawerLeft = (): JSX.Element => {
           <CssBaseline />
           <AppBar position='fixed' open={openWatchList} isLogin={isLogin}>
             <Toolbar>
-              <Header
+              <Menu
+                open={openWatchList}
+                onOpenWatchList={toggle}
                 darkMode={darkMode}
                 onSetDarkMode={setDarkMode}
                 languages={languages}
                 onSetLanguages={setLanguages}
               />
-              <Menu
-                onOpenWatchList={toggle}
+              <Header
                 darkMode={darkMode}
                 onSetDarkMode={setDarkMode}
                 languages={languages}
@@ -139,7 +141,7 @@ const PersistentDrawerLeft = (): JSX.Element => {
           <Main open={openWatchList} sx={{ p: 0 }} isLogin={isLogin}>
             <Outlet />
           </Main>
-          <WatchListDrawer open={openWatchList} toggle={toggle} isLogin={isLogin} />
+          {/* <WatchListDrawer open={openWatchList} toggle={toggle} isLogin={isLogin} /> */}
         </Box>
       </IntlProvider>
     </ThemeProvider>
