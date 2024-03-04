@@ -104,139 +104,137 @@ const FilterStocks = (): JSX.Element => {
   return (
     <>
       <Helmet title='title.filter.stocks' />
-
       <Container
-        component={Paper}
         sx={{
-          pt: isMdWindow ? 2 : 3,
-          minHeight: 'calc(100vh - 112px)',
-          boxShadow: 'none'
+          height: '100vh'
         }}
       >
-        <Grid container columnSpacing={2} rowSpacing={2}>
-          <Grid item xs={6} sm={6} md={6} lg={4}>
-            <List
-              sx={{
-                bgcolor: theme.palette.mode === 'dark' ? 'grey.800' : 'primary.light',
-                p: 0,
-                borderRadius: 1,
-                overflow: 'hidden',
-                boxShadow: 2
-              }}
-            >
-              {technicalList.map((item) => {
-                const isIncludes = defaultFilter.includes(item)
-                return (
-                  <ListItem onClick={() => onSetDefaultFilter(item)} key={item} sx={{ p: 0 }}>
-                    <Box
+        <Box height='100%'>
+          <Grid container pt={14}>
+            <Grid item xs={6} sm={6} md={6} lg={4}>
+              <List
+                sx={{
+                  bgcolor: theme.palette.mode === 'dark' ? 'grey.800' : 'primary.light',
+                  p: 0,
+                  borderRadius: 1,
+                  overflow: 'hidden',
+                  boxShadow: 2
+                }}
+              >
+                {technicalList.map((item) => {
+                  const isIncludes = defaultFilter.includes(item)
+                  return (
+                    <ListItem onClick={() => onSetDefaultFilter(item)} key={item} sx={{ p: 0 }}>
+                      <Box
+                        sx={{
+                          bgcolor: isIncludes
+                            ? theme.palette.mode === 'dark'
+                              ? 'grey.500'
+                              : '#ebabef'
+                            : 'transparent'
+                        }}
+                        width='100%'
+                        px={3}
+                        py={1}
+                        display='flex'
+                        justifyContent='space-between'
+                        alignItems='center'
+                      >
+                        <Typography>{item.toUpperCase()}</Typography>
+                        {isIncludes && <Check />}
+                      </Box>
+                    </ListItem>
+                  )
+                })}
+              </List>
+            </Grid>
+            <Grid item display='flex' flex={1} order={isLg ? 3 : 2}>
+              <List
+                sx={{
+                  bgcolor: theme.palette.mode === 'dark' ? 'grey.800' : 'primary.light',
+                  py: 0,
+                  borderRadius: 1,
+                  width: '100%',
+                  boxShadow: 2
+                }}
+              >
+                {technicalList.map((item) => {
+                  const isIncludes = defaultFilter.includes(item)
+                  return (
+                    <ListItem
+                      key={item}
                       sx={{
-                        bgcolor: isIncludes
+                        width: '100%',
+                        height: '40px',
+                        px: 3
+                      }}
+                    >
+                      {isIncludes ? (
+                        <Grid container justifyContent='space-between'>
+                          <Grid item flex={1}>
+                            <Slider
+                              name={item}
+                              value={filter?.[item]}
+                              onChange={handleChange}
+                              onChangeCommitted={handleChange}
+                              valueLabelDisplay='auto'
+                              getAriaValueText={valuetext}
+                              min={item === 'macd' ? -10 : 0}
+                              max={item === 'macd' ? 10 : 100}
+                            />
+                          </Grid>
+                          <Grid item>
+                            <Typography width='max-content' minWidth={72} textAlign='right'>
+                              ({filter?.[item]?.[0] ?? '0'}, {filter?.[item]?.[1] ?? '0'})
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      ) : (
+                        <></>
+                      )}
+                    </ListItem>
+                  )
+                })}
+              </List>
+            </Grid>
+            <Grid item minWidth={130} xs={6} sm={6} md={6} lg={2} order={isLg ? 2 : 3}>
+              <List
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  height: '100%',
+                  p: 1,
+                  borderRadius: 1,
+                  overflow: 'hidden',
+                  boxShadow: 2
+                }}
+              >
+                {filterLevels.map((item) => (
+                  <Button
+                    key={item}
+                    fullWidth
+                    variant='contained'
+                    sx={{
+                      bgcolor:
+                        item === levels
                           ? theme.palette.mode === 'dark'
                             ? 'grey.500'
                             : '#ebabef'
                           : 'transparent'
-                      }}
-                      width='100%'
-                      px={3}
-                      py={1}
-                      display='flex'
-                      justifyContent='space-between'
-                      alignItems='center'
-                    >
-                      <Typography>{item.toUpperCase()}</Typography>
-                      {isIncludes && <Check />}
-                    </Box>
-                  </ListItem>
-                )
-              })}
-            </List>
-          </Grid>
-          <Grid item display='flex' flex={1} order={isLg ? 3 : 2}>
-            <List
-              sx={{
-                bgcolor: theme.palette.mode === 'dark' ? 'grey.800' : 'primary.light',
-                py: 0,
-                borderRadius: 1,
-                width: '100%',
-                boxShadow: 2
-              }}
-            >
-              {technicalList.map((item) => {
-                const isIncludes = defaultFilter.includes(item)
-                return (
-                  <ListItem
-                    key={item}
-                    sx={{
-                      width: '100%',
-                      height: '40px',
-                      px: 3
                     }}
+                    onClick={() => onFilterLevel(item)}
                   >
-                    {isIncludes ? (
-                      <Grid container justifyContent='space-between'>
-                        <Grid item flex={1}>
-                          <Slider
-                            name={item}
-                            value={filter?.[item]}
-                            onChange={handleChange}
-                            onChangeCommitted={handleChange}
-                            valueLabelDisplay='auto'
-                            getAriaValueText={valuetext}
-                            min={item === 'macd' ? -10 : 0}
-                            max={item === 'macd' ? 10 : 100}
-                          />
-                        </Grid>
-                        <Grid item>
-                          <Typography width='max-content' minWidth={72} textAlign='right'>
-                            ({filter?.[item]?.[0] ?? '0'}, {filter?.[item]?.[1] ?? '0'})
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    ) : (
-                      <></>
-                    )}
-                  </ListItem>
-                )
-              })}
-            </List>
+                    <Typography color='text.primary'>{item}</Typography>
+                  </Button>
+                ))}
+              </List>
+            </Grid>
           </Grid>
-          <Grid item minWidth={130} xs={6} sm={6} md={6} lg={2} order={isLg ? 2 : 3}>
-            <List
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                height: '100%',
-                p: 1,
-                borderRadius: 1,
-                overflow: 'hidden',
-                boxShadow: 2
-              }}
-            >
-              {filterLevels.map((item) => (
-                <Button
-                  key={item}
-                  fullWidth
-                  variant='contained'
-                  sx={{
-                    bgcolor:
-                      item === levels
-                        ? theme.palette.mode === 'dark'
-                          ? 'grey.500'
-                          : '#ebabef'
-                        : 'transparent'
-                  }}
-                  onClick={() => onFilterLevel(item)}
-                >
-                  <Typography color='text.primary'>{item}</Typography>
-                </Button>
-              ))}
-            </List>
-          </Grid>
-        </Grid>
-        <Box my={2}>
-          <FilterResult filterDebounce={filterDebounce} />
+          <Box my={2}>
+            <FilterResult filterDebounce={filterDebounce} />
+          </Box>
         </Box>
       </Container>
     </>

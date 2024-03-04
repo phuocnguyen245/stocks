@@ -66,6 +66,7 @@ const onDarkTheme = (mode: 'dark' | 'light'): Theme => {
       background: {
         default: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.5)'
       },
+
       grey: {
         100: '#f7fafc',
         200: '#edf2f7',

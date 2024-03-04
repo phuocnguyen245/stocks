@@ -4,16 +4,19 @@ import {
   Checklist,
   ChevronLeft,
   ChevronRight,
+  FilterAlt,
   Logout,
   Payment,
   ShowChart
 } from '@mui/icons-material'
-import { Box, Divider, Drawer, Grid, Typography, styled, useTheme } from '@mui/material'
+import { Box, Divider, Drawer, Grid, Theme, Typography, styled, useTheme } from '@mui/material'
+import { Fragment, ReactNode } from 'react'
 import { FormattedMessage } from 'react-intl'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import DarkModeSwitch from 'src/Layouts/Header/components/DarkModeSwitch'
 import Languages from 'src/Layouts/Header/components/Languages'
 import RefreshTime from 'src/Layouts/Header/components/RefreshTime'
+import { useAppSelector } from 'src/store'
 
 interface MenuDrawerProps {
   open: boolean
@@ -25,6 +28,42 @@ interface MenuDrawerProps {
   onSetDarkMode: (value: React.SetStateAction<'dark' | 'light'>) => void
   onSetLanguages: (value: React.SetStateAction<'vi' | 'en'>) => void
 }
+
+const routes = [
+  {
+    icons: (color: never) => <ShowChart sx={{ color, width: 28, height: 28 }} />,
+    name: 'title.stocks',
+    url: '/stocks',
+    key: 'stocks'
+  },
+  {
+    icons: (color: never) => <FilterAlt sx={{ color, width: 28, height: 28 }} />,
+    name: 'title.filter.stocks',
+    url: '/filters',
+    key: 'filters'
+  },
+  {
+    icons: (color: never) => <CandlestickChart sx={{ color, width: 28, height: 28 }} />,
+    name: 'title.charts',
+    url: '/charts/vnindex',
+    key: 'charts'
+  },
+  {
+    icons: (color: never) => <Payment sx={{ color, width: 28, height: 28 }} />,
+    name: 'title.payments',
+    url: '/payments',
+    key: 'payments'
+  },
+  {
+    icons: (color: never) => <Checklist sx={{ color, width: 28, height: 28 }} />,
+    name: 'title.watchlist'
+  },
+  {
+    icons: (color: never) => <AttachMoney sx={{ color, width: 28, height: 28 }} />,
+    name: 'title.asset'
+  }
+]
+
 const MenuDrawer = ({
   open,
   darkMode,
@@ -37,10 +76,17 @@ const MenuDrawer = ({
 }: MenuDrawerProps): JSX.Element => {
   const theme = useTheme()
   const navigate = useNavigate()
+  const { isMdWindow } = useAppSelector((state) => state.Stocks)
 
-  const onOpen = (): void => {
-    // onOpenWatchList()
-    // toggle()
+  const location = useLocation()
+
+  const onOpen = (url?: string): void => {
+    if (url) {
+      return navigate(url)
+    } else {
+      // onOpenWatchList()
+      // toggle()
+    }
   }
 
   const onLogout = (): void => {
@@ -73,7 +119,7 @@ const MenuDrawer = ({
           </DrawerHeader>
           <Divider />
         </Box>
-        <Box height='calc(100% - 66px)'>
+        <Box height='calc(100% - 65px)'>
           <Grid
             container
             sx={{
@@ -85,114 +131,64 @@ const MenuDrawer = ({
             }}
           >
             <Grid item flex={1}>
-              <Grid
-                item
-                sx={{
-                  cursor: 'pointer',
-                  gap: 1,
-                  display: 'flex',
-                  height: 64,
-                  alignItems: 'center',
-                  px: 2
-                }}
-                onClick={onOpen}
-              >
-                <ShowChart sx={{ color: 'primary.main', width: 28, height: 28 }} />
-                <Typography variant='h6' fontWeight={600}>
-                  <FormattedMessage id='title.stocks' />
-                </Typography>
-              </Grid>
-              <Divider />
-              <Box
-                sx={{
-                  cursor: 'pointer',
-                  gap: 1,
-                  display: 'flex',
-                  height: 64,
-                  alignItems: 'center',
-                  px: 2
-                }}
-                onClick={onOpen}
-              >
-                <CandlestickChart sx={{ color: 'primary.main', width: 28, height: 28 }} />
-                <Typography variant='h6' fontWeight={600}>
-                  <FormattedMessage id='title.charts' />
-                </Typography>
-              </Box>
-              <Divider />
-              <Box
-                sx={{
-                  cursor: 'pointer',
-                  gap: 1,
-                  display: 'flex',
-                  height: 64,
-                  alignItems: 'center',
-                  px: 2
-                }}
-                onClick={onOpen}
-              >
-                <Payment sx={{ color: 'primary.main', width: 28, height: 28 }} />
-                <Typography variant='h6' fontWeight={600}>
-                  <FormattedMessage id='title.payments' />
-                </Typography>
-              </Box>
-              <Divider />
-              <Box
-                sx={{
-                  cursor: 'pointer',
-                  gap: 1,
-                  display: 'flex',
-                  height: 64,
-                  alignItems: 'center',
-                  px: 2
-                }}
-                onClick={onOpen}
-              >
-                <Checklist sx={{ color: 'primary.main', width: 28, height: 28 }} />
-                <Typography variant='h6' fontWeight={600}>
-                  Watch List
-                </Typography>
-              </Box>
-              <Divider />
-              <Box
-                sx={{
-                  cursor: 'pointer',
-                  gap: 1,
-                  display: 'flex',
-                  height: 64,
-                  alignItems: 'center',
-                  px: 2
-                }}
-                onClick={onOpenAsset}
-              >
-                <AttachMoney sx={{ color: 'primary.main', width: 28, height: 28 }} />
-                <Typography variant='h6' fontWeight={600}>
-                  Asset
-                </Typography>
-              </Box>
-              <Divider />
-              {/* <Box>
-            <SearchBar open={open} />
-          </Box> */}
-              <Divider />
-              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                <Typography>Refreshed Time:</Typography>
-                <RefreshTime />
-              </Box>
-              <Divider />
-              <Box
-                sx={{
-                  display: 'flex',
-                  gap: 4,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: '100%'
-                }}
-              >
-                <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
-                <Languages languages={languages} onSetLanguages={onSetLanguages} />
-              </Box>
-              <Divider />
+              {routes.map((item) => {
+                const isRoute = item.url && location.pathname.split('/').includes(item.key)
+                return (
+                  <Fragment key={item.name}>
+                    <Grid
+                      item
+                      sx={{
+                        cursor: 'pointer',
+                        gap: 1,
+                        display: 'flex',
+                        height: 48,
+                        alignItems: 'center',
+                        px: 2,
+                        ...(isRoute && { bgcolor: 'primary.main' }),
+                        ...(isRoute && { color: 'grey.100' })
+                      }}
+                      onClick={() => onOpen(item.url)}
+                    >
+                      {item.icons(isRoute ? ('grey.100' as never) : ('primary.main' as never))}
+                      <Typography variant='h6' fontWeight={600}>
+                        <FormattedMessage id={item.name} />
+                      </Typography>
+                    </Grid>
+                    <Divider />
+                  </Fragment>
+                )
+              })}
+
+              {isMdWindow && (
+                <>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: 0,
+                      alignItems: 'center',
+                      width: '100%',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <Typography>Refreshed Time:</Typography>
+                    <RefreshTime />
+                  </Box>
+                  <Divider />
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: 2,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '100%'
+                    }}
+                  >
+                    <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
+                    <Languages languages={languages} onSetLanguages={onSetLanguages} />
+                  </Box>
+                  <Divider />
+                </>
+              )}
             </Grid>
 
             <Grid item>
@@ -205,11 +201,12 @@ const MenuDrawer = ({
                   alignItems: 'center',
                   width: '100%',
                   cursor: 'pointer',
+                  transition: 'all 0.3s ease',
                   '&:hover': {
-                    color: 'primary.main'
+                    bgcolor: 'primary.main',
+                    color: 'grey.100'
                   },
-                  height: 64,
-                  transition: 'color 0.3s ease'
+                  height: 48
                 }}
                 onClick={onLogout}
               >

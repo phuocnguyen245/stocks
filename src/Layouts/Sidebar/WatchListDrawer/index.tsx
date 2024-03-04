@@ -162,7 +162,7 @@ const WatchListDrawer = ({ open, isLogin, toggle }: WatchListDrawerProps): JSX.E
                   >
                     {item?.stocks?.map((stock: Board, index) => (
                       <Link
-                        href={`/stocks/${stock.symbol}`}
+                        href={`/charts/${stock.symbol}`}
                         key={stock.symbol}
                         target='_blank'
                         style={{ color: 'unset', textDecoration: 'none' }}

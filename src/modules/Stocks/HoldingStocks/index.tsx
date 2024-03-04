@@ -28,9 +28,9 @@ const HoldingStocks = (): JSX.Element => {
     <Box
       height='100%'
       position='relative'
-      minHeight='calc(100vh - 112px)'
-      pt={0}
-      pb={isMdWindow ? 4 : '112px'}
+      minHeight='calc(100vh)'
+      pt={isMdWindow ? 5 : 8}
+      pb={isMdWindow ? 4 : 0}
       px={2}
     >
       <Helmet title='label.stocks' />
@@ -57,7 +57,7 @@ const HoldingStocks = (): JSX.Element => {
           </Grid>
         </Box>
       </Box>
-      {!isMdWindow && <StockFooter />}
+      {/* {!isMdWindow && <StockFooter />} */}
     </Box>
   )
 }

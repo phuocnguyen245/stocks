@@ -165,7 +165,7 @@ const Table = ({
                                 }}
                               >
                                 <Link
-                                  to={`/stocks/${row.code}`}
+                                  to={`/charts/${row.code}`}
                                   style={{ display: 'flex', alignItems: 'center' }}
                                   target='_blank'
                                 >

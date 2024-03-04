@@ -1,18 +1,7 @@
 import { Logout } from '@mui/icons-material'
-import {
-  Box,
-  Grid,
-  IconButton,
-  Paper,
-  Tab,
-  Tabs,
-  styled,
-  useMediaQuery,
-  useTheme
-} from '@mui/material'
+import { Box, Grid, IconButton, Paper, styled, useMediaQuery, useTheme } from '@mui/material'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { FormattedMessage } from 'react-intl'
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import SearchBar from 'src/components/SearchBar'
@@ -40,21 +29,8 @@ const Header = ({
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const [value, setValue] = React.useState('1')
   const [isLogin, setIsLogin] = useState(false)
   const location = useLocation()
-  const handleChange = (event: React.SyntheticEvent, newValue: string): void => {
-    setValue(newValue)
-  }
-
-  useEffect(() => {
-    const options = {
-      '/stocks': '1',
-      '/stocks/vnindex': '2',
-      '/payments': '3'
-    }
-    setValue(options[location.pathname as keyof typeof options] || '1')
-  }, [location])
 
   useEffect(() => {
     dispatch(onMdWindow(isMd))
@@ -88,44 +64,11 @@ const Header = ({
         top: 0,
         left: 0,
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         height: 52,
         gap: '4px'
       }}
     >
-      <HeaderNavigation flex={1} ml={isMd ? 0 : 4}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          centered={isMd}
-          sx={{
-            '& .MuiTabs-scroller': {
-              height: '50px',
-              minHeight: 'unset'
-            },
-            display: isLogin ? 'block' : 'none'
-          }}
-        >
-          <Tab
-            label={<FormattedMessage id='title.stocks' />}
-            value={'1'}
-            onClick={() => navigate('/stocks')}
-            sx={{ color: 'text.primary', fontWeight: 600, height: 56 }}
-          />
-          <Tab
-            label={<FormattedMessage id='title.charts' />}
-            value={'2'}
-            sx={{ color: 'text.primary', fontWeight: 600 }}
-            onClick={() => navigate('/stocks/vnindex')}
-          />
-          <Tab
-            label={<FormattedMessage id='title.payments' />}
-            value={'3'}
-            sx={{ color: 'text.primary', fontWeight: 600 }}
-            onClick={() => navigate('/payments')}
-          />
-        </Tabs>
-      </HeaderNavigation>
       <HeaderSetting route={location.pathname}>
         <Grid
           container
@@ -203,8 +146,6 @@ const Header = ({
 }
 
 const HeaderContainer = styled(Paper)(({ theme }) => ({}))
-
-const HeaderNavigation = styled(Box)(({ theme }) => ({}))
 
 const HeaderSetting = styled(Box)<{ route: string }>(({ theme, route }) => ({
   [theme.breakpoints.down('md')]: {

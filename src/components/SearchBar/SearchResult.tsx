@@ -81,7 +81,7 @@ const SearchResult = ({ setValue, isTextField, search, isMd }: SearchResultProps
         return setData([])
       }
     }
-    return navigate(`/stocks/${code.toLowerCase()}`, { replace: true })
+    return navigate(`/charts/${code.toLowerCase()}`, { replace: true })
   }
 
   return (

@@ -53,7 +53,7 @@ const RefreshTime = (): JSX.Element => {
   }
 
   const modals = (
-    <Box px={2} py={1}>
+    <Box px={0} py={1}>
       {isLogin && (
         <>
           <Typography>Do you want to refresh all stocks? </Typography>
@@ -71,12 +71,7 @@ const RefreshTime = (): JSX.Element => {
   )
 
   return (
-    <Box
-      alignItems='center'
-      justifyContent='space-between'
-      display='flex'
-      marginRight={isMdWindow ? 0 : 1}
-    >
+    <Box alignItems='center' justifyContent='space-between' display='flex'>
       <Box order={isMdWindow ? 2 : 1}>
         <ClickAwayListener onClickAway={hide}>
           <Tooltip

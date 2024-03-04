@@ -98,7 +98,7 @@ const FilterResult = ({ filterDebounce }: FilterResultProps): JSX.Element => {
   }, [pagination])
 
   useEffect(() => {
-    navigate('/stocks/filters')
+    navigate('/filters')
   }, [])
 
   useEffect(() => {
@@ -114,7 +114,7 @@ const FilterResult = ({ filterDebounce }: FilterResultProps): JSX.Element => {
       render: (row) => {
         return (
           <Link
-            href={`/stocks/${row.code}`}
+            href={`/charts/${row.code}`}
             target='_blank'
             sx={{ color: 'primary.main', textDecoration: 'none' }}
           >

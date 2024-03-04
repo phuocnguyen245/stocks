@@ -38,7 +38,8 @@ const Loader = (Component: any) => (props: any) => (
 const MainLayout = Loader(lazy(async () => await import('src/Layouts/Sidebar')))
 const AuthLayout = Loader(lazy(async () => await import('src/modules/Auth/Layout')))
 
-const Stocks = Loader(lazy(async () => await import('src/modules/Stocks')))
+const Stocks = Loader(lazy(async () => await import('src/modules/Stocks/HoldingStocks')))
+const FilterStocks = Loader(lazy(async () => await import('src/modules/Stocks/FilterStocks')))
 const Charts = Loader(lazy(async () => await import('src/modules/Charts')))
 const Payment = Loader(lazy(async () => await import('src/modules/Payments')))
 const Login = Loader(lazy(async () => await import('src/modules/Auth/Login')))
@@ -62,16 +63,20 @@ const routes: RouteObject[] = [
           {
             path: '',
             element: <PrivateRoute element={Stocks} />
-          },
-
-          {
-            path: 'filters',
-            element: <PrivateRoute element={Stocks} />
           }
         ]
       },
       {
-        path: '/stocks',
+        path: '/filters',
+        children: [
+          {
+            path: '',
+            element: <PrivateRoute element={FilterStocks} />
+          }
+        ]
+      },
+      {
+        path: '/charts/',
         children: [
           {
             path: ':code',

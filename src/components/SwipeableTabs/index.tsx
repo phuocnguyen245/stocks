@@ -33,10 +33,9 @@ const CustomTabPanel = (props: TabPanelProps): JSX.Element => {
   )
 }
 
-const SwipeableTabs = ({ components, exceptionRoute }: SwipeableTabsProps): JSX.Element => {
+const SwipeableTabs = ({ components }: SwipeableTabsProps): JSX.Element => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const theme = useTheme()
   const { isOpenSidebar, isMdWindow } = useAppSelector((state) => state.Stocks)
 
   const [value, setValue] = useState<number>(() => {
@@ -66,28 +65,14 @@ const SwipeableTabs = ({ components, exceptionRoute }: SwipeableTabsProps): JSX.
       </CustomTabPanel>
     ))
 
-    if (isMdWindow) {
-      return children
-    }
-
-    return (
-      <SwipeableViews
-        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-        index={value}
-        onChangeIndex={handleChangeIndex}
-        style={{ position: 'relative' }}
-      >
-        {children}
-      </SwipeableViews>
-    )
-  }, [isMdWindow, theme, components, pathname, exceptionRoute, value])
+    return children
+  }, [isMdWindow, components, value])
 
   return (
     <Box borderRadius={0} mt={isMdWindow ? 13 : 14}>
       <Box
         sx={{
-          boxShadow: ' rgba(0, 0, 0, 0.24) 0px 3px 8px',
-          transition: 'all .2s ease'
+          boxShadow: ' rgba(0, 0, 0, 0.24) 0px 3px 8px'
         }}
         position='absolute'
         zIndex={1000}
