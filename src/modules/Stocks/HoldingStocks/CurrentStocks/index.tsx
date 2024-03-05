@@ -27,14 +27,17 @@ const CurrentStocks = (): JSX.Element => {
   const [editData, setEditData] = useState<Stock>()
   const [pagination, setPagination] = useState<DefaultPagination>({
     page: 0,
-    size: 10
+    size: 10,
+    search: '',
+    sortBy: '',
+    sortDirection: undefined
   })
 
   const {
     data: currentStockData,
     isFetching,
     refetch
-  } = useGetCurrentStocksQuery({}, { refetchOnMountOrArgChange: true })
+  } = useGetCurrentStocksQuery(pagination, { refetchOnMountOrArgChange: true })
 
   useEffect(() => {
     if (currentStockData?.data?.data) {
@@ -65,25 +68,6 @@ const CurrentStocks = (): JSX.Element => {
         .catch((error: ErrorResponse) => console.log(error))
     }
   }, [isRefetchStock])
-
-  const onEdit = (row: Stock): void => {
-    setEditData((prev: Stock | undefined) => {
-      if (prev?.code) {
-        const data = {
-          _id: '',
-          code: '',
-          date: moment(Date.now()).format('DD/MM/YYYY'),
-          volume: 0,
-          orderPrice: 0,
-          marketPrice: 0,
-          status: 'Buy',
-          ratio: 0
-        }
-        return data as Stock
-      }
-      return row
-    })
-  }
 
   const onChangeRow = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const name = e.target.name
@@ -261,6 +245,10 @@ const CurrentStocks = (): JSX.Element => {
     }
   ]
 
+  const onSort = (pagination: DefaultPagination): void => {
+    setPagination(pagination)
+  }
+
   return (
     <>
       <FilteredStocks />
@@ -270,7 +258,7 @@ const CurrentStocks = (): JSX.Element => {
         isLoading={isFetching}
         totalItems={currentStockData?.data?.totalItems ?? 0}
         onDelete={onDelete}
-        // onEdit={onEdit}
+        onSort={onSort}
         pagination={pagination}
         onSetPagination={setPagination}
         onView={onView}

@@ -7,7 +7,7 @@ import {
   styled,
   type AppBarProps as MuiAppBarProps
 } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { IntlProvider } from 'react-intl'
 import { useDispatch } from 'react-redux'
 import { Outlet } from 'react-router-dom'
@@ -19,58 +19,28 @@ import themeProvider from 'src/styles/theme'
 import Header from '../Header'
 import Menu from './Menu'
 import WatchListDrawer from './WatchListDrawer'
-
-export const drawerWidth = 280
-
-const Main = styled('main', {
-  shouldForwardProp: (prop) => prop !== 'open' && prop !== 'isLogin'
-})<{
-  open?: boolean
-  isLogin?: boolean
-}>(({ theme, open, isLogin }) => ({
-  padding: theme.spacing(3),
-  width: '100%',
-  transition: theme.transitions.create('all', {
-    easing: theme.transitions.easing.easeInOut,
-    duration: '0,2s'
-  }),
-  marginLeft: 0,
-  ...(open && {
-    transition: theme.transitions.create('all', {
-      easing: theme.transitions.easing.easeInOut,
-      duration: '0,2s'
-    }),
-    marginLeft: isLogin ? `${drawerWidth}px` : 0
-  })
-}))
-
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean
-  isLogin: boolean
-}
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open' && prop !== 'isLogin'
-})<AppBarProps>(({ theme, open, isLogin }) => ({
-  transition: 'all 0.2s ease-in-out',
-  width: '100%',
-  ...(open && {
-    width: isLogin ? `calc(100% - ${drawerWidth}px)` : '100%',
-    marginLeft: isLogin ? `${drawerWidth}px` : '0',
-
-    [theme.breakpoints.down('md')]: {
-      width: '100%',
-      marginLeft: 100
-    }
-  })
-}))
+import { useAppSelector } from 'src/store'
+import MainComponents from './Main'
+export const watchListWidth = 280
+export const menuWidth = 240
 
 const PersistentDrawerLeft = (): JSX.Element => {
   const dispatch = useDispatch()
   const isLogin = useIsLogin()
+  const { isMdWindow } = useAppSelector((state) => state.Stocks)
+
+  const [openMenu, setOpenMenu] = useState(() => {
+    const openLocal = localStorage.getItem('isOpenMenu')
+    if (typeof openLocal === 'string' && (openLocal === 'true' || openLocal === 'false')) {
+      const isOpen = JSON.parse(openLocal)
+      const isTypeBoolean = typeof isOpen === 'boolean'
+      return isTypeBoolean ? isOpen : true
+    }
+    return false
+  })
 
   const [openWatchList, setOpenWatchList] = useState(() => {
-    const openLocal = localStorage.getItem('isOpenDrawer')
+    const openLocal = localStorage.getItem('isOpenWatchList')
     if (typeof openLocal === 'string' && (openLocal === 'true' || openLocal === 'false')) {
       const isOpen = JSON.parse(openLocal)
       const isTypeBoolean = typeof isOpen === 'boolean'
@@ -86,6 +56,7 @@ const PersistentDrawerLeft = (): JSX.Element => {
     }
     return localMode
   })
+
   const [languages, setLanguages] = useState<'en' | 'vi'>(() => {
     const lang = localStorage.getItem('lang')
     if (!lang || (lang !== 'en' && lang !== 'vi')) {
@@ -95,16 +66,20 @@ const PersistentDrawerLeft = (): JSX.Element => {
   })
 
   useEffect(() => {
-    localStorage.setItem('isOpenDrawer', JSON.stringify(openWatchList))
+    localStorage.setItem('isOpenMenu', JSON.stringify(openMenu))
+  }, [openMenu])
+
+  useEffect(() => {
+    localStorage.setItem('isOpenWatchList', JSON.stringify(openWatchList))
   }, [openWatchList])
 
-  const toggle = (): void => {
-    setOpenWatchList(!openWatchList)
+  const toggleMenu = (): void => {
+    setOpenMenu(!openMenu)
   }
 
   useEffect(() => {
-    dispatch(setOpenSidebar(openWatchList))
-  }, [openWatchList])
+    dispatch(setOpenSidebar(openMenu))
+  }, [openMenu])
 
   useEffect(() => {
     dispatch(setMode(darkMode))
@@ -115,33 +90,70 @@ const PersistentDrawerLeft = (): JSX.Element => {
     vi
   }
 
+  const widthAndMargin = useMemo(() => {
+    let width = 60
+    let marginLeft = 60
+    let marginRight = 0
+
+    if (!isMdWindow) {
+      if (openMenu && openWatchList) {
+        width = menuWidth
+        marginLeft = menuWidth
+      } else if (openMenu) {
+        width = menuWidth
+        marginLeft = menuWidth
+        if (!openWatchList) {
+          width = menuWidth
+          marginLeft = menuWidth
+        }
+      } else if (openWatchList) {
+        width = watchListWidth - 60
+        marginRight = watchListWidth
+        if (!openMenu) {
+          width = 60
+          marginLeft = 60
+          marginRight = 0
+        }
+      }
+    } else {
+      width = 0
+      marginLeft = 0
+    }
+
+    const result = { width, marginLeft, marginRight }
+
+    return result
+  }, [openMenu, openWatchList, isMdWindow])
+
   return (
     <ThemeProvider theme={themeProvider(darkMode)}>
       <IntlProvider locale={languages} messages={locale[languages] as Record<string, string>}>
         <Box sx={{ display: 'flex' }} bgcolor={darkMode === 'dark' ? '#000' : '#fff'}>
           <CssBaseline />
-          <AppBar position='fixed' open={openWatchList} isLogin={isLogin}>
-            <Toolbar>
-              <Menu
-                open={openWatchList}
-                onOpenWatchList={toggle}
-                darkMode={darkMode}
-                onSetDarkMode={setDarkMode}
-                languages={languages}
-                onSetLanguages={setLanguages}
-              />
-              <Header
-                darkMode={darkMode}
-                onSetDarkMode={setDarkMode}
-                languages={languages}
-                onSetLanguages={setLanguages}
-              />
-            </Toolbar>
-          </AppBar>
-          <Main open={openWatchList} sx={{ p: 0 }} isLogin={isLogin}>
-            <Outlet />
-          </Main>
-          {/* <WatchListDrawer open={openWatchList} toggle={toggle} isLogin={isLogin} /> */}
+          <MainComponents
+            appBar={{
+              widthAndMargin,
+              darkMode,
+              open: openMenu,
+              languages,
+              openWatchList,
+              onOpenMenu: toggleMenu,
+              onOpenWatchList: () => setOpenWatchList(!openWatchList),
+              onSetDarkMode: setDarkMode,
+              onSetLanguages: setLanguages
+            }}
+            outlet={{
+              widthAndMargin,
+              sx: { p: 0 },
+              isLogin
+            }}
+          />
+
+          <WatchListDrawer
+            open={openWatchList}
+            toggle={() => setOpenWatchList(false)}
+            isLogin={isLogin}
+          />
         </Box>
       </IntlProvider>
     </ThemeProvider>

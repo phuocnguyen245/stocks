@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import Helmet from 'src/components/Helmet'
 import CurrentStocks from 'src/modules/Stocks/HoldingStocks/CurrentStocks'
 import type { ConfirmModal as ConfirmModalType } from 'src/modules/Stocks/HoldingStocks/Modals/index'
-import StockFooter from 'src/modules/Stocks/HoldingStocks/Partials/AssetFooter'
 import StockHeader from 'src/modules/Stocks/HoldingStocks/Partials/StockHeader'
 import StocksDetail from 'src/modules/Stocks/HoldingStocks/StocksDetail'
 import { useAppSelector } from 'src/store'
@@ -35,29 +34,24 @@ const HoldingStocks = (): JSX.Element => {
     >
       <Helmet title='label.stocks' />
 
-      <Box>
-        <Grid container columnSpacing={2} rowGap={2} justifyContent='center'>
-          <Grid item xs={12} sm={12} md={12} lg={5.5}></Grid>
-          <Grid item xs={12} sm={12} md={12} lg={5.5}>
-            <StockHeader
-              openConfirmModal={openConfirmModal}
-              modalStatus={modalStatus}
-              onSetModalStatus={setModalStatus}
-            />
-          </Grid>
+      <Grid container columnSpacing={2} rowGap={2} justifyContent='center'>
+        <Grid item xs={12} sm={12} md={12} lg={5.5}></Grid>
+        <Grid item xs={12} sm={12} md={12} lg={5.5}>
+          <StockHeader
+            openConfirmModal={openConfirmModal}
+            modalStatus={modalStatus}
+            onSetModalStatus={setModalStatus}
+          />
         </Grid>
-        <Box>
-          <Grid container columnSpacing={2} rowGap={2} justifyContent='center'>
-            <Grid item xs={12} sm={12} md={12} lg={5.5} order={isMdWindow ? 2 : 1}>
-              <StocksDetail />
-            </Grid>
-            <Grid item xs={12} sm={12} md={12} lg={5.5} order={isMdWindow ? 1 : 2}>
-              <CurrentStocks />
-            </Grid>
-          </Grid>
-        </Box>
-      </Box>
-      {/* {!isMdWindow && <StockFooter />} */}
+      </Grid>
+      <Grid container columnSpacing={2} rowGap={2} justifyContent='center'>
+        <Grid item xs={12} sm={12} md={12} lg={5.5} order={isMdWindow ? 2 : 1}>
+          <StocksDetail />
+        </Grid>
+        <Grid item xs={12} sm={12} md={12} lg={5.5} order={isMdWindow ? 1 : 2}>
+          <CurrentStocks />
+        </Grid>
+      </Grid>
     </Box>
   )
 }

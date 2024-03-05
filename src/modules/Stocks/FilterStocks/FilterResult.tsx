@@ -50,7 +50,11 @@ const labelColor = (name: string, value: number): JSX.Element => {
       type = 'error'
       break
   }
-  return <Label type={type}>{value}</Label>
+  return (
+    <Label type={type} sx={{ width: 80 }}>
+      {value}
+    </Label>
+  )
 }
 const FilterResult = ({ filterDebounce }: FilterResultProps): JSX.Element => {
   const navigate = useNavigate()
@@ -129,7 +133,11 @@ const FilterResult = ({ filterDebounce }: FilterResultProps): JSX.Element => {
       width: '15%',
       align: 'center',
       render: (row) => {
-        return <>{labelColor('rsi', convertToDecimal(row.rsi))}</>
+        return (
+          <Box display='flex' justifyContent='center'>
+            {labelColor('rsi', convertToDecimal(row.rsi))}
+          </Box>
+        )
       }
     },
     {
@@ -138,7 +146,11 @@ const FilterResult = ({ filterDebounce }: FilterResultProps): JSX.Element => {
       width: '15%',
       align: 'center',
       render: (row) => {
-        return <>{labelColor('mfi', convertToDecimal(row.mfi))}</>
+        return (
+          <Box display='flex' justifyContent='center'>
+            {labelColor('mfi', convertToDecimal(row.mfi))}
+          </Box>
+        )
       }
     },
     {

@@ -18,7 +18,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { type Board, type WatchList } from 'src/Models'
 import { useAlert, useModals } from 'src/hooks'
 import { useGetWatchListQuery, useUpdateWatchListMutation } from 'src/services/stocks.services'
-import { drawerWidth } from '..'
+import { watchListWidth } from '..'
 import WatchListModal from './WatchListModal'
 
 interface WatchListDrawerProps {
@@ -88,10 +88,10 @@ const WatchListDrawer = ({ open, isLogin, toggle }: WatchListDrawerProps): JSX.E
       <Drawer
         sx={{
           display: isLogin ? 'block' : 'none',
-          width: open ? drawerWidth : 0,
+          width: open ? watchListWidth : 0,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
-            width: drawerWidth,
+            width: watchListWidth,
             boxSizing: 'border-box',
             overflowY: 'unset'
           }
@@ -248,7 +248,7 @@ const WatchListDrawer = ({ open, isLogin, toggle }: WatchListDrawerProps): JSX.E
           </Box>
         </Box>
       </Drawer>
-      <WatchListModal open={watchListActions.open} toggle={watchListActions.toggle} />
+      {/* <WatchListModal open={watchListActions.open} toggle={watchListActions.toggle} /> */}
     </>
   )
 }

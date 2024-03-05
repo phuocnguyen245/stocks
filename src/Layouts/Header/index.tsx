@@ -1,4 +1,4 @@
-import { Logout } from '@mui/icons-material'
+import { Logout, Menu } from '@mui/icons-material'
 import { Box, Grid, IconButton, Paper, styled, useMediaQuery, useTheme } from '@mui/material'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
@@ -78,7 +78,7 @@ const Header = ({
           columnSpacing={0.5}
           height='100%'
         >
-          {isLogin && (
+          {isLogin && !isMd && (
             <Grid item>
               <Box
                 width={160}
@@ -94,19 +94,17 @@ const Header = ({
               </Box>
             </Grid>
           )}
-          {isLogin && (
-            <Grid
-              item
-              sx={{
-                [theme.breakpoints.down('md')]: {
-                  display:
-                    (location.pathname === '/login' || location.pathname === '/register') && 'none'
-                }
-              }}
-            >
-              <RefreshTime />
-            </Grid>
-          )}
+          <Grid
+            item
+            sx={{
+              [theme.breakpoints.down('md')]: {
+                display:
+                  (location.pathname === '/login' || location.pathname === '/register') && 'none'
+              }
+            }}
+          >
+            <RefreshTime />
+          </Grid>
 
           <Grid item>
             <Languages languages={languages} onSetLanguages={onSetLanguages} />
@@ -115,7 +113,7 @@ const Header = ({
             <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
           </Grid>
 
-          {isLogin && (
+          {isLogin && !isMd && (
             <Grid
               item
               mr={1}
@@ -148,9 +146,7 @@ const Header = ({
 const HeaderContainer = styled(Paper)(({ theme }) => ({}))
 
 const HeaderSetting = styled(Box)<{ route: string }>(({ theme, route }) => ({
-  [theme.breakpoints.down('md')]: {
-    display: route === '/login' || route === '/register' ? 'block' : 'none'
-  }
+  display: route === '/login' || route === '/register' ? 'none' : 'block'
 }))
 
 export default Header

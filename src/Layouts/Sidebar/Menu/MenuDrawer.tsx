@@ -6,16 +6,16 @@ import {
   ChevronRight,
   FilterAlt,
   Logout,
+  Menu,
   Payment,
   ShowChart
 } from '@mui/icons-material'
-import { Box, Divider, Drawer, Grid, Theme, Typography, styled, useTheme } from '@mui/material'
-import { Fragment, ReactNode } from 'react'
+import { Box, Divider, Drawer, Grid, Typography, styled, useTheme } from '@mui/material'
+import { Fragment } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { useLocation, useNavigate } from 'react-router'
-import DarkModeSwitch from 'src/Layouts/Header/components/DarkModeSwitch'
-import Languages from 'src/Layouts/Header/components/Languages'
-import RefreshTime from 'src/Layouts/Header/components/RefreshTime'
+import { menuWidth } from '..'
+import { useSelector } from 'react-redux'
 import { useAppSelector } from 'src/store'
 
 interface MenuDrawerProps {
@@ -64,16 +64,7 @@ const routes = [
   }
 ]
 
-const MenuDrawer = ({
-  open,
-  darkMode,
-  languages,
-  toggle,
-  onOpenAsset,
-  onSetDarkMode,
-  onSetLanguages,
-  onOpenWatchList
-}: MenuDrawerProps): JSX.Element => {
+const MenuDrawer = ({ open, toggle, onOpenWatchList }: MenuDrawerProps): JSX.Element => {
   const theme = useTheme()
   const navigate = useNavigate()
   const { isMdWindow } = useAppSelector((state) => state.Stocks)
@@ -84,8 +75,7 @@ const MenuDrawer = ({
     if (url) {
       return navigate(url)
     } else {
-      // onOpenWatchList()
-      // toggle()
+      onOpenWatchList()
     }
   }
 
@@ -100,22 +90,28 @@ const MenuDrawer = ({
     <Drawer
       variant='persistent'
       anchor='left'
-      open={open}
+      open={isMdWindow ? open : true}
       onClose={toggle}
       sx={{
         '& .MuiPaper-root': {
-          width: 280,
+          transition: 'all 0.2s ease-in-out',
+          width: open ? menuWidth : 60,
           height: 'calc(100vh)'
         }
       }}
     >
-      <Box boxShadow={3} width='100%' height='100%'>
+      <Box boxShadow={3} width='100%' height='100%' overflow='hidden'>
         <Box height='max-content'>
-          <DrawerHeader onClick={toggle} sx={{ cursor: 'pointer' }}>
-            <Typography pl={2} fontWeight={600}>
-              Stock Tracking
-            </Typography>
-            {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
+          <DrawerHeader
+            onClick={toggle}
+            sx={{ cursor: 'pointer', justifyContent: open ? 'space-between' : 'center' }}
+          >
+            {open && (
+              <Typography pl={2} fontWeight={600} whiteSpace='nowrap'>
+                Stock Tracking
+              </Typography>
+            )}
+            {open ? theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight /> : <Menu />}
           </DrawerHeader>
           <Divider />
         </Box>
@@ -139,7 +135,7 @@ const MenuDrawer = ({
                       item
                       sx={{
                         cursor: 'pointer',
-                        gap: 1,
+                        gap: open ? 1 : 0,
                         display: 'flex',
                         height: 48,
                         alignItems: 'center',
@@ -150,45 +146,16 @@ const MenuDrawer = ({
                       onClick={() => onOpen(item.url)}
                     >
                       {item.icons(isRoute ? ('grey.100' as never) : ('primary.main' as never))}
-                      <Typography variant='h6' fontWeight={600}>
-                        <FormattedMessage id={item.name} />
-                      </Typography>
+                      {open && (
+                        <Typography variant='h6' fontWeight={600} whiteSpace='nowrap'>
+                          <FormattedMessage id={item.name} />
+                        </Typography>
+                      )}
                     </Grid>
                     <Divider />
                   </Fragment>
                 )
               })}
-
-              {isMdWindow && (
-                <>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: 0,
-                      alignItems: 'center',
-                      width: '100%',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <Typography>Refreshed Time:</Typography>
-                    <RefreshTime />
-                  </Box>
-                  <Divider />
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: 2,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      width: '100%'
-                    }}
-                  >
-                    <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
-                    <Languages languages={languages} onSetLanguages={onSetLanguages} />
-                  </Box>
-                  <Divider />
-                </>
-              )}
             </Grid>
 
             <Grid item>
@@ -210,7 +177,7 @@ const MenuDrawer = ({
                 }}
                 onClick={onLogout}
               >
-                <Typography fontWeight={600}>Logout</Typography>
+                {open && <Typography fontWeight={600}>Logout</Typography>}
                 <Logout />
               </Box>
             </Grid>

@@ -1,4 +1,4 @@
-import { Switch, TextField } from '@mui/material'
+import { Box, Switch, TextField } from '@mui/material'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'

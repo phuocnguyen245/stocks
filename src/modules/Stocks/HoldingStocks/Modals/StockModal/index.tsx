@@ -58,7 +58,7 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
 
   const { sellStock } = useAppSelector((state) => state.Stocks)
   const [createStock, { isLoading }] = useCreateStockMutation()
-  const { data: stockData } = StockService.useGetCurrentStocksQuery({})
+  const { data: stockData } = StockService.useGetCurrentStocksQuery({}, { skip: !open })
 
   const [target, setTarget] = useState<TargetState>({
     take: [{ id: uuidV4(), name: '', price: 0, volume: 0 }],
@@ -156,7 +156,7 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
       return []
     }
     return []
-  }, [tradingStatus])
+  }, [tradingStatus, stockData])
 
   const onAddTakeOrStop = (type: keyof TargetState): void => {
     return setTarget((prev) => ({ ...prev, [type]: [...prev[type], init] }))

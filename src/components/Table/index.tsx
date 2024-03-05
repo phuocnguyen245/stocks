@@ -22,7 +22,9 @@ import EmptyResult from 'src/asset/imgs/empty-result.jpg'
 import { Loader } from 'src/components/MUIComponents'
 import DeletePopover from './DeletePopover'
 import Pagination from './Pagination'
+import HeaderTableCell from './components/HeaderTableCell'
 import type { TableHeaderBody, TableProps } from './type'
+
 const Table = ({
   data,
   table,
@@ -59,7 +61,7 @@ const Table = ({
     let direction: 'asc' | 'desc' | undefined
 
     if (isSameSortBy) {
-      direction = pagination.sortDirection === 'asc' ? 'desc' : 'asc'
+      direction = pagination.sortDirection === 'asc' ? 'desc' : undefined
     } else {
       direction = 'asc'
     }
@@ -84,28 +86,30 @@ const Table = ({
           <TableHead>
             <TableRow>
               {[...(subTable ? [{ name: '', title: '' }] : []), ...table].map(
-                ({ title, name, render, ...rest }: TableHeaderBody<unknown>, index) => (
-                  <TableCell
-                    sx={{
-                      whiteSpace: 'nowrap',
-                      padding: '8px',
-                      bgcolor: 'primary.main',
-                      color: '#fff',
-                      paddingLeft: index === 0 ? '16px' : '8px',
-                      fontWeight: 600
-                    }}
-                    {...rest}
-                    key={`header-${name as string}-${index}`}
-                  >
-                    <TableSortLabel
-                      active={pagination?.sortBy === name}
-                      direction={pagination?.sortBy === name ? pagination?.sortDirection : 'asc'}
-                      onClick={createSortHandler(name)}
+                ({ title, name, render, ...rest }: TableHeaderBody<unknown>, index) => {
+                  return (
+                    <HeaderTableCell
+                      key={`header-${name as string}-${index}`}
+                      index={index}
+                      name={name}
+                      {...rest}
                     >
-                      {title}
-                    </TableSortLabel>
-                  </TableCell>
-                )
+                      {name ? (
+                        <TableSortLabel
+                          active={pagination?.sortBy === name}
+                          direction={
+                            pagination?.sortBy === name ? pagination?.sortDirection : 'asc'
+                          }
+                          onClick={createSortHandler(name)}
+                        >
+                          {title}
+                        </TableSortLabel>
+                      ) : (
+                        title
+                      )}
+                    </HeaderTableCell>
+                  )
+                }
               )}
               {(onDelete ?? onEdit ?? onView) && (
                 <TableCell
@@ -203,7 +207,8 @@ const Table = ({
                           style={{ paddingBottom: 0, paddingTop: 0 }}
                           colSpan={12}
                           sx={{
-                            bgcolor: theme.palette.mode === 'dark' ? 'grey.500' : 'primary.light'
+                            bgcolor: theme.palette.mode === 'dark' ? 'grey.500' : 'primary.light',
+                            borderBottom: 'none'
                           }}
                         >
                           <Collapse in={open.includes(row._id)} timeout='auto' unmountOnExit>
