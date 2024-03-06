@@ -1,5 +1,4 @@
 import { styled } from '@mui/material'
-import React from 'react'
 import { Outlet as OutletRouter } from 'react-router'
 
 const OutletWrapper = styled('main', {
@@ -13,10 +12,7 @@ const OutletWrapper = styled('main', {
   isLogin: boolean
 }>(({ theme, widthAndMargin }) => ({
   padding: theme.spacing(3),
-  transition: theme.transitions.create('all', {
-    easing: theme.transitions.easing.easeInOut,
-    duration: '0,2s'
-  }),
+  transition: 'all 0.25s ease',
   width: `calc(100% - ${widthAndMargin.width}px)`,
   marginLeft: widthAndMargin.marginLeft,
   marginRight: widthAndMargin.marginRight

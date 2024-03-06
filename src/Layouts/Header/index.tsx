@@ -1,4 +1,4 @@
-import { Logout, Menu } from '@mui/icons-material'
+import { Logout } from '@mui/icons-material'
 import { Box, Grid, IconButton, Paper, styled, useMediaQuery, useTheme } from '@mui/material'
 import * as React from 'react'
 import { useEffect, useState } from 'react'

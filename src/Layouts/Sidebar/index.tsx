@@ -1,26 +1,15 @@
-import {
-  Box,
-  CssBaseline,
-  AppBar as MuiAppBar,
-  ThemeProvider,
-  Toolbar,
-  styled,
-  type AppBarProps as MuiAppBarProps
-} from '@mui/material'
+import { Box, CssBaseline, ThemeProvider } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
 import { IntlProvider } from 'react-intl'
 import { useDispatch } from 'react-redux'
-import { Outlet } from 'react-router-dom'
 import { useIsLogin } from 'src/hooks'
 import en from 'src/locales/en.json'
 import vi from 'src/locales/vi.json'
+import { useAppSelector } from 'src/store'
 import { setMode, setOpenSidebar } from 'src/store/slices/stockSlice'
 import themeProvider from 'src/styles/theme'
-import Header from '../Header'
-import Menu from './Menu'
-import WatchListDrawer from './WatchListDrawer'
-import { useAppSelector } from 'src/store'
 import MainComponents from './Main'
+import WatchListDrawer from './WatchListDrawer'
 export const watchListWidth = 280
 export const menuWidth = 240
 
@@ -118,6 +107,7 @@ const PersistentDrawerLeft = (): JSX.Element => {
     } else {
       width = 0
       marginLeft = 0
+      marginRight = 0
     }
 
     const result = { width, marginLeft, marginRight }
@@ -137,6 +127,7 @@ const PersistentDrawerLeft = (): JSX.Element => {
               open: openMenu,
               languages,
               openWatchList,
+              onHideMenu: () => setOpenMenu(false),
               onOpenMenu: toggleMenu,
               onOpenWatchList: () => setOpenWatchList(!openWatchList),
               onSetDarkMode: setDarkMode,

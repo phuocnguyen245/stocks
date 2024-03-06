@@ -41,6 +41,7 @@ interface Stock {
   stocks?: Stock[]
   take: Target[]
   stop: Target[]
+  sector: string
 }
 export interface ResponsePagination<T> {
   data?: T
@@ -179,6 +180,7 @@ interface Board {
   close: number
   change: number
   changePercent: number
+  sector: string
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

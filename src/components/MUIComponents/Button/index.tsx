@@ -21,7 +21,7 @@ const LoadingButton = ({ isLoading, ...props }: ButtonProps): JSX.Element => {
             width: '26px !important',
             height: '26px !important',
             mr: 1,
-            transform: 'all 0.2s ease'
+            transform: 'all 0.25s ease'
           }}
         />
       )}

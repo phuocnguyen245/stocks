@@ -20,6 +20,7 @@ interface Option {
   id: number | string
   name: string
   value: string | number
+  sector: string
 }
 export interface MUISelectProps extends SelectProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,7 +33,7 @@ export interface MUISelectProps extends SelectProps {
   errors?: any
   onSearch?: (value: string) => void
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setSelected?: (value: any) => void
+  setSelected?: any
   searchTerm?: string
 }
 
@@ -49,7 +50,7 @@ const Select = ({
   ...props
 }: MUISelectProps): JSX.Element => {
   const onSelected = (value: Option): void => {
-    setSelected?.(value)
+    setSelected?.('sector', value.sector)
   }
 
   return control ? (
@@ -161,4 +162,4 @@ const Select = ({
     </FormControl>
   )
 }
-export default memo(Select)
+export default Select

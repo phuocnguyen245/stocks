@@ -73,7 +73,8 @@ const StocksDetail = (): JSX.Element => {
       ratio: 0,
       sellPrice: 0,
       stop: [],
-      take: []
+      take: [],
+      sector: ''
     }
 
     try {

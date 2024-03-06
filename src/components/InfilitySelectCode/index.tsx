@@ -9,6 +9,10 @@ interface InfinitySelectCodeProps {
   onSetData?: (name: any, value: string) => void
 }
 
+interface ISearch {
+  name: string
+  sector: string
+}
 const InfinitySelectCode = ({ onSetData }: InfinitySelectCodeProps): JSX.Element => {
   const [search, setSearch] = useState<string | undefined>(undefined)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -29,7 +33,10 @@ const InfinitySelectCode = ({ onSetData }: InfinitySelectCodeProps): JSX.Element
   )
 
   useEffect(() => {
-    onSetData && value?.name && onSetData('code', value.name)
+    if (onSetData && value?.name?.name) {
+      onSetData('code', value.name?.name)
+      onSetData('sector', value.name?.sector)
+    }
   }, [value])
 
   useEffect(() => {
@@ -66,7 +73,13 @@ const InfinitySelectCode = ({ onSetData }: InfinitySelectCodeProps): JSX.Element
 
   const options = useMemo(() => {
     if (data) {
-      return data?.map((item) => ({ label: item.symbol, name: item.symbol }))
+      return data?.map((item) => ({
+        label: item.symbol,
+        name: {
+          name: item.symbol,
+          sector: item.sector
+        }
+      }))
     }
     return []
   }, [data])
@@ -89,7 +102,7 @@ const InfinitySelectCode = ({ onSetData }: InfinitySelectCodeProps): JSX.Element
         }
       }}
       fullWidth
-      value={value || null}
+      value={value ?? null}
       onChange={(_: unknown, newValue) => {
         setValue(newValue)
       }}

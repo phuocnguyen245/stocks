@@ -3,30 +3,28 @@ import {
   CandlestickChart,
   Checklist,
   ChevronLeft,
-  ChevronRight,
   FilterAlt,
   Logout,
   Menu,
   Payment,
   ShowChart
 } from '@mui/icons-material'
-import { Box, Divider, Drawer, Grid, Typography, styled, useTheme } from '@mui/material'
-import { Fragment } from 'react'
+import { Box, Divider, Drawer, Grid, Typography, styled } from '@mui/material'
+import { Fragment, useRef } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { useLocation, useNavigate } from 'react-router'
-import { menuWidth } from '..'
-import { useSelector } from 'react-redux'
+import useClickOutside from 'src/hooks/useClickOutside'
 import { useAppSelector } from 'src/store'
+import { menuWidth } from '../../../..'
 
 interface MenuDrawerProps {
   open: boolean
+  openAsset: boolean
+  openWatchList: boolean
   toggle: () => void
-  darkMode: 'dark' | 'light'
-  languages: 'vi' | 'en'
-  onOpenWatchList: () => void
+  onHideMenu: () => void
   onOpenAsset: () => void
-  onSetDarkMode: (value: React.SetStateAction<'dark' | 'light'>) => void
-  onSetLanguages: (value: React.SetStateAction<'vi' | 'en'>) => void
+  onOpenWatchList: () => void
 }
 
 const routes = [
@@ -64,26 +62,53 @@ const routes = [
   }
 ]
 
-const MenuDrawer = ({ open, toggle, onOpenWatchList }: MenuDrawerProps): JSX.Element => {
-  const theme = useTheme()
+const MenuDrawer = ({
+  open,
+  openAsset,
+  openWatchList,
+  toggle,
+  onOpenAsset,
+  onHideMenu,
+  onOpenWatchList
+}: MenuDrawerProps): JSX.Element => {
   const navigate = useNavigate()
+  const drawerRef = useRef<HTMLDivElement>(null)
+
   const { isMdWindow } = useAppSelector((state) => state.Stocks)
 
   const location = useLocation()
 
-  const onOpen = (url?: string): void => {
-    if (url) {
-      return navigate(url)
-    } else {
-      onOpenWatchList()
+  useClickOutside(drawerRef, () => {
+    if (isMdWindow) {
+      onHideMenu()
     }
+  })
+
+  const onOpen = (url?: string, name?: string): void => {
+    if (url) {
+      navigate(url)
+    }
+    if (name) {
+      if (name === 'title.watchlist') {
+        onOpenWatchList()
+        if (openAsset) {
+          onOpenAsset()
+        }
+      } else {
+        onOpenAsset()
+        if (openWatchList) {
+          onOpenWatchList()
+        }
+      }
+    }
+    isMdWindow && toggle()
   }
 
   const onLogout = (): void => {
     navigate('/login')
     localStorage.removeItem('user')
     localStorage.removeItem('tokens')
-    toggle()
+    onHideMenu()
   }
 
   return (
@@ -92,29 +117,28 @@ const MenuDrawer = ({ open, toggle, onOpenWatchList }: MenuDrawerProps): JSX.Ele
       anchor='left'
       open={isMdWindow ? open : true}
       onClose={toggle}
+      ref={drawerRef}
       sx={{
         '& .MuiPaper-root': {
-          transition: 'all 0.2s ease-in-out',
+          transition: 'all 0.25s ease',
           width: open ? menuWidth : 60,
           height: 'calc(100vh)'
         }
       }}
     >
       <Box boxShadow={3} width='100%' height='100%' overflow='hidden'>
-        <Box height='max-content'>
-          <DrawerHeader
-            onClick={toggle}
-            sx={{ cursor: 'pointer', justifyContent: open ? 'space-between' : 'center' }}
-          >
-            {open && (
-              <Typography pl={2} fontWeight={600} whiteSpace='nowrap'>
-                Stock Tracking
-              </Typography>
-            )}
-            {open ? theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight /> : <Menu />}
-          </DrawerHeader>
-          <Divider />
-        </Box>
+        <DrawerHeader
+          onClick={toggle}
+          sx={{ cursor: 'pointer', justifyContent: open ? 'space-between' : 'center' }}
+        >
+          {open && (
+            <Typography pl={2} fontWeight={600} whiteSpace='nowrap'>
+              Stock Tracking
+            </Typography>
+          )}
+          {open ? <ChevronLeft /> : <Menu />}
+        </DrawerHeader>
+        <Divider />
         <Box height='calc(100% - 65px)'>
           <Grid
             container
@@ -128,7 +152,15 @@ const MenuDrawer = ({ open, toggle, onOpenWatchList }: MenuDrawerProps): JSX.Ele
           >
             <Grid item flex={1}>
               {routes.map((item) => {
-                const isRoute = item.url && location.pathname.split('/').includes(item.key)
+                const isRoute = item?.url && location.pathname.split('/').includes(item.key)
+                const isWatchList = item?.name === 'title.watchlist'
+                const isAsset = item?.name === 'title.asset'
+                let styles = {}
+                if (isRoute) {
+                  styles = { bgcolor: 'primary.main', color: 'grey.100' }
+                } else if (isWatchList && openWatchList) {
+                  styles = { bgcolor: 'primary.main', color: 'grey.100' }
+                }
                 return (
                   <Fragment key={item.name}>
                     <Grid
@@ -140,12 +172,20 @@ const MenuDrawer = ({ open, toggle, onOpenWatchList }: MenuDrawerProps): JSX.Ele
                         height: 48,
                         alignItems: 'center',
                         px: 2,
-                        ...(isRoute && { bgcolor: 'primary.main' }),
-                        ...(isRoute && { color: 'grey.100' })
+                        transition: 'all .15s ease-in-out',
+                        ...styles
                       }}
-                      onClick={() => onOpen(item.url)}
+                      onClick={() => onOpen(item.url, item.name)}
                     >
-                      {item.icons(isRoute ? ('grey.100' as never) : ('primary.main' as never))}
+                      {item?.url &&
+                        !isWatchList &&
+                        item.icons(isRoute ? ('grey.100' as never) : ('primary.main' as never))}
+                      {!item?.url &&
+                        item.icons(
+                          isWatchList && openWatchList
+                            ? ('grey.100' as never)
+                            : ('primary.main' as never)
+                        )}
                       {open && (
                         <Typography variant='h6' fontWeight={600} whiteSpace='nowrap'>
                           <FormattedMessage id={item.name} />

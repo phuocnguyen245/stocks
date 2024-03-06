@@ -7,7 +7,7 @@ import {
 } from '@mui/material'
 import Header from 'src/Layouts/Header'
 import { watchListWidth } from '../..'
-import Menu from '../../Menu'
+import Menu from './Menu'
 
 interface AppBarProps extends MuiAppBarProps {
   widthAndMargin: {
@@ -23,10 +23,14 @@ const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) =>
     prop !== 'widthAndMargin' && prop !== 'isLogin' && prop !== 'openWatchList'
 })<AppBarProps>(({ theme, widthAndMargin, openWatchList }) => ({
-  transition: 'all 0.2s ease-in-out',
+  transition: 'all 0.25s ease',
   width: `calc(100% - ${widthAndMargin.width + (openWatchList ? watchListWidth : 0)}px)`,
   marginLeft: widthAndMargin.marginLeft,
-  marginRight: openWatchList ? watchListWidth : 0
+  marginRight: openWatchList ? watchListWidth : 0,
+  [theme.breakpoints.down('md')]: {
+    marginRight: 0,
+    width: '100%'
+  }
 }))
 
 const AppBarComponent = ({
@@ -39,10 +43,9 @@ const AppBarComponent = ({
   onOpenWatchList,
   onSetDarkMode,
   languages,
-  onSetLanguages
+  onSetLanguages,
+  onHideMenu
 }: any): JSX.Element => {
-  console.log(widthAndMargin)
-
   return (
     <AppBar
       position='fixed'
@@ -54,11 +57,9 @@ const AppBarComponent = ({
         <Menu
           open={open}
           onOpenMenu={onOpenMenu}
+          onHideMenu={onHideMenu}
+          openWatchList={openWatchList}
           onOpenWatchList={onOpenWatchList}
-          darkMode={darkMode}
-          onSetDarkMode={onSetDarkMode}
-          languages={languages}
-          onSetLanguages={onSetLanguages}
         />
         <Header
           darkMode={darkMode}

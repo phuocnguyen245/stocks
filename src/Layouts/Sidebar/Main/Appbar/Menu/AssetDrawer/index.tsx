@@ -9,16 +9,26 @@ interface AssetDrawerProps {
 const AssetDrawer = ({ open, toggle }: AssetDrawerProps): JSX.Element => {
   const theme = useTheme()
   return (
-    <Drawer open={open} onClose={toggle} anchor='left'>
+    <Drawer
+      open={open}
+      onClose={toggle}
+      anchor='right'
+      variant='persistent'
+      sx={{
+        '& .MuiPaper-root': {
+          transition: 'all 0.25s ease',
+          width: 280,
+          height: 'calc(100vh)'
+        }
+      }}
+    >
       <DrawerHeader onClick={toggle} sx={{ cursor: 'pointer' }}>
         <Typography pl={2} fontWeight={600}>
           Assets
         </Typography>
         <IconButton>{theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}</IconButton>
       </DrawerHeader>
-      <Box>
-        <AssetFooter />
-      </Box>
+      <AssetFooter open={open} />
     </Drawer>
   )
 }

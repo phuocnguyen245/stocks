@@ -32,6 +32,7 @@ interface FormBody {
   orderPrice?: number | null
   sellPrice?: number | null
   date: string
+  sector: string
 }
 
 interface StockModalProps {
@@ -83,7 +84,7 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
     watch,
     control,
     formState: { errors }
-  } = useForm({
+  } = useForm<FormBody>({
     resolver: yupResolver(schema)
   })
 
@@ -123,6 +124,7 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
         volume,
         date: getValues('date'),
         ...(tradingStatus === 1 ? { orderPrice } : { sellPrice }),
+        sector: getValues('sector'),
         status: tradingStatus === 1 ? 'Buy' : 'Sell',
         ...(tradingStatus === 1 && { take: target.take }),
         ...(tradingStatus === 1 && { stop: target.stop })
@@ -150,7 +152,8 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
         return stockData?.data?.data?.map((stock: Stock) => ({
           id: stock._id,
           name: stock.code,
-          value: stock.code
+          value: stock.code,
+          sector: stock.sector
         }))
       }
       return []
@@ -244,6 +247,7 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
               <Box pb={1}>
                 <Select
                   control={control}
+                  setSelected={setValue}
                   name='code'
                   label={<FormattedMessage id='label.code' />}
                   options={option}

@@ -1,27 +1,23 @@
 import { Menu as MenuIcon } from '@mui/icons-material'
-import { Box, IconButton, useMediaQuery, useTheme } from '@mui/material'
+import { Box, IconButton } from '@mui/material'
 import { useModals } from 'src/hooks'
-import MenuDrawer from './MenuDrawer'
 import { useAppSelector } from 'src/store'
-import AssetDrawer from '../AssetDrawer'
+import AssetDrawer from './AssetDrawer'
+import MenuDrawer from './MenuDrawer'
 
 interface MenuProps {
   open: boolean
-  languages: 'vi' | 'en'
-  darkMode: 'dark' | 'light'
+  openWatchList: boolean
   onOpenMenu: () => void
-  onSetDarkMode: (value: React.SetStateAction<'dark' | 'light'>) => void
-  onSetLanguages: (value: React.SetStateAction<'vi' | 'en'>) => void
+  onHideMenu: () => void
   onOpenWatchList: () => void
 }
 const Menu = ({
   open,
-  languages,
-  darkMode,
+  openWatchList,
   onOpenMenu,
-  onSetDarkMode,
-  onSetLanguages,
-  onOpenWatchList
+  onOpenWatchList,
+  onHideMenu
 }: MenuProps): JSX.Element => {
   const { isMdWindow, isLogin } = useAppSelector((state) => state.Stocks)
 
@@ -38,7 +34,7 @@ const Menu = ({
           color='inherit'
           onClick={onOpenDrawer}
           edge='start'
-          sx={{ mr: 2, display: isLogin ? 'block' : 'none' }}
+          sx={{ mr: 0.5, display: isLogin ? 'block' : 'none' }}
         >
           <MenuIcon />
         </IconButton>
@@ -48,12 +44,11 @@ const Menu = ({
 
       <MenuDrawer
         open={open}
-        darkMode={darkMode}
-        languages={languages}
         toggle={onOpenMenu}
+        onHideMenu={onHideMenu}
+        openAsset={openAsset}
         onOpenAsset={onOpenAsset}
-        onSetDarkMode={onSetDarkMode}
-        onSetLanguages={onSetLanguages}
+        openWatchList={openWatchList}
         onOpenWatchList={onOpenWatchList}
       />
       <AssetDrawer open={openAsset} toggle={onOpenAsset} />
