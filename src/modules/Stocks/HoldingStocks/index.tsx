@@ -1,4 +1,4 @@
-import { Box, Grid } from '@mui/material'
+import { Box, Container, Grid } from '@mui/material'
 import { memo, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Helmet from 'src/components/Helmet'
@@ -24,35 +24,27 @@ const HoldingStocks = (): JSX.Element => {
   }, [])
 
   return (
-    <Box
-      height='100%'
-      position='relative'
-      minHeight='calc(100vh)'
-      pt={isMdWindow ? 5 : 8}
-      pb={isMdWindow ? 4 : 0}
-      px={2}
+    <Container
+      sx={{ minHeight: 'calc(100vh)', pt: isMdWindow ? 5 : 8, pb: isMdWindow ? 4 : 0, px: 2 }}
     >
       <Helmet title='label.stocks' />
 
-      <Grid container columnSpacing={2} rowGap={2} justifyContent='center'>
-        <Grid item xs={12} sm={12} md={12} lg={5.5}></Grid>
-        <Grid item xs={12} sm={12} md={12} lg={5.5}>
-          <StockHeader
-            openConfirmModal={openConfirmModal}
-            modalStatus={modalStatus}
-            onSetModalStatus={setModalStatus}
-          />
-        </Grid>
+      <Grid container sx={{ pt: isMdWindow ? 2 : 0 }}>
+        <StockHeader
+          openConfirmModal={openConfirmModal}
+          modalStatus={modalStatus}
+          onSetModalStatus={setModalStatus}
+        />
       </Grid>
       <Grid container columnSpacing={2} rowGap={2} justifyContent='center'>
-        <Grid item xs={12} sm={12} md={12} lg={5.5} order={isMdWindow ? 2 : 1}>
+        {/* <Grid item xs={12} sm={12} md={12} lg={5.5} order={isMdWindow ? 2 : 1}>
           <StocksDetail />
-        </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={5.5} order={isMdWindow ? 1 : 2}>
+        </Grid> */}
+        <Grid item xs={12} sm={12} md={12} lg={12} order={isMdWindow ? 1 : 2}>
           <CurrentStocks />
         </Grid>
       </Grid>
-    </Box>
+    </Container>
   )
 }
 export default memo(HoldingStocks)

@@ -1,5 +1,4 @@
 import { Box, Button, TextField, Typography } from '@mui/material'
-import moment from 'moment'
 import React, { useCallback, useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { type ErrorResponse } from 'react-router-dom'
@@ -51,7 +50,7 @@ const CurrentStocks = (): JSX.Element => {
       setSubData(
         Object.values(currentStockData.data.data).map(
           (item: Stock) =>
-            item.stocks?.map((stock: Stock) => ({
+            item?.availableStocks?.map((stock: Stock) => ({
               ...stock,
               t: countDays(stock.date)
             }))
@@ -181,6 +180,10 @@ const CurrentStocks = (): JSX.Element => {
   }
 
   const subTable: Array<TableHeaderBody<Stock>> = [
+    {
+      name: 'availableVolume',
+      title: <FormattedMessage id='label.volume' />
+    },
     {
       name: 'volume',
       title: <FormattedMessage id='label.volume' />

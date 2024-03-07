@@ -23,7 +23,8 @@ interface MenuDrawerProps {
   openWatchList: boolean
   toggle: () => void
   onHideMenu: () => void
-  onOpenAsset: () => void
+  onHideAsset: () => void
+  onToggleAsset: () => void
   onOpenWatchList: () => void
 }
 
@@ -67,8 +68,9 @@ const MenuDrawer = ({
   openAsset,
   openWatchList,
   toggle,
-  onOpenAsset,
   onHideMenu,
+  onToggleAsset,
+  onHideAsset,
   onOpenWatchList
 }: MenuDrawerProps): JSX.Element => {
   const navigate = useNavigate()
@@ -92,10 +94,10 @@ const MenuDrawer = ({
       if (name === 'title.watchlist') {
         onOpenWatchList()
         if (openAsset) {
-          onOpenAsset()
+          onHideAsset()
         }
-      } else {
-        onOpenAsset()
+      } else if (name === 'title.asset') {
+        onToggleAsset()
         if (openWatchList) {
           onOpenWatchList()
         }
@@ -160,6 +162,8 @@ const MenuDrawer = ({
                   styles = { bgcolor: 'primary.main', color: 'grey.100' }
                 } else if (isWatchList && openWatchList) {
                   styles = { bgcolor: 'primary.main', color: 'grey.100' }
+                } else if (isAsset && openAsset) {
+                  styles = { bgcolor: 'primary.main', color: 'grey.100' }
                 }
                 return (
                   <Fragment key={item.name}>
@@ -181,11 +185,13 @@ const MenuDrawer = ({
                         !isWatchList &&
                         item.icons(isRoute ? ('grey.100' as never) : ('primary.main' as never))}
                       {!item?.url &&
+                        isWatchList &&
                         item.icons(
-                          isWatchList && openWatchList
-                            ? ('grey.100' as never)
-                            : ('primary.main' as never)
+                          openWatchList ? ('grey.100' as never) : ('primary.main' as never)
                         )}
+                      {!item?.url &&
+                        isAsset &&
+                        item.icons(openAsset ? ('grey.100' as never) : ('primary.main' as never))}
                       {open && (
                         <Typography variant='h6' fontWeight={600} whiteSpace='nowrap'>
                           <FormattedMessage id={item.name} />

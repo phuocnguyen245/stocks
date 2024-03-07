@@ -7,6 +7,7 @@ import { PaymentService } from 'src/services/payment.services'
 import { useGetCurrentStocksQuery } from 'src/services/stocks.services'
 import { useAppSelector } from 'src/store'
 import { convertToDecimal, formatVND } from 'src/utils'
+import Charts from './Charts'
 
 const AssetFooter = ({ open }: { open: boolean }): JSX.Element => {
   const theme: Theme = useTheme()
@@ -63,7 +64,7 @@ const AssetFooter = ({ open }: { open: boolean }): JSX.Element => {
     if (currentData?.data?.data) {
       let investedValue = 0
       let marketValue = 0
-      currentData?.data?.data?.forEach((stock) => {
+      currentData.data.data?.forEach((stock) => {
         marketValue += (stock?.marketPrice ?? 0) * stock?.volume * 1000
         investedValue += (stock?.averagePrice ?? 0) * (stock?.volume ?? 0) * 1000
       })
@@ -117,10 +118,15 @@ const AssetFooter = ({ open }: { open: boolean }): JSX.Element => {
 
   return (
     <Box
-      bgcolor={theme.palette.mode === 'dark' ? 'grey.500' : '#f9f3fe'}
-      sx={{ transition: 'all .25s ease' }}
+      sx={{ transition: 'all .25s ease', display: 'flex', flexDirection: 'column' }}
+      height='100%'
     >
-      <Box display='flex' alignItems={'flex-start'} flexDirection={'column'}>
+      <Box
+        display='flex'
+        alignItems={'flex-start'}
+        flexDirection={'column'}
+        bgcolor={theme.palette.mode === 'dark' ? 'grey.500' : '#f9f3fe'}
+      >
         <Box sx={{ width: '100%', px: 2, py: 1 }}>
           <Grid container alignItems='center'>
             <Grid item>
@@ -254,6 +260,7 @@ const AssetFooter = ({ open }: { open: boolean }): JSX.Element => {
           </Grid>
         </Box>
       </Box>
+      <Charts data={currentData?.data?.data ?? []} />
     </Box>
   )
 }

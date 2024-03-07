@@ -21,7 +21,7 @@ const Menu = ({
 }: MenuProps): JSX.Element => {
   const { isMdWindow, isLogin } = useAppSelector((state) => state.Stocks)
 
-  const { open: openAsset, toggle: onOpenAsset } = useModals()
+  const { open: openAsset, toggle: onToggleAsset, hide: onHideAsset } = useModals()
 
   const onOpenDrawer = (): void => {
     return onOpenMenu()
@@ -47,11 +47,12 @@ const Menu = ({
         toggle={onOpenMenu}
         onHideMenu={onHideMenu}
         openAsset={openAsset}
-        onOpenAsset={onOpenAsset}
+        onToggleAsset={onToggleAsset}
+        onHideAsset={onHideAsset}
         openWatchList={openWatchList}
         onOpenWatchList={onOpenWatchList}
       />
-      <AssetDrawer open={openAsset} toggle={onOpenAsset} />
+      <AssetDrawer open={openAsset} toggle={onToggleAsset} />
     </>
   )
 }

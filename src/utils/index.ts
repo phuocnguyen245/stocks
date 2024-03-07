@@ -27,6 +27,7 @@ const convertToDecimal = (value: string | number, decimal = 2): number => {
 const countDays = (startDate: string, endDate = moment().toISOString()): number => {
   let start = moment(startDate).utcOffset(420).startOf('day')
   const end = moment(endDate).utcOffset(420).startOf('day')
+
   let diffDays = 0
 
   const isAfternoon = Number(moment(endDate).format('HH')) >= 12 ? 0.5 : 0

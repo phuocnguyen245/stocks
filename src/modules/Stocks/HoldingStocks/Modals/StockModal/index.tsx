@@ -59,13 +59,16 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
 
   const { sellStock } = useAppSelector((state) => state.Stocks)
   const [createStock, { isLoading }] = useCreateStockMutation()
-  const { data: stockData } = StockService.useGetCurrentStocksQuery({}, { skip: !open })
 
   const [target, setTarget] = useState<TargetState>({
     take: [{ id: uuidV4(), name: '', price: 0, volume: 0 }],
     stop: [{ id: uuidV4(), name: '', price: 0, volume: 0 }]
   })
   const [tradingStatus, setTradingStatus] = useState(0)
+  const { data: stockData } = StockService.useGetCurrentStocksQuery(
+    {},
+    { skip: Boolean(tradingStatus) }
+  )
 
   useEffect(() => {
     setTradingStatus(status)
@@ -102,6 +105,7 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
       setValue('code', sellStock.code)
       setValue('volume', sellStock.volume)
       setValue('orderPrice', null)
+      setValue('sector', sellStock.sector)
     }
     setValue('date', moment(Date.now()).toISOString())
   }, [open, status, sellStock])
@@ -159,7 +163,7 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
       return []
     }
     return []
-  }, [tradingStatus, stockData])
+  }, [tradingStatus, stockData, sellStock])
 
   const onAddTakeOrStop = (type: keyof TargetState): void => {
     return setTarget((prev) => ({ ...prev, [type]: [...prev[type], init] }))
@@ -262,6 +266,7 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
                 onChange={onChangeDate}
                 sx={{ width: '100%' }}
                 slotProps={{ textField: { fullWidth: true } }}
+                maxDate={moment()}
               />
             </Box>
 
