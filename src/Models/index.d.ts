@@ -43,9 +43,9 @@ interface Stock {
   stop: Target[]
   sector: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  availableVolume?: any[]
+  unavailableVol?: number
+  availableVol?: number
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  availableStocks?: any[]
 }
 export interface ResponsePagination<T> {
   data?: T

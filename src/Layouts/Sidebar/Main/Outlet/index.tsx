@@ -10,12 +10,12 @@ const OutletWrapper = styled('main', {
     marginRight: number
   }
   isLogin: boolean
-}>(({ theme, widthAndMargin }) => ({
+}>(({ theme, widthAndMargin, isLogin }) => ({
   padding: theme.spacing(3),
   transition: 'all 0.25s ease',
-  width: `calc(100% - ${widthAndMargin.width}px)`,
-  marginLeft: widthAndMargin.marginLeft,
-  marginRight: widthAndMargin.marginRight
+  width: `calc(100% - ${isLogin ? widthAndMargin.width : 0}px)`,
+  marginLeft: isLogin ? widthAndMargin.marginLeft : 0,
+  marginRight: isLogin ? widthAndMargin.marginRight : 0
 }))
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

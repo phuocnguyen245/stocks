@@ -56,6 +56,10 @@
   "label.go.back": "Go back",
   "label.type": "Type",
   "label.balance": "Balance",
+  "label.total.volume": "Total",
+  "label.available.vol": "Available",
+  "label.unavailable.vol": "Unavailable",
+
   "label._TVSPT": "Steel",
   "label._BDS": "Real Estate",
   "label._NH": "Bank",

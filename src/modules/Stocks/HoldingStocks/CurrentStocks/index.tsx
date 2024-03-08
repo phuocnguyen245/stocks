@@ -1,14 +1,18 @@
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { RemoveRedEye, Sell } from '@mui/icons-material'
+import { Box, IconButton, TextField, Tooltip, Typography } from '@mui/material'
 import React, { useCallback, useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
-import { type ErrorResponse } from 'react-router-dom'
+import { useNavigate, type ErrorResponse } from 'react-router-dom'
 import type { LabelType, Stock } from 'src/Models'
 import { getBgColor } from 'src/Models/constants'
+import ConfirmPopup from 'src/components/ConfirmPopup/ index'
 import { Label } from 'src/components/MUIComponents'
 import Table from 'src/components/Table'
 import type { DefaultPagination, TableHeaderBody } from 'src/components/Table/type'
+import { useAlert } from 'src/hooks'
 import {
   useDeleteCurrentStockMutation,
+  useDeleteStockMutation,
   useGetCurrentStocksQuery
 } from 'src/services/stocks.services'
 import { useAppDispatch, useAppSelector } from 'src/store'
@@ -17,12 +21,16 @@ import { countDays, formatVND, ratio } from 'src/utils'
 import FilteredStocks from '../StocksDetail/FilteredStocks'
 
 const CurrentStocks = (): JSX.Element => {
-  const [deleteCurrentStock] = useDeleteCurrentStockMutation()
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { isRefetchStock } = useAppSelector((state) => state.Stocks)
+
+  const alert = useAlert()
+  const [deleteCurrentStock, { isSuccess, isLoading }] = useDeleteCurrentStockMutation()
+  const [deleteStock, { isSuccess: isDeleteStockSuccess, isLoading: isLoadingDeleteStock }] =
+    useDeleteStockMutation()
   const [data, setData] = useState<Stock[]>([])
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [subData, setSubData] = useState<any[]>([])
+  const [subData, setSubData] = useState<Stock[]>([])
   const [editData, setEditData] = useState<Stock>()
   const [pagination, setPagination] = useState<DefaultPagination>({
     page: 0,
@@ -39,22 +47,23 @@ const CurrentStocks = (): JSX.Element => {
   } = useGetCurrentStocksQuery(pagination, { refetchOnMountOrArgChange: true })
 
   useEffect(() => {
-    if (currentStockData?.data?.data) {
+    const stocks = currentStockData?.data?.data ?? []
+    if (stocks) {
       setData(
-        currentStockData.data.data.map((item: Stock) => ({
+        stocks.map((item: Stock) => ({
           ...item,
           orderPrice: Number(item.orderPrice?.toFixed(2)),
           investedValue: Number((item?.investedValue ?? 0).toFixed(2))
         }))
       )
       setSubData(
-        Object.values(currentStockData.data.data).map(
+        Object.values(stocks).map(
           (item: Stock) =>
-            item?.availableStocks?.map((stock: Stock) => ({
+            item?.stocks?.map((stock: Stock) => ({
               ...stock,
               t: countDays(stock.date)
             }))
-        )
+        ) as unknown as Stock[]
       )
     }
   }, [currentStockData])
@@ -97,28 +106,53 @@ const CurrentStocks = (): JSX.Element => {
     }
   }
 
-  const onView = (row: Stock): void => {}
-
   const onDelete = async (row: Stock): Promise<void> => {
-    await deleteCurrentStock({ code: row.code })
-      .unwrap()
-      .then(async () => await refetch())
+    try {
+      const response = await deleteCurrentStock({ code: row.code }).unwrap()
+      if (response) {
+        alert({ message: response?.message, variant: 'success' })
+        await refetch()
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      alert({ message: error?.data?.message, variant: 'error' })
+    }
   }
 
-  const renderLabel = useCallback((number: number, type?: string) => {
-    const labelType: LabelType = number === 0 ? 'warning' : number > 0 ? 'success' : 'error'
-    const symbol = number > 0 ? '+' : ''
-    return type ? (
-      <Typography color={getBgColor(labelType)} fontWeight={600} fontSize={14}>
-        {symbol}
-        {formatVND(number * 1000)}
-      </Typography>
-    ) : (
-      <Label type={labelType} fontSize={14}>
-        {number.toFixed(2)}%
-      </Label>
-    )
-  }, [])
+  const onDeleteSubData = async (row: Stock): Promise<void> => {
+    try {
+      const response = await deleteStock({ _id: row._id }).unwrap()
+      if (response) {
+        alert({ message: response?.message, variant: 'success' })
+        await refetch()
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      alert({ message: error?.data?.message, variant: 'error' })
+    }
+  }
+
+  const onView = (row: Stock): void => {
+    navigate(`/charts/${row.code}`)
+  }
+
+  const renderLabel = useCallback(
+    (number: number, type?: string) => {
+      const labelType: LabelType = number === 0 ? 'warning' : number > 0 ? 'success' : 'error'
+      const symbol = number > 0 ? '+' : ''
+      return type ? (
+        <Typography color={getBgColor(labelType)} fontWeight={600} fontSize={14}>
+          {symbol}
+          {formatVND(number * 1000)}
+        </Typography>
+      ) : (
+        <Label type={labelType} fontSize={14}>
+          {number.toFixed(2)}%
+        </Label>
+      )
+    },
+    [data, subData]
+  )
 
   const table: Array<TableHeaderBody<Stock>> = [
     {
@@ -127,7 +161,15 @@ const CurrentStocks = (): JSX.Element => {
     },
     {
       name: 'volume',
-      title: <FormattedMessage id='label.volume' />
+      title: <FormattedMessage id='label.total.volume' />
+    },
+    {
+      name: 'availableVol',
+      title: <FormattedMessage id='label.available.vol' />
+    },
+    {
+      name: 'unavailableVol',
+      title: <FormattedMessage id='label.unavailable.vol' />
     },
     {
       name: 'averagePrice',
@@ -172,6 +214,35 @@ const CurrentStocks = (): JSX.Element => {
       title: <FormattedMessage id='label.profit.loss.value' />,
       align: 'left',
       render: (row) => <> {renderLabel(Number(row.investedValue?.toFixed(2)), 'gain')}</>
+    },
+    {
+      name: '',
+      title: '',
+      align: 'center',
+      width: '100px',
+      render: (row) => {
+        return (
+          <Box display='flex' flexWrap='nowrap'>
+            <Tooltip title='View' onClick={() => onView(row)}>
+              <IconButton color='primary' onClick={() => onSell(row)}>
+                <RemoveRedEye fontSize='small' />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title='Sell'>
+              <IconButton color='info' onClick={() => onSell(row)}>
+                <Sell fontSize='small' />
+              </IconButton>
+            </Tooltip>
+
+            <ConfirmPopup
+              row={row}
+              isLoading={isLoading}
+              isSuccess={isSuccess}
+              onConfirm={() => onDelete(row)}
+            />
+          </Box>
+        )
+      }
     }
   ]
 
@@ -180,10 +251,6 @@ const CurrentStocks = (): JSX.Element => {
   }
 
   const subTable: Array<TableHeaderBody<Stock>> = [
-    {
-      name: 'availableVolume',
-      title: <FormattedMessage id='label.volume' />
-    },
     {
       name: 'volume',
       title: <FormattedMessage id='label.volume' />
@@ -197,7 +264,7 @@ const CurrentStocks = (): JSX.Element => {
       title: 'T+',
       align: 'center',
       render: (row) => {
-        return <>{row.t}</>
+        return <>{row.t ?? 0}</>
       }
     },
     {
@@ -230,19 +297,17 @@ const CurrentStocks = (): JSX.Element => {
     },
     {
       name: '',
-      title: <FormattedMessage id='label.sell' />,
+      title: <FormattedMessage id='Delete' />,
       align: 'center',
       width: '100px',
       render: (row) => {
-        const isAvailable = (row?.t ?? 0) >= 2.5
-        return isAvailable ? (
-          <Button variant='contained' onClick={() => onSell(row)}>
-            <Typography>
-              <FormattedMessage id='label.sell' />
-            </Typography>
-          </Button>
-        ) : (
-          <></>
+        return (
+          <ConfirmPopup
+            row={row}
+            isLoading={isLoadingDeleteStock}
+            isSuccess={isDeleteStockSuccess}
+            onConfirm={() => onDeleteSubData(row)}
+          />
         )
       }
     }
@@ -251,6 +316,7 @@ const CurrentStocks = (): JSX.Element => {
   const onSort = (pagination: DefaultPagination): void => {
     setPagination(pagination)
   }
+  console.log(subData)
 
   return (
     <>
@@ -260,11 +326,9 @@ const CurrentStocks = (): JSX.Element => {
         table={table}
         isLoading={isFetching}
         totalItems={currentStockData?.data?.totalItems ?? 0}
-        onDelete={onDelete}
         onSort={onSort}
         pagination={pagination}
         onSetPagination={setPagination}
-        onView={onView}
         subTable={subTable}
         subData={subData}
       />

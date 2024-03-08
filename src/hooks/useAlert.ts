@@ -1,4 +1,4 @@
-import { type SnackbarKey, useSnackbar, type VariantType, type EnqueueSnackbar } from 'notistack'
+import { useSnackbar, type SnackbarKey, type VariantType } from 'notistack'
 import { type ReactNode } from 'react'
 interface AlertProps {
   message: ReactNode
@@ -9,7 +9,13 @@ const useAlert = (): (({ message, variant }: AlertProps) => SnackbarKey) => {
   const { enqueueSnackbar } = useSnackbar()
 
   return ({ message, variant }: AlertProps) => {
-    return enqueueSnackbar(message ?? 'Successfully', {
+    const showedMessage = (): string | ReactNode => {
+      if (message) return message
+      if (variant === 'success') return 'Successfully'
+      if (variant === 'error') return 'Bad Request'
+    }
+
+    return enqueueSnackbar(showedMessage(), {
       variant: variant ?? 'success',
       autoHideDuration: 5000,
       anchorOrigin: {

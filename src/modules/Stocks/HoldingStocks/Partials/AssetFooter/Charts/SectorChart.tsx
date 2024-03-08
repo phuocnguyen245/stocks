@@ -44,17 +44,17 @@ const SectorChart = ({ data }: { data: Stock[] }): JSX.Element => {
     setChartData(data.length > 0 ? sectorData : [{ code: 'Cash', y: 100 }])
   }, [data])
 
-  const options: Highcharts.Options = {
+  const options = {
     chart: {
       type: 'pie'
     },
     title: {
-      text: 'Sector percentage',
+      text: 'Stocks percentage',
       align: 'left'
     },
-    // tooltip: {
-    //   pointFormat: '{series.code}: <b>{point.y:.1f}%</b>'
-    // },
+    tooltip: {
+      pointFormat: '{series.code}: <b>{point.percentage:.1f}%</b>'
+    },
     accessibility: {
       point: {
         valueSuffix: '%'
@@ -67,8 +67,7 @@ const SectorChart = ({ data }: { data: Stock[] }): JSX.Element => {
         cursor: 'pointer',
         dataLabels: {
           enabled: true,
-          format:
-            '<b>{point.code}</b><br><span style="fontWeight: 400; fontSize: 14">{point.percentage}%</span>'
+          format: '<b>{point.code}</b><br>{point.percentage}%'
         }
       }
     },
@@ -77,7 +76,7 @@ const SectorChart = ({ data }: { data: Stock[] }): JSX.Element => {
         // Disable mouse tracking on load, enable after custom animation
         enableMouseTracking: false,
         animation: {
-          duration: 1000
+          duration: 2000
         },
         colorByPoint: true,
         data: chartData

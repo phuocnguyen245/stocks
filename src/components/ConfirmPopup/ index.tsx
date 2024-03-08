@@ -1,49 +1,47 @@
 import { Delete } from '@mui/icons-material'
 import { Box, Button, CircularProgress, IconButton, Tooltip, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import { useModals } from 'src/hooks'
-interface DeletePopoverProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  row: any
+interface ConfirmPopupProps {
+  row: unknown
+  title?: string
+  icon?: ReactNode
   isLoading: boolean
-  onDelete: (row: unknown) => void
+  isSuccess: boolean
+  onConfirm: (row: unknown) => void
 }
-const DeletePopover = ({ row, isLoading, onDelete }: DeletePopoverProps): JSX.Element => {
+const ConfirmPopup = ({
+  row,
+  title = 'Are you sure want to delete?',
+  icon = <Delete fontSize='small' />,
+  isLoading,
+  isSuccess,
+  onConfirm
+}: ConfirmPopupProps): JSX.Element => {
   const { open: popoverOpen, toggle, hide } = useModals()
   const [isLoadingDelete, setIsLoadingDelete] = useState(false)
 
-  const handleDelete = (): void => {
-    onDelete(row)
+  const handleConfirm = (): void => {
+    onConfirm(row)
   }
 
   useEffect(() => {
-    if (popoverOpen) {
-      if (isLoading) {
-        setIsLoadingDelete(true)
-      }
-    } else {
-      setIsLoadingDelete(false)
-    }
-  }, [isLoading, popoverOpen])
+    setIsLoadingDelete(isLoading)
+  }, [isLoading])
 
   useEffect(() => {
-    if (popoverOpen) {
-      if (isLoading) {
-        if (isLoadingDelete) {
-          hide()
-        }
-      }
+    if (isSuccess) {
+      hide()
     }
-  }, [popoverOpen, isLoadingDelete, isLoading])
+  }, [isSuccess])
 
   return (
     <Tooltip
-      className='123123'
       open={popoverOpen}
       title={
         <Box sx={{ px: 1.5, py: 1 }}>
           <Typography fontWeight={600} sx={{ marginTop: '4px', width: '100%' }}>
-            Are you sure want to delete?
+            {title}
           </Typography>
           <Box
             sx={{
@@ -56,7 +54,7 @@ const DeletePopover = ({ row, isLoading, onDelete }: DeletePopoverProps): JSX.El
             <Button variant='outlined' onClick={toggle} sx={{ color: 'text.secondary' }}>
               No
             </Button>
-            <Button onClick={handleDelete} variant='contained'>
+            <Button onClick={handleConfirm} variant='contained'>
               <Box display='flex' alignItems='center' gap={1} flexWrap='nowrap'>
                 {isLoadingDelete && (
                   <CircularProgress
@@ -85,10 +83,10 @@ const DeletePopover = ({ row, isLoading, onDelete }: DeletePopoverProps): JSX.El
       }}
     >
       <IconButton color='error' onClick={toggle}>
-        <Delete fontSize='small' />
+        {icon}
       </IconButton>
     </Tooltip>
   )
 }
 
-export default DeletePopover
+export default ConfirmPopup

@@ -94,17 +94,19 @@ const Header = ({
               </Box>
             </Grid>
           )}
-          <Grid
-            item
-            sx={{
-              [theme.breakpoints.down('md')]: {
-                display:
-                  (location.pathname === '/login' || location.pathname === '/register') && 'none'
-              }
-            }}
-          >
-            <RefreshTime />
-          </Grid>
+          {isLogin && (
+            <Grid
+              item
+              sx={{
+                [theme.breakpoints.down('md')]: {
+                  display:
+                    (location.pathname === '/login' || location.pathname === '/register') && 'none'
+                }
+              }}
+            >
+              <RefreshTime />
+            </Grid>
+          )}
 
           <Grid item>
             <Languages languages={languages} onSetLanguages={onSetLanguages} />
@@ -146,7 +148,7 @@ const Header = ({
 const HeaderContainer = styled(Paper)(({ theme }) => ({}))
 
 const HeaderSetting = styled(Box)<{ route: string }>(({ theme, route }) => ({
-  display: route === '/login' || route === '/register' ? 'none' : 'block'
+  display: 'block'
 }))
 
 export default Header

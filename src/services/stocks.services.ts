@@ -95,7 +95,7 @@ export const StockService = createApi({
         method: 'PATCH'
       })
     }),
-    deleteStock: builder.mutation<ResponseType<ResponsePagination<[number[]]>>, any>({
+    deleteStock: builder.mutation<ResponseType<{ message: string }>, any>({
       query: ({ _id }) => ({
         url: `/stocks/${_id}`,
         method: 'Delete'

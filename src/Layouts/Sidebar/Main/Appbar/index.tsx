@@ -5,7 +5,7 @@ import {
   styled,
   type AppBarProps as MuiAppBarProps
 } from '@mui/material'
-import Header from 'src/Layouts/Header'
+import Header from 'src/Layouts/Sidebar/Main/Appbar/Header'
 import { watchListWidth } from '../..'
 import Menu from './Menu'
 
@@ -22,9 +22,11 @@ interface AppBarProps extends MuiAppBarProps {
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) =>
     prop !== 'widthAndMargin' && prop !== 'isLogin' && prop !== 'openWatchList'
-})<AppBarProps>(({ theme, widthAndMargin, openWatchList }) => ({
+})<AppBarProps>(({ theme, widthAndMargin, openWatchList, isLogin }) => ({
   transition: 'all 0.25s ease',
-  width: `calc(100% - ${widthAndMargin.width + (openWatchList ? watchListWidth : 0)}px)`,
+  width: `calc(100% - ${
+    isLogin ? widthAndMargin.width + (openWatchList ? watchListWidth : 0) : 0
+  }px)`,
   marginLeft: widthAndMargin.marginLeft,
   marginRight: openWatchList ? watchListWidth : 0,
   [theme.breakpoints.down('md')]: {

@@ -76,7 +76,7 @@ const MenuDrawer = ({
   const navigate = useNavigate()
   const drawerRef = useRef<HTMLDivElement>(null)
 
-  const { isMdWindow } = useAppSelector((state) => state.Stocks)
+  const { isMdWindow, isLogin } = useAppSelector((state) => state.Stocks)
 
   const location = useLocation()
 
@@ -117,7 +117,7 @@ const MenuDrawer = ({
     <Drawer
       variant='persistent'
       anchor='left'
-      open={isMdWindow ? open : true}
+      open={isLogin ? (isMdWindow ? open : true) : false}
       onClose={toggle}
       ref={drawerRef}
       sx={{

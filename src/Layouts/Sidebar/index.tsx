@@ -127,6 +127,7 @@ const PersistentDrawerLeft = (): JSX.Element => {
               open: openMenu,
               languages,
               openWatchList,
+              isLogin,
               onHideMenu: () => setOpenMenu(false),
               onOpenMenu: toggleMenu,
               onOpenWatchList: () => setOpenWatchList(!openWatchList),

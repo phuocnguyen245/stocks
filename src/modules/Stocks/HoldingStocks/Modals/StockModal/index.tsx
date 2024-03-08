@@ -75,7 +75,7 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
   }, [status])
 
   useEffect(() => {
-    sellStock && setTradingStatus(0)
+    setTradingStatus(!sellStock ? 1 : 0)
   }, [sellStock])
 
   const {
@@ -85,6 +85,7 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
     handleSubmit,
     reset,
     watch,
+    setError,
     control,
     formState: { errors }
   } = useForm<FormBody>({
@@ -103,7 +104,7 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
     }
     if (sellStock) {
       setValue('code', sellStock.code)
-      setValue('volume', sellStock.volume)
+      setValue('volume', 0)
       setValue('orderPrice', null)
       setValue('sector', sellStock.sector)
     }
@@ -220,8 +221,15 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
           }
         ]
       })
+      if (sellStock) {
+        if (targetVolume > (sellStock?.availableVol ?? 0)) {
+          setError('volume', {
+            message: `Volume must be less than available volume: ${sellStock?.availableVol ?? 0}`
+          })
+        }
+      }
     })
-  }, [watch])
+  }, [watch, sellStock])
 
   return (
     <Dialog
@@ -276,10 +284,10 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
                   fullWidth
                   label={<FormattedMessage id='label.volume' />}
                   type='number'
-                  inputProps={{ min: 0 }}
+                  {...register('volume')}
+                  InputProps={{ inputProps: { min: 0, max: 0 } }}
                   required
                   sx={{ margin: '8px 0' }}
-                  {...register('volume')}
                   onChange={(e) => setValue('volume', parseInt(e.target.value, 10))}
                   error={!!errors.volume}
                   helperText={errors.volume?.message}
