@@ -14,8 +14,7 @@ const Status404 = (): JSX.Element => {
           display: 'flex',
           width: '100vw',
           justifyContent: 'center',
-          alignItems: 'center',
-          height: 'calc(100vh - 64px)'
+          alignItems: 'center'
         }}
         mt={8}
       >

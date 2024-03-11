@@ -1,4 +1,4 @@
-import { Box, Switch, TextField } from '@mui/material'
+import { Box, Container, Switch, TextField } from '@mui/material'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
@@ -15,10 +15,10 @@ import {
 } from 'src/services/stocks.services'
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { refetchStocks } from 'src/store/slices/stockSlice'
-import { countDays } from 'src/utils'
+import { convertToDecimal, countDays, formatVND } from 'src/utils'
 import FilteredStocks from './FilteredStocks'
 
-const StocksDetail = (): JSX.Element => {
+const HistoryStocksTable = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const { isRefetchStock } = useAppSelector((state) => state.Stocks)
   const [updateStocks] = useUpdateStockMutation()
@@ -225,6 +225,46 @@ const StocksDetail = (): JSX.Element => {
       width: '10%'
     },
     {
+      name: '',
+      title: <FormattedMessage id='label.profit.loss' />,
+      width: '10%',
+      render: (row) => {
+        const average = row?.averagePrice ?? 0
+        const isPositive = row.sellPrice > average
+        return (
+          <>
+            {row.status === 'Sell' ? (
+              <Label type={isPositive ? 'success' : 'error'} fontSize={14}>
+                {convertToDecimal(100 - (average / row.sellPrice) * 100)}%
+              </Label>
+            ) : (
+              <Label type='warning'>0</Label>
+            )}
+          </>
+        )
+      }
+    },
+    {
+      name: '',
+      title: <FormattedMessage id='label.profit.loss.value' />,
+      width: '10%',
+      render: (row) => {
+        const average = row?.averagePrice ?? 0
+        const isPositive = row.sellPrice > average
+        return (
+          <>
+            {row.status === 'Sell' ? (
+              <Label type={isPositive ? 'success' : 'error'} fontSize={14}>
+                {formatVND((row.sellPrice - average) * row.volume)}
+              </Label>
+            ) : (
+              <Label type='warning'>0</Label>
+            )}
+          </>
+        )
+      }
+    },
+    {
       name: 'status',
       title: <FormattedMessage id='label.status' />,
       width: '10%',
@@ -245,7 +285,7 @@ const StocksDetail = (): JSX.Element => {
   }
 
   return (
-    <>
+    <Container sx={{ pt: 13, pb: 2 }}>
       <FilteredStocks onSetPagination={setPagination} />
       <Table
         data={data}
@@ -258,8 +298,8 @@ const StocksDetail = (): JSX.Element => {
         onSetPagination={setPagination}
         onSort={onSort}
       />
-    </>
+    </Container>
   )
 }
 
-export default StocksDetail
+export default HistoryStocksTable

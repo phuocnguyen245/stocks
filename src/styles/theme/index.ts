@@ -66,7 +66,6 @@ const onDarkTheme = (mode: 'dark' | 'light'): Theme => {
       background: {
         default: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.5)'
       },
-
       grey: {
         100: '#f7fafc',
         200: '#edf2f7',
@@ -127,6 +126,15 @@ const onDarkTheme = (mode: 'dark' | 'light'): Theme => {
                 }
               }
             }
+          }
+        }
+      },
+      MuiCssBaseline: {
+        styleOverrides: {
+          html: {
+            width: '100%',
+            height: '100%',
+            backgroundColor: mode === 'dark' ? 'rgba(0,0,0)' : 'rgba(255,255,255'
           }
         }
       }

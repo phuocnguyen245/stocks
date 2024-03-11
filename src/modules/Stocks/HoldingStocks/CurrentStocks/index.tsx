@@ -18,7 +18,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { onSellStock, refetchStocks } from 'src/store/slices/stockSlice'
 import { countDays, formatVND, ratio } from 'src/utils'
-import FilteredStocks from '../StocksDetail/FilteredStocks'
+import FilteredStocks from '../../HistoryStocks/FilteredStocks'
 
 const CurrentStocks = (): JSX.Element => {
   const navigate = useNavigate()
@@ -316,11 +316,9 @@ const CurrentStocks = (): JSX.Element => {
   const onSort = (pagination: DefaultPagination): void => {
     setPagination(pagination)
   }
-  console.log(subData)
 
   return (
     <>
-      <FilteredStocks />
       <Table
         data={data}
         table={table}

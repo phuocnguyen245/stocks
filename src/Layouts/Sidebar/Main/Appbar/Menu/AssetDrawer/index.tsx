@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
-import { Box, Drawer, IconButton, Typography, styled, useTheme } from '@mui/material'
-import AssetFooter from 'src/modules/Stocks/HoldingStocks/Partials/AssetFooter'
+import { Drawer, IconButton, Typography, styled, useTheme } from '@mui/material'
+import AssetFooter from 'src/Layouts/Sidebar/Main/Appbar/Menu/AssetFooter'
 import { useAppSelector } from 'src/store'
 
 interface AssetDrawerProps {
@@ -19,8 +19,7 @@ const AssetDrawer = ({ open, toggle }: AssetDrawerProps): JSX.Element => {
       sx={{
         '& .MuiPaper-root': {
           transition: 'all 0.25s ease',
-          width: 280,
-          height: 'calc(100vh)'
+          width: 340
         }
       }}
     >

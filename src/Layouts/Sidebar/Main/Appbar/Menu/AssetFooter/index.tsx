@@ -131,14 +131,36 @@ const AssetFooter = ({ open }: { open: boolean }): JSX.Element => {
           <Grid container alignItems='center'>
             <Grid item>
               <Typography fontWeight={600}>
-                <FormattedMessage id='label.top.up' />
-                :&nbsp;
+                <FormattedMessage id='label.top.up' />:
               </Typography>
+              &nbsp;
             </Grid>
+            <Grid item>{isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.topUp))}</Grid>
+          </Grid>
+        </Box>
+        <Divider />
+        <Box sx={{ width: '100%', px: 2, py: 1 }}>
+          <Grid container alignItems='center'>
             <Grid item>
               <Typography fontWeight={600}>
-                {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.topUp))}
+                <FormattedMessage id='label.net.asset.value' />:
               </Typography>
+              &nbsp;
+            </Grid>
+            <Grid item>{isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.net))}</Grid>
+          </Grid>
+        </Box>
+        <Divider />
+        <Box sx={{ width: '100%', px: 2, py: 1 }}>
+          <Grid container alignItems='center'>
+            <Grid item>
+              <Typography fontWeight={600}>
+                <FormattedMessage id='label.available.cash' />:
+              </Typography>
+              &nbsp;
+            </Grid>
+            <Grid item>
+              {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.available))}
             </Grid>
           </Grid>
         </Box>
@@ -147,30 +169,16 @@ const AssetFooter = ({ open }: { open: boolean }): JSX.Element => {
           <Grid container alignItems='center'>
             <Grid item>
               <Typography fontWeight={600}>
-                <FormattedMessage id='label.net.asset.value' />
-                :&nbsp;
+                <FormattedMessage id='label.market.value' />:
               </Typography>
+              &nbsp;
             </Grid>
             <Grid item>
-              <Typography>
-                {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.net))}
-              </Typography>
-            </Grid>
-          </Grid>
-        </Box>
-        <Divider />
-        <Box sx={{ width: '100%', px: 2, py: 1 }}>
-          <Grid container alignItems='center'>
-            <Grid item>
-              <Typography fontWeight={600}>
-                <FormattedMessage id='label.available.cash' />
-                :&nbsp;
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography>
-                {isLoading ? <SkeletonRender /> : renderLabel(formatVND(asset.available))}
-              </Typography>
+              {isLoading ? (
+                <SkeletonRender />
+              ) : (
+                renderLabel(formatVND(asset.marketValue), asset.profitOrLost)
+              )}
             </Grid>
           </Grid>
         </Box>
@@ -179,18 +187,16 @@ const AssetFooter = ({ open }: { open: boolean }): JSX.Element => {
           <Grid container alignItems='center'>
             <Grid item>
               <Typography fontWeight={600}>
-                <FormattedMessage id='label.market.value' />
-                :&nbsp;
+                <FormattedMessage id='label.invested.value' />:
               </Typography>
+              &nbsp;
             </Grid>
             <Grid item>
-              <Typography>
-                {isLoading ? (
-                  <SkeletonRender />
-                ) : (
-                  renderLabel(formatVND(asset.marketValue), asset.profitOrLost)
-                )}
-              </Typography>
+              {isLoading ? (
+                <SkeletonRender />
+              ) : (
+                renderLabel(formatVND(asset.investedValue), asset.profitOrLost)
+              )}
             </Grid>
           </Grid>
         </Box>
@@ -198,44 +204,19 @@ const AssetFooter = ({ open }: { open: boolean }): JSX.Element => {
         <Box sx={{ width: '100%', px: 2, py: 1 }}>
           <Grid container alignItems='center'>
             <Grid item>
-              <Typography fontWeight={600}>
-                <FormattedMessage id='label.invested.value' />
-                :&nbsp;
-              </Typography>
+              <FormattedMessage id='label.profit.loss.value' />: &nbsp;
             </Grid>
             <Grid item>
-              <Typography fontWeight={600}>
-                {isLoading ? (
-                  <SkeletonRender />
-                ) : (
-                  renderLabel(formatVND(asset.investedValue), asset.profitOrLost)
-                )}
-              </Typography>
-            </Grid>
-          </Grid>
-        </Box>
-        <Divider />
-        <Box sx={{ width: '100%', px: 2, py: 1 }}>
-          <Grid container alignItems='center'>
-            <Grid item>
-              <Typography fontWeight={600}>
-                <FormattedMessage id='label.profit.loss.value' />
-                :&nbsp;
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography fontWeight={600}>
-                {isLoading ? (
-                  <SkeletonRender />
-                ) : (
-                  renderLabel(
-                    formatVND(
-                      (asset.investedValue - asset.marketValue) * (asset.profitOrLost > 0 ? 1 : -1)
-                    ),
-                    asset.profitOrLost
-                  )
-                )}
-              </Typography>
+              {isLoading ? (
+                <SkeletonRender />
+              ) : (
+                renderLabel(
+                  formatVND(
+                    (asset.investedValue - asset.marketValue) * (asset.profitOrLost > 0 ? 1 : -1)
+                  ),
+                  asset.profitOrLost
+                )
+              )}
             </Grid>
           </Grid>
         </Box>
@@ -243,19 +224,14 @@ const AssetFooter = ({ open }: { open: boolean }): JSX.Element => {
         <Box sx={{ width: '100%', px: 2, py: 1 }}>
           <Grid container alignItems='center'>
             <Grid item>
-              <Typography fontWeight={600}>
-                <FormattedMessage id='label.profit.loss' />
-                :&nbsp;
-              </Typography>
+              <FormattedMessage id='label.profit.loss' />: &nbsp;
             </Grid>
             <Grid item>
-              <Typography>
-                {isLoading ? (
-                  <SkeletonRender />
-                ) : (
-                  renderLabel(`${asset.profitOrLost || 0}%`, asset.profitOrLost)
-                )}
-              </Typography>
+              {isLoading ? (
+                <SkeletonRender />
+              ) : (
+                renderLabel(`${asset.profitOrLost || 0}%`, asset.profitOrLost)
+              )}
             </Grid>
           </Grid>
         </Box>

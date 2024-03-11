@@ -207,8 +207,8 @@ const FilterResult = ({ filterDebounce }: FilterResultProps): JSX.Element => {
       table={table}
       isLoading={false}
       sx={{ maxHeight: 500 }}
-      pagination={pagination}
-      onSetPagination={setPagination}
+      // pagination={pagination}
+      // onSetPagination={setPagination}
       totalItems={data?.length ?? 0}
       onSort={onSort}
     />

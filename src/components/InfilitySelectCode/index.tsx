@@ -1,19 +1,15 @@
-import { Autocomplete, TextField } from '@mui/material'
+import { Autocomplete, TextField, type TextFieldVariants, type TextFieldProps } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
 import type { Board } from 'src/Models'
 import { useDebounce } from 'src/hooks'
 import { useGetBoardQuery } from 'src/services/stocks.services'
 
-interface InfinitySelectCodeProps {
+interface InfinitySelectCodeProps extends TextFieldProps<'filled'> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSetData?: (name: any, value: string) => void
 }
 
-interface ISearch {
-  name: string
-  sector: string
-}
-const InfinitySelectCode = ({ onSetData }: InfinitySelectCodeProps): JSX.Element => {
+const InfinitySelectCode = ({ onSetData, ...props }: InfinitySelectCodeProps): JSX.Element => {
   const [search, setSearch] = useState<string | undefined>(undefined)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [value, setValue] = useState<any>(null)
@@ -110,7 +106,15 @@ const InfinitySelectCode = ({ onSetData }: InfinitySelectCodeProps): JSX.Element
       onInputChange={(_, newInputValue) => {
         setSearch(newInputValue)
       }}
-      renderInput={(params) => <TextField {...params} label='Code' required />}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label='Code'
+          required
+          error={props.error}
+          helperText={props?.helperText}
+        />
+      )}
     />
   )
 }

@@ -4,6 +4,7 @@ import {
   Checklist,
   ChevronLeft,
   FilterAlt,
+  History,
   Logout,
   Menu,
   Payment,
@@ -34,6 +35,12 @@ const routes = [
     name: 'title.stocks',
     url: '/stocks',
     key: 'stocks'
+  },
+  {
+    icons: (color: never) => <History sx={{ color, width: 28, height: 28 }} />,
+    name: 'title.history.stocks',
+    url: '/history',
+    key: 'history'
   },
   {
     icons: (color: never) => <FilterAlt sx={{ color, width: 28, height: 28 }} />,
@@ -123,8 +130,7 @@ const MenuDrawer = ({
       sx={{
         '& .MuiPaper-root': {
           transition: 'all 0.25s ease',
-          width: open ? menuWidth : 60,
-          height: 'calc(100vh)'
+          width: open ? menuWidth : 60
         }
       }}
     >

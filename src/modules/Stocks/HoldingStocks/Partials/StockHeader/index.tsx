@@ -1,37 +1,23 @@
 import { Box, Button, Container } from '@mui/material'
-import { type SetStateAction } from 'react'
-import useModal from 'src/hooks/useModals'
-import type { ConfirmModal as ConfirmModalType } from '../../Modals'
-import ConfirmModal from '../../Modals/ConfirmModal'
-import StockModal from '../../Modals/StockModal'
 import { FormattedMessage } from 'react-intl'
 import { useAppSelector } from 'src/store'
+import StockModal from '../../Modals'
 
 interface StockHeaderProps {
-  modalStatus: ConfirmModalType
-  onSetModalStatus: (state: SetStateAction<ConfirmModalType>) => void
-  openConfirmModal: () => void
+  open: boolean
+  hide: () => void
+  show: () => void
 }
 
-const StockHeader = ({
-  modalStatus,
-  onSetModalStatus,
-  openConfirmModal
-}: StockHeaderProps): JSX.Element => {
+const StockHeader = ({ open, show, hide }: StockHeaderProps): JSX.Element => {
   const { isMdWindow } = useAppSelector((state) => state.Stocks)
-  const { toggle, hide, show, open } = useModal()
-
-  const addData = (): void => {
-    show()
-  }
 
   const children = (
     <>
-      <Button variant='contained' onClick={openConfirmModal}>
+      <Button variant='contained' onClick={show}>
         <FormattedMessage id='label.create' />
       </Button>
-      <ConfirmModal modalStatus={modalStatus} onSetModalStatus={onSetModalStatus} toggle={toggle} />
-      <StockModal open={open} handleClose={hide} addData={addData} status={modalStatus.isBuy} />
+      <StockModal open={open} handleClose={hide} />
     </>
   )
 

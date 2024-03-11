@@ -118,7 +118,10 @@ const PersistentDrawerLeft = (): JSX.Element => {
   return (
     <ThemeProvider theme={themeProvider(darkMode)}>
       <IntlProvider locale={languages} messages={locale[languages] as Record<string, string>}>
-        <Box sx={{ display: 'flex' }} bgcolor={darkMode === 'dark' ? '#000' : '#fff'}>
+        <Box
+          sx={{ display: 'flex', width: '100%' }}
+          bgcolor={darkMode === 'dark' ? '#000' : '#fff'}
+        >
           <CssBaseline />
           <MainComponents
             appBar={{

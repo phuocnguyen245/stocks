@@ -28,7 +28,7 @@ import { v4 as uuidV4 } from 'uuid'
 import schema from './schema'
 interface FormBody {
   code: string
-  volume: number
+  volume: number | null
   orderPrice?: number | null
   sellPrice?: number | null
   date: string
@@ -37,9 +37,7 @@ interface FormBody {
 
 interface StockModalProps {
   open: boolean
-  status: 0 | 1
   handleClose: () => void
-  addData: (data: Stock) => void
 }
 
 interface TargetItem extends Target {
@@ -51,7 +49,7 @@ interface TargetState {
   stop: TargetItem[]
 }
 
-const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element => {
+const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
   const init = { id: uuidV4(), name: '', price: 0, volume: 0 }
   const textFieldRef = useRef(null)
   const dispatch = useAppDispatch()
@@ -64,19 +62,9 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
     take: [{ id: uuidV4(), name: '', price: 0, volume: 0 }],
     stop: [{ id: uuidV4(), name: '', price: 0, volume: 0 }]
   })
-  const [tradingStatus, setTradingStatus] = useState(0)
-  const { data: stockData } = StockService.useGetCurrentStocksQuery(
-    {},
-    { skip: Boolean(tradingStatus) }
-  )
+  const [openModal, setOpenModal] = useState<boolean>(false)
 
-  useEffect(() => {
-    setTradingStatus(status)
-  }, [status])
-
-  useEffect(() => {
-    setTradingStatus(!sellStock ? 1 : 0)
-  }, [sellStock])
+  const { data: stockData } = StockService.useGetCurrentStocksQuery({}, { skip: !sellStock })
 
   const {
     register,
@@ -97,44 +85,63 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
       const textField = textFieldRef.current as HTMLInputElement
       textField.focus()
     }
-    if (status === 1) {
+  }, [open])
+
+  useEffect(() => {
+    open && setOpenModal(true)
+    sellStock && setOpenModal(true)
+  }, [open, sellStock])
+
+  useEffect(() => {
+    if (!sellStock) {
       setValue('sellPrice', null)
     } else {
       setValue('orderPrice', null)
-    }
-    if (sellStock) {
       setValue('code', sellStock.code)
       setValue('volume', 0)
       setValue('orderPrice', null)
       setValue('sector', sellStock.sector)
     }
+  }, [sellStock])
+
+  useEffect(() => {
     setValue('date', moment(Date.now()).toISOString())
-  }, [open, status, sellStock])
+  }, [openModal])
 
   const onChangeDate = (date: MomentInput): void => {
     setValue('date', moment(date).toISOString())
   }
 
   const onCloseModal = (): void => {
+    setOpenModal(false)
     handleClose()
-    handleClose()
-    dispatch(onSellStock(null))
+    sellStock && setTimeout(() => dispatch(onSellStock(null)), 200)
   }
 
   const handleSave = async (value: FormBody): Promise<void> => {
     try {
       const { code, volume, orderPrice, sellPrice } = value
+      if (sellStock && !sellPrice) {
+        return setError('sellPrice', {
+          message: 'Sell price must be greater than 0'
+        })
+      }
+      if (!sellStock && !orderPrice) {
+        return setError('orderPrice', {
+          message: 'Order Price must be greater than 0'
+        })
+      }
       const response = await createStock({
         code: code.toUpperCase(),
         volume,
         date: getValues('date'),
-        ...(tradingStatus === 1 ? { orderPrice } : { sellPrice }),
+        ...(!sellStock ? { orderPrice } : { sellPrice }),
         sector: getValues('sector'),
-        status: tradingStatus === 1 ? 'Buy' : 'Sell',
-        ...(tradingStatus === 1 && { take: target.take }),
-        ...(tradingStatus === 1 && { stop: target.stop })
+        status: !sellStock ? 'Buy' : 'Sell',
+        ...(!sellStock && { take: target.take }),
+        ...(!sellStock && { stop: target.stop })
       }).unwrap()
-      if (response.data) {
+      if (response) {
         reset()
         dispatch(refetchStocks(true))
         dispatch(onSellStock(undefined))
@@ -143,7 +150,7 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
           take: [{ id: uuidV4(), name: '', price: 0, volume: 0 }],
           stop: [{ id: uuidV4(), name: '', price: 0, volume: 0 }]
         })
-        return onCloseModal()
+        onCloseModal()
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -152,7 +159,7 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
   }
 
   const option = useMemo(() => {
-    if (tradingStatus === 0) {
+    if (sellStock) {
       if (stockData?.data?.data?.length) {
         return stockData?.data?.data?.map((stock: Stock) => ({
           id: stock._id,
@@ -164,7 +171,7 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
       return []
     }
     return []
-  }, [tradingStatus, stockData, sellStock])
+  }, [sellStock, stockData, sellStock])
 
   const onAddTakeOrStop = (type: keyof TargetState): void => {
     return setTarget((prev) => ({ ...prev, [type]: [...prev[type], init] }))
@@ -233,7 +240,7 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
 
   return (
     <Dialog
-      open={Boolean(sellStock) || open}
+      open={openModal}
       onClose={onCloseModal}
       onKeyUp={(e) => {
         if (e.key === 'Enter') {
@@ -242,19 +249,23 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
       }}
     >
       <Container maxWidth='sm' sx={{ padding: '0 !important' }}>
-        <Box py={3} px={0} component='form' onSubmit={handleSubmit(handleSave)} id='stock-form'>
+        <Box py={3} px={0} onSubmit={handleSubmit(handleSave)} id='stock-form' component='form'>
           <Box paddingBottom={2} paddingX={4}>
             <Typography>
-              {tradingStatus === 1 && !sellStock && <FormattedMessage id='label.buying' />}
-              {(tradingStatus === 0 || sellStock) && <FormattedMessage id='label.selling' />}
+              <FormattedMessage id={`${sellStock ? 'label.selling' : 'label.buying'}`} />
               &nbsp;
               <FormattedMessage id='label.stock' />
             </Typography>
           </Box>
           <Divider />
           <Box paddingX={4} paddingY={2} component='form'>
-            {tradingStatus === 1 ? (
-              <InfinitySelectCode onSetData={setValue} />
+            {!sellStock ? (
+              <InfinitySelectCode
+                onSetData={setValue}
+                error={!!errors.code}
+                helperText={errors.code?.message}
+                variant='filled'
+              />
             ) : (
               <Box pb={1}>
                 <Select
@@ -285,16 +296,25 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
                   label={<FormattedMessage id='label.volume' />}
                   type='number'
                   {...register('volume')}
-                  InputProps={{ inputProps: { min: 0, max: 0 } }}
                   required
                   sx={{ margin: '8px 0' }}
-                  onChange={(e) => setValue('volume', parseInt(e.target.value, 10))}
                   error={!!errors.volume}
                   helperText={errors.volume?.message}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
-                {tradingStatus === 1 ? (
+                {sellStock ? (
+                  <TextField
+                    fullWidth
+                    label={<FormattedMessage id='label.selling.price' />}
+                    type='number'
+                    required
+                    sx={{ margin: '8px 0' }}
+                    {...register('sellPrice')}
+                    error={!!errors?.sellPrice}
+                    helperText={errors.sellPrice?.message}
+                  />
+                ) : (
                   <TextField
                     fullWidth
                     label={<FormattedMessage id='label.order.price' />}
@@ -306,22 +326,11 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
                     error={!!errors?.orderPrice}
                     helperText={errors.orderPrice?.message}
                   />
-                ) : (
-                  <TextField
-                    fullWidth
-                    label={<FormattedMessage id='label.selling.price' />}
-                    type='number'
-                    required
-                    sx={{ margin: '8px 0' }}
-                    {...register('sellPrice')}
-                    error={!!errors?.sellPrice}
-                    helperText={errors.sellPrice?.message}
-                  />
                 )}
               </Grid>
             </Grid>
 
-            {tradingStatus === 1 && (
+            {!sellStock && (
               <Box mt={0.5}>
                 <Typography mb={0.75}>Takes</Typography>
                 {target.take.map((item, index) => (
@@ -378,10 +387,10 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
               </Box>
             )}
 
-            {tradingStatus === 1 && (
+            {!sellStock && (
               <Box mt={0.5}>
                 <Typography mb={0.75}>Stops</Typography>
-                {target.stop.map((item, index) => (
+                {target.stop.map((item) => (
                   <Grid
                     container
                     key={item.id}
@@ -389,6 +398,7 @@ const StockModal = ({ open, status, handleClose }: StockModalProps): JSX.Element
                     alignItems='center'
                     justifyContent='space-between'
                     columnSpacing={0.75}
+                    rowSpacing={1}
                   >
                     <Grid item xs={12} md={6}>
                       <TextField

@@ -103,13 +103,9 @@ const FilterStocks = (): JSX.Element => {
   return (
     <>
       <Helmet title='title.filter.stocks' />
-      <Container
-        sx={{
-          height: '100vh'
-        }}
-      >
+      <Container>
         <Box height='100%'>
-          <Grid container pt={10}>
+          <Grid container pt={13} columnSpacing={1} rowSpacing={1}>
             <Grid item xs={6} sm={6} md={6} lg={4}>
               <List
                 sx={{

@@ -87,7 +87,7 @@ const Payment = (): JSX.Element => {
     <>
       <Helmet title='title.payments' />
 
-      <Container sx={{ height: '100vh', borderRadius: 0 }}>
+      <Container sx={{ borderRadius: 0 }}>
         <Box pt={2} pb={0} display='flex' alignItems='center' justifyContent='flex-end'>
           <Button variant='contained' onClick={toggle} sx={{ mt: 8 }}>
             <FormattedMessage id='label.create' />

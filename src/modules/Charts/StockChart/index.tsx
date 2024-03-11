@@ -112,13 +112,13 @@ const StockChart = (): JSX.Element => {
           position = {
             x: Math.max(
               chart.plotLeft,
-              Math.min(point.plotX + chart.plotLeft - width / 2, chart.chartWidth - width - 30)
+              Math.min(point.plotX + chart.plotLeft - width / 2, chart.chartWidth - width - 50)
             ),
             y: point.plotY
           }
         } else {
           position = {
-            x: point.series.chart.plotLeft,
+            x: point.series.chart.plotLeft - 100,
             y: 0
           }
         }
@@ -254,7 +254,7 @@ const StockChart = (): JSX.Element => {
   }
 
   return (
-    <Box p={0} height='calc(100vh - 112px)' bgcolor={mode === 'dark' ? '#000' : '#fff'}>
+    <Box p={0} height='calc(100vh - 108px)' bgcolor={mode === 'dark' ? '#000' : '#fff'}>
       <Helmet title='title.charts' />
       <ChartComponent highcharts={Highcharts} options={options} />
     </Box>

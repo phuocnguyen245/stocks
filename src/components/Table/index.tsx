@@ -17,10 +17,8 @@ import {
   useTheme
 } from '@mui/material'
 import { Fragment, memo, useState } from 'react'
-import { Link } from 'react-router-dom'
 import EmptyResult from 'src/asset/imgs/empty-result.jpg'
 import { Loader } from 'src/components/MUIComponents'
-import DeletePopover from './DeletePopover'
 import Pagination from './Pagination'
 import HeaderTableCell from './components/HeaderTableCell'
 import type { TableHeaderBody, TableProps } from './type'
@@ -111,19 +109,6 @@ const Table = ({
                   )
                 }
               )}
-              {(onDelete ?? onEdit ?? onView) && (
-                <TableCell
-                  align='center'
-                  sx={{
-                    whiteSpace: 'nowrap',
-                    bgcolor: 'primary.main',
-                    color: '#fff'
-                  }}
-                  width='10%'
-                >
-                  {/* <FormattedMessage id='label.actions' /> */}
-                </TableCell>
-              )}
             </TableRow>
           </TableHead>
           {data?.length > 0 && (
@@ -158,48 +143,6 @@ const Table = ({
                           {render?.(row) ?? row[rest.name]}
                         </TableCell>
                       ))}
-                      {(onView ?? onEdit ?? onDelete) && (
-                        <TableCell size='small'>
-                          <Box display='flex' alignItems='center' justifyContent='center' gap={0.5}>
-                            {onView && (
-                              <Button
-                                sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                                onClick={() => {
-                                  onView(row)
-                                }}
-                              >
-                                <Link
-                                  to={`/charts/${row.code}`}
-                                  style={{ display: 'flex', alignItems: 'center' }}
-                                  target='_blank'
-                                >
-                                  <RemoveRedEyeSharp color='primary' />
-                                </Link>
-                              </Button>
-                            )}
-                            {onEdit && (
-                              <Button
-                                color='info'
-                                sx={{ width: '40px', minWidth: 'unset', borderRadius: '100%' }}
-                                onClick={() => {
-                                  onEdit(row)
-                                }}
-                              >
-                                <Edit />
-                              </Button>
-                            )}
-                            {onDelete && (
-                              <Box position='relative'>
-                                <DeletePopover
-                                  row={row}
-                                  onDelete={onDelete}
-                                  isLoading={isLoading}
-                                />
-                              </Box>
-                            )}
-                          </Box>
-                        </TableCell>
-                      )}
                     </TableRow>
                     {subTable && (
                       <TableRow>
@@ -217,7 +160,10 @@ const Table = ({
                                 <TableHead>
                                   <TableRow>
                                     {subTable?.map(
-                                      ({ title, ...rest }: TableHeaderBody<unknown>, index) => (
+                                      (
+                                        { title, render, ...rest }: TableHeaderBody<unknown>,
+                                        index
+                                      ) => (
                                         <TableCell
                                           sx={{ whiteSpace: 'nowrap', padding: '8px' }}
                                           {...rest}

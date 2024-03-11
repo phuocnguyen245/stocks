@@ -59,6 +59,8 @@
   "label.total.volume": "Tổng",
   "label.available.vol": "Có sẵn",
   "label.unavailable.vol": "Không có sẵn",
+  "label.delete": "Xoá",
+  "title.history.stocks": "Lịch sử",
 
   "label._TVSPT": "Thép",
   "label._BDS": "BĐS",

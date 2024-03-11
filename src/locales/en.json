@@ -59,6 +59,8 @@
   "label.total.volume": "Total",
   "label.available.vol": "Available",
   "label.unavailable.vol": "Unavailable",
+  "label.delete": "Delete",
+  "title.history.stocks": "History",
 
   "label._TVSPT": "Steel",
   "label._BDS": "Real Estate",

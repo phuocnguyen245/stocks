@@ -1,7 +1,6 @@
-import { AppBar, Box, Paper, Tab, Tabs, useTheme } from '@mui/material'
-import React, { useMemo, useState, type ReactNode, memo } from 'react'
+import { AppBar, Box, Paper, Tab, Tabs } from '@mui/material'
+import React, { memo, useMemo, useState, type ReactNode } from 'react'
 import { useLocation, useNavigate } from 'react-router'
-import SwipeableViews from 'react-swipeable-views'
 import { watchListWidth } from 'src/Layouts/Sidebar'
 import { useAppSelector } from 'src/store'
 

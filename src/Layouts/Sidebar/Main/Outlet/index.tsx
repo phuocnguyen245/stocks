@@ -2,7 +2,7 @@ import { styled } from '@mui/material'
 import { Outlet as OutletRouter } from 'react-router'
 
 const OutletWrapper = styled('main', {
-  shouldForwardProp: (prop) => prop !== 'WidthAndMargin' && prop !== 'isLogin'
+  shouldForwardProp: (prop) => prop !== 'widthAndMargin' && prop !== 'isLogin'
 })<{
   widthAndMargin: {
     width: number

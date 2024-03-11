@@ -4,10 +4,9 @@ import { useIntl } from 'react-intl'
 import { type Stock } from 'src/Models'
 import Chart from 'src/components/Chart'
 import { convertToDecimal } from 'src/utils'
-import type Highcharts from 'highcharts'
 
 interface IChartData {
-  code: string
+  name: string
   y: number
 }
 type SectorsMap = Record<string, IChartData[]>
@@ -26,22 +25,22 @@ const SectorChart = ({ data }: { data: Stock[] }): JSX.Element => {
         if (!sectors[sector]) {
           sectors[sector] = []
         }
-        sectors[sector].push({ code: sector, y: value })
+        sectors[sector].push({ name: sector, y: value })
         totalAssets += value
       })
       const sectorData: IChartData[] = []
       Object.values(sectors).forEach((sector) => {
         sectorData.push(
           ...sector.map((stock) => ({
-            code: intl.formatMessage({ id: `label.${stock.code}` }),
-            y: convertToDecimal(stock.y / totalAssets)
+            name: intl.formatMessage({ id: `label.${stock.name}` }),
+            y: convertToDecimal((stock.y / totalAssets) * 100)
           }))
         )
       })
       return sectorData
     }
     const sectorData = getSectorsData(data)
-    setChartData(data.length > 0 ? sectorData : [{ code: 'Cash', y: 100 }])
+    setChartData(data.length > 0 ? sectorData : [{ name: 'Cash', y: 100 }])
   }, [data])
 
   const options = {
@@ -49,35 +48,29 @@ const SectorChart = ({ data }: { data: Stock[] }): JSX.Element => {
       type: 'pie'
     },
     title: {
-      text: 'Stocks percentage',
-      align: 'left'
-    },
-    tooltip: {
-      pointFormat: '{series.code}: <b>{point.percentage:.1f}%</b>'
-    },
-    accessibility: {
-      point: {
-        valueSuffix: '%'
+      text: 'Sectors',
+      style: {
+        fontSize: '20px'
       }
     },
+    tooltip: {
+      valueSuffix: '%'
+    },
     plotOptions: {
-      pie: {
+      series: {
         allowPointSelect: true,
-        borderWidth: 2,
         cursor: 'pointer',
-        dataLabels: {
-          enabled: true,
-          format: '<b>{point.code}</b><br>{point.percentage}%'
-        }
+        dataLabels: [
+          {
+            enabled: true,
+            distance: 20
+          }
+        ]
       }
     },
     series: [
       {
-        // Disable mouse tracking on load, enable after custom animation
-        enableMouseTracking: false,
-        animation: {
-          duration: 2000
-        },
+        name: 'Percentage',
         colorByPoint: true,
         data: chartData
       }
@@ -92,6 +85,7 @@ const SectorChart = ({ data }: { data: Stock[] }): JSX.Element => {
           height: '230px !important'
         }
       }}
+      className='asset-chart'
     >
       <Chart options={options} />
     </Box>

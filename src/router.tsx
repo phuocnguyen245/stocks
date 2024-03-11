@@ -40,6 +40,7 @@ const AuthLayout = Loader(lazy(async () => await import('src/modules/Auth/Layout
 
 const Stocks = Loader(lazy(async () => await import('src/modules/Stocks/HoldingStocks')))
 const FilterStocks = Loader(lazy(async () => await import('src/modules/Stocks/FilterStocks')))
+const HistoryStocks = Loader(lazy(async () => await import('src/modules/Stocks/HistoryStocks')))
 const Charts = Loader(lazy(async () => await import('src/modules/Charts')))
 const Payment = Loader(lazy(async () => await import('src/modules/Payments')))
 const Login = Loader(lazy(async () => await import('src/modules/Auth/Login')))
@@ -63,6 +64,15 @@ const routes: RouteObject[] = [
           {
             path: '',
             element: <PrivateRoute element={Stocks} />
+          }
+        ]
+      },
+      {
+        path: '/history',
+        children: [
+          {
+            path: '',
+            element: <PrivateRoute element={HistoryStocks} />
           }
         ]
       },
