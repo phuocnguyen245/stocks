@@ -1,10 +1,9 @@
-import { Add, ChevronLeft, ChevronRight, ExpandMore } from '@mui/icons-material'
+import { ChevronLeft, ChevronRight, ExpandMore } from '@mui/icons-material'
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Box,
-  Button,
   Divider,
   Drawer,
   IconButton,
@@ -15,10 +14,10 @@ import {
   useTheme
 } from '@mui/material'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useAlert } from 'src/hooks'
+import { watchListWidth } from 'src/layouts/Sidebar'
 import { type Board, type WatchList } from 'src/models'
-import { useAlert, useModals } from 'src/hooks'
 import { useGetWatchListQuery } from 'src/services/stocks.services'
-import { watchListWidth } from '..'
 
 interface WatchListDrawerProps {
   open: boolean

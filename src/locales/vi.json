@@ -9,6 +9,7 @@
   "title.filter.stocks": "Bộ lọc Cổ phiếu",
   "title.watchlist": "Theo dõi",
   "title.asset": "Tài sản",
+  "title.history.stocks": "Lịch sử",
 
   "label.stocks": "Mã cổ phiếu",
   "label.payment": "Thanh toán",
@@ -60,7 +61,8 @@
   "label.available.vol": "Có sẵn",
   "label.unavailable.vol": "Không có sẵn",
   "label.delete": "Xoá",
-  "title.history.stocks": "Lịch sử",
+  "label.profit.loss.portfolio": "Rate danh mục",
+  "label.profit.loss.asset": "Rate Tài sản",
 
   "label._TVSPT": "Thép",
   "label._BDS": "BĐS",

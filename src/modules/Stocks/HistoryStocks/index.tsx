@@ -1,11 +1,11 @@
-import { Box, Container, Switch, TextField } from '@mui/material'
+import { Box, Container, TextField } from '@mui/material'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { type ErrorResponse } from 'react-router-dom'
-import { Label } from 'src/components/MUIComponents'
-import Table from 'src/components/Table'
+import { ConfirmPopup, Table } from 'src/components'
 import type { DefaultPagination, TableHeaderBody } from 'src/components/Table/type'
+import { Label } from 'src/components/MUIComponents'
 import { useAlert } from 'src/hooks'
 import type { Stock } from 'src/models'
 import {
@@ -22,7 +22,7 @@ const HistoryStocksTable = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const { isRefetchStock } = useAppSelector((state) => state.Stocks)
   const [updateStocks] = useUpdateStockMutation()
-  const [deleteStocks, { isLoading }] = useDeleteStockMutation()
+  const [deleteStocks, { isLoading, isSuccess }] = useDeleteStockMutation()
   const alert = useAlert()
   const [data, setData] = useState<Stock[]>([])
   const [editData, setEditData] = useState<Stock>()
@@ -158,7 +158,7 @@ const HistoryStocksTable = (): JSX.Element => {
     {
       name: 'volume',
       title: <FormattedMessage id='label.volume' />,
-      width: '25%',
+      width: '10%',
       render: (row) => {
         return (
           <>
@@ -191,7 +191,7 @@ const HistoryStocksTable = (): JSX.Element => {
     {
       name: 'orderPrice',
       title: <FormattedMessage id='label.order' />,
-      width: '25%',
+      width: '10%',
       render: (row) => (
         <>
           {editData?._id === row._id ? (
@@ -222,7 +222,10 @@ const HistoryStocksTable = (): JSX.Element => {
     {
       name: 'sellPrice',
       title: <FormattedMessage id='label.sell' />,
-      width: '10%'
+      width: '10%',
+      render: (row) => {
+        return <>{row.status === 'Sell' && row.sellPrice}</>
+      }
     },
     {
       name: '',
@@ -234,12 +237,11 @@ const HistoryStocksTable = (): JSX.Element => {
           row.sellPrice === average ? 'warning' : row.sellPrice > average ? 'success' : 'error'
         return (
           <>
-            <Label type={type} fontSize={14}>
-              {row.status === 'Sell'
-                ? convertToDecimal(((row.sellPrice - average) / average) * 100)
-                : 0}
-              %
-            </Label>
+            {row.status === 'Sell' && (
+              <Label type={type} fontSize={14} width={80}>
+                {convertToDecimal(((row.sellPrice - average) / average) * 100)}%
+              </Label>
+            )}
           </>
         )
       }
@@ -253,9 +255,13 @@ const HistoryStocksTable = (): JSX.Element => {
         const type =
           row.sellPrice === average ? 'warning' : row.sellPrice > average ? 'success' : 'error'
         return (
-          <Label type={type} fontSize={14}>
-            {row.status === 'Sell' ? formatVND((row.sellPrice - average) * row.volume * 1000) : 0}
-          </Label>
+          <>
+            {row.status === 'Sell' && (
+              <Label type={type} fontSize={14}>
+                {formatVND((row.sellPrice - average) * row.volume * 1000)}
+              </Label>
+            )}
+          </>
         )
       }
     },
@@ -272,6 +278,23 @@ const HistoryStocksTable = (): JSX.Element => {
           </>
         )
       }
+    },
+    {
+      name: '',
+      title: '',
+      align: 'center',
+      render: (row) => {
+        return (
+          <Box display='flex' justifyContent='center'>
+            <ConfirmPopup
+              row={row}
+              isLoading={isLoading}
+              isSuccess={isSuccess}
+              onConfirm={() => onDelete(row)}
+            />
+          </Box>
+        )
+      }
     }
   ]
 
@@ -285,7 +308,7 @@ const HistoryStocksTable = (): JSX.Element => {
       <Table
         data={data}
         table={table}
-        isLoading={isFetching || isLoading}
+        isLoading={isFetching}
         totalItems={stocksData?.data?.totalItems ?? 0}
         onDelete={onDelete}
         onEdit={onEdit}

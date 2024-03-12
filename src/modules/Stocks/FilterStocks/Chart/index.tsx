@@ -1,6 +1,6 @@
 import type HighCharts from 'highcharts'
 import { useMemo } from 'react'
-import Charts from 'src/components/Chart'
+import { Chart as ChartComponent } from 'src/components'
 import type { Asset, ResponsePagination, ResponseType, Stock } from 'src/models'
 
 interface ChartProps {
@@ -38,7 +38,7 @@ const Chart = ({ data }: { data: ChartProps }): JSX.Element => {
       }
     ]
   }
-  return <Charts options={options as HighCharts.Options} />
+  return <ChartComponent options={options as HighCharts.Options} />
 }
 
 export default Chart

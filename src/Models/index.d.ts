@@ -81,6 +81,7 @@ interface Asset {
   profitOrLost: number
   investedValue: number
   marketValue: number
+  ratePortfolio: number
 }
 
 interface WatchList {

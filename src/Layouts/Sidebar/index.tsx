@@ -8,8 +8,8 @@ import vi from 'src/locales/vi.json'
 import { useAppSelector } from 'src/store'
 import { setMode, setOpenSidebar } from 'src/store/slices/stockSlice'
 import themeProvider from 'src/styles/theme'
-import MainComponents from './Main'
-import WatchListDrawer from './WatchListDrawer'
+import MainComponents from 'src/layouts/Sidebar/Main'
+import WatchListDrawer from 'src/layouts/Sidebar/WatchListDrawer'
 export const watchListWidth = 280
 export const menuWidth = 240
 
@@ -118,10 +118,7 @@ const PersistentDrawerLeft = (): JSX.Element => {
   return (
     <ThemeProvider theme={themeProvider(darkMode)}>
       <IntlProvider locale={languages} messages={locale[languages] as Record<string, string>}>
-        <Box
-          sx={{ display: 'flex', width: '100%' }}
-          bgcolor={darkMode === 'dark' ? '#000' : '#fff'}
-        >
+        <Box sx={{ display: 'flex', width: '100%' }}>
           <CssBaseline />
           <MainComponents
             appBar={{

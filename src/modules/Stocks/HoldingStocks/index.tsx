@@ -1,7 +1,7 @@
 import { Container, Grid } from '@mui/material'
 import { memo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Helmet from 'src/components/Helmet'
+import { Helmet } from 'src/components'
 import { useModals } from 'src/hooks'
 import CurrentStocks from 'src/modules/Stocks/HoldingStocks/CurrentStocks'
 import StockHeader from 'src/modules/Stocks/HoldingStocks/Partials/StockHeader'

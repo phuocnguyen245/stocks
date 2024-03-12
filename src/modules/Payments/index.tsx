@@ -1,19 +1,18 @@
-import { Box, Button, Container, Paper, TableContainer, Typography } from '@mui/material'
+import { Edit } from '@mui/icons-material'
+import { Box, Button, Container, IconButton, Typography } from '@mui/material'
 import { memo, useEffect, useState } from 'react'
-import type { LabelType, Payments } from 'src/models'
-import Table from 'src/components/Table'
-import type { DefaultPagination, TableHeaderBody } from 'src/components/Table/type'
-import { useDeletePaymentMutation, useGetPaymentQuery } from 'src/services/payment.services'
-import PaymentsModal from './Modals/Payments'
-import useModal from 'src/hooks/useModals'
+import { FormattedMessage } from 'react-intl'
+import { ConfirmPopup, Helmet, Table } from 'src/components'
 import { Label } from 'src/components/MUIComponents'
+import type { DefaultPagination, TableHeaderBody } from 'src/components/Table/type'
+import useModal from 'src/hooks/useModals'
+import type { LabelType, Payments } from 'src/models'
+import { useDeletePaymentMutation, useGetPaymentQuery } from 'src/services/payment.services'
 import { formatVND } from 'src/utils'
-import Helmet from 'src/components/Helmet'
-import { FormattedMessage, useIntl } from 'react-intl'
+import PaymentsModal from './Modals/Payments'
 
 const Payment = (): JSX.Element => {
-  const intl = useIntl()
-  const [deletePayment] = useDeletePaymentMutation()
+  const [deletePayment, { isLoading: isLoadingDelete, isSuccess }] = useDeletePaymentMutation()
   const { open, toggle } = useModal()
 
   const [data, setData] = useState<Payments[]>([])
@@ -80,6 +79,28 @@ const Payment = (): JSX.Element => {
       name: 'balance',
       title: <FormattedMessage id='label.balance' />,
       render: (row) => <Typography>{formatVND(row.balance)}</Typography>
+    },
+    {
+      name: '',
+      title: '',
+      align: 'right',
+      render: (row) => {
+        return (
+          <>
+            <Box display='flex' justifyContent='flex-end'>
+              <IconButton color='info' onClick={() => onEdit(row)}>
+                <Edit />
+              </IconButton>
+              <ConfirmPopup
+                row={row}
+                isLoading={isLoadingDelete}
+                isSuccess={isSuccess}
+                onConfirm={() => onDelete(row)}
+              />
+            </Box>
+          </>
+        )
+      }
     }
   ]
 
@@ -99,8 +120,6 @@ const Payment = (): JSX.Element => {
             table={table}
             isLoading={isLoading}
             totalItems={paymentData?.data?.totalItems ?? 0}
-            onDelete={onDelete}
-            onEdit={onEdit}
             pagination={pagination}
             onSetPagination={setPagination}
           />

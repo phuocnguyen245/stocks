@@ -1,28 +1,30 @@
 import { Delete } from '@mui/icons-material'
 import { Box, Button, CircularProgress, IconButton, Tooltip, Typography } from '@mui/material'
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState, type ReactElement } from 'react'
 import { useModals } from 'src/hooks'
 interface ConfirmPopupProps {
-  row: unknown
+  row?: unknown
   title?: string
   icon?: ReactNode
-  isLoading: boolean
-  isSuccess: boolean
+  isLoading?: boolean
+  isSuccess?: boolean
+  children?: ReactElement
   onConfirm: (row: unknown) => void
 }
 const ConfirmPopup = ({
   row,
   title = 'Are you sure want to delete?',
   icon = <Delete fontSize='small' />,
-  isLoading,
-  isSuccess,
+  children,
+  isLoading = false,
+  isSuccess = false,
   onConfirm
 }: ConfirmPopupProps): JSX.Element => {
   const { open: popoverOpen, toggle, hide } = useModals()
   const [isLoadingDelete, setIsLoadingDelete] = useState(false)
 
   const handleConfirm = (): void => {
-    onConfirm(row)
+    row && onConfirm(row)
   }
 
   useEffect(() => {
@@ -51,7 +53,7 @@ const ConfirmPopup = ({
               justifyContent: 'flex-end'
             }}
           >
-            <Button variant='outlined' onClick={toggle} sx={{ color: 'text.secondary' }}>
+            <Button variant='outlined' onClick={toggle} sx={{ color: '#fff', borderColor: '#fff' }}>
               No
             </Button>
             <Button onClick={handleConfirm} variant='contained'>
@@ -82,9 +84,15 @@ const ConfirmPopup = ({
         }
       }}
     >
-      <IconButton color='error' onClick={toggle}>
-        {icon}
-      </IconButton>
+      {children ? (
+        <Box onClick={toggle} sx={{ p: 0, m: 0 }}>
+          {children}
+        </Box>
+      ) : (
+        <IconButton color='error' onClick={toggle}>
+          {icon}
+        </IconButton>
+      )}
     </Tooltip>
   )
 }

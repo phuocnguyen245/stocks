@@ -1,9 +1,10 @@
-import { Box } from '@mui/material'
+import { Box, useTheme } from '@mui/material'
 import { memo, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { type Stock } from 'src/models'
-import Chart from 'src/components/Chart'
+import { Chart } from 'src/components'
 import { convertToDecimal } from 'src/utils'
+import type Highcharts from 'highcharts'
 
 interface IChartData {
   name: string
@@ -13,6 +14,7 @@ type SectorsMap = Record<string, IChartData[]>
 
 const SectorChart = ({ data }: { data: Stock[] }): JSX.Element => {
   const intl = useIntl()
+  const theme = useTheme()
   const [chartData, setChartData] = useState<IChartData[]>([])
 
   useEffect(() => {
@@ -43,7 +45,7 @@ const SectorChart = ({ data }: { data: Stock[] }): JSX.Element => {
     setChartData(data.length > 0 ? sectorData : [{ name: 'Cash', y: 100 }])
   }, [data])
 
-  const options = {
+  const options: Highcharts.Options = {
     chart: {
       type: 'pie'
     },
@@ -54,38 +56,44 @@ const SectorChart = ({ data }: { data: Stock[] }): JSX.Element => {
       }
     },
     tooltip: {
-      valueSuffix: '%'
+      pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>',
+      followPointer: true
     },
     plotOptions: {
       series: {
         allowPointSelect: true,
-        cursor: 'pointer',
-        dataLabels: [
-          {
-            enabled: true,
-            distance: 20
-          }
-        ]
+        cursor: 'pointer'
+      },
+      pie: {
+        shadow: false,
+        center: ['50%', '50%'],
+        dataLabels: {
+          format: '<b style="font-size: 12px;">{point.name}</b>'
+        }
       }
     },
     series: [
       {
         name: 'Percentage',
         colorByPoint: true,
-        data: chartData
+        data: chartData,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        type: 'pie' as any
       }
-    ]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any
+    ],
+    credits: {
+      enabled: false
+    }
+  }
 
   return (
     <Box
+      className='asset-chart'
       sx={{
-        '& .highcharts-container': {
-          height: '230px !important'
+        '.highcharts-background': {
+          fill: theme.palette.mode === 'dark' ? theme.palette.grey[500] : '#f9f3fe'
         }
       }}
-      className='asset-chart'
     >
       <Chart options={options} />
     </Box>

@@ -17,6 +17,7 @@ import { useLocation, useNavigate } from 'react-router'
 import useClickOutside from 'src/hooks/useClickOutside'
 import { useAppSelector } from 'src/store'
 import { menuWidth } from 'src/layouts/Sidebar'
+import { ConfirmPopup } from 'src/components'
 
 interface MenuDrawerProps {
   open: boolean
@@ -212,26 +213,27 @@ const MenuDrawer = ({
 
             <Grid item>
               <Divider />
-              <Box
-                sx={{
-                  display: 'flex',
-                  gap: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: '100%',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    bgcolor: 'primary.main',
-                    color: 'grey.100'
-                  },
-                  height: 48
-                }}
-                onClick={onLogout}
-              >
-                {open && <Typography fontWeight={600}>Logout</Typography>}
-                <Logout />
-              </Box>
+              <ConfirmPopup onConfirm={onLogout}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '100%',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      bgcolor: 'primary.main',
+                      color: 'grey.100'
+                    },
+                    height: 48
+                  }}
+                >
+                  {open && <Typography fontWeight={600}>Logout</Typography>}
+                  <Logout />
+                </Box>
+              </ConfirmPopup>
             </Grid>
           </Grid>
         </Box>

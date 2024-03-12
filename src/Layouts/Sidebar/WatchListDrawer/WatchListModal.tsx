@@ -1,5 +1,5 @@
 import { Add } from '@mui/icons-material'
-import { Box, Button, Dialog, Divider, TextField, Typography } from '@mui/material'
+import { Box, Button, Dialog, TextField, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useUpdateWatchListMutation } from 'src/services/stocks.services'
 

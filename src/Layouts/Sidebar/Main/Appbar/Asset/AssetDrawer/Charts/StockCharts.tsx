@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, useTheme } from '@mui/material'
 import { memo, useEffect, useState } from 'react'
 import type { Stock } from 'src/models'
 import Chart from 'src/components/Chart'
@@ -9,6 +9,7 @@ interface IChartData {
 }
 
 const StockCharts = ({ data }: { data: Stock[] }): JSX.Element => {
+  const theme = useTheme()
   const [chartData, setChartData] = useState<IChartData[]>([])
 
   useEffect(() => {
@@ -50,6 +51,13 @@ const StockCharts = ({ data }: { data: Stock[] }): JSX.Element => {
       series: {
         allowPointSelect: true,
         cursor: 'pointer'
+      },
+      pie: {
+        shadow: false,
+        center: ['50%', '50%'],
+        dataLabels: {
+          format: '<b style="font-size: 12px;">{point.name}</b>'
+        }
       }
     },
     series: [
@@ -58,18 +66,21 @@ const StockCharts = ({ data }: { data: Stock[] }): JSX.Element => {
         colorByPoint: true,
         data: chartData
       }
-    ]
+    ],
+    credits: {
+      enabled: false
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any
 
   return (
     <Box
+      className='asset-chart'
       sx={{
-        '& .highcharts-container': {
-          height: '230px !important'
+        '.highcharts-background': {
+          fill: theme.palette.mode === 'dark' ? theme.palette.grey[500] : '#f9f3fe'
         }
       }}
-      className='asset-chart'
     >
       <Chart options={options} />
     </Box>

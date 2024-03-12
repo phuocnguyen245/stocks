@@ -2,7 +2,7 @@ import { Menu as MenuIcon } from '@mui/icons-material'
 import { Box, IconButton } from '@mui/material'
 import { useModals } from 'src/hooks'
 import { useAppSelector } from 'src/store'
-import AssetDrawer from 'src/layouts/Sidebar/Main/Appbar/Menu/AssetDrawer'
+import AssetDrawer from 'src/layouts/Sidebar/Main/Appbar/Asset'
 import MenuDrawer from 'src/layouts/Sidebar/Main/Appbar/Menu/MenuDrawer'
 
 interface MenuProps {

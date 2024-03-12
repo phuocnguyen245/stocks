@@ -4,7 +4,7 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
-import SearchBar from 'src/components/SearchBar'
+import { ConfirmPopup, SearchBar } from 'src/components'
 import { onIsLogin, onMdWindow } from 'src/store/slices/stockSlice'
 import DarkModeSwitch from 'src/layouts/Sidebar/Main/Appbar/Header/components/DarkModeSwitch'
 import Languages from 'src/layouts/Sidebar/Main/Appbar/Header/components/Languages'
@@ -61,11 +61,10 @@ const Header = ({
     <HeaderContainer
       sx={{
         width: '100%',
-        top: 0,
-        left: 0,
         display: 'flex',
         justifyContent: 'flex-end',
-        height: 52,
+        height: isMd ? 44 : 52,
+        pr: isMd ? 1 : 0,
         gap: '4px'
       }}
     >
@@ -126,17 +125,11 @@ const Header = ({
                 }
               }}
             >
-              <IconButton
-                onClick={onLogout}
-                sx={{
-                  p: 1,
-                  '&:hover': {
-                    color: 'primary.main'
-                  }
-                }}
-              >
-                <Logout />
-              </IconButton>
+              <ConfirmPopup
+                onConfirm={onLogout}
+                icon={<Logout color='primary' />}
+                title='Do you want to Logout?'
+              />
             </Grid>
           )}
         </Grid>

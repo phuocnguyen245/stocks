@@ -1,14 +1,14 @@
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
-import { Drawer, IconButton, Typography, styled, useTheme } from '@mui/material'
+import { Box, Drawer, IconButton, Typography, styled, useTheme } from '@mui/material'
 import { memo } from 'react'
-import AssetFooter from 'src/layouts/Sidebar/Main/Appbar/Menu/AssetDrawer/Asset'
+import AssetFooter from 'src/layouts/Sidebar/Main/Appbar/Asset/AssetDrawer'
 import { useAppSelector } from 'src/store'
 
-interface AssetDrawerProps {
+interface AssetProps {
   open: boolean
   toggle: () => void
 }
-const AssetDrawer = ({ open, toggle }: AssetDrawerProps): JSX.Element => {
+const Asset = ({ open, toggle }: AssetProps): JSX.Element => {
   const { isLogin } = useAppSelector((state) => state.Stocks)
   const theme = useTheme()
   return (
@@ -24,18 +24,20 @@ const AssetDrawer = ({ open, toggle }: AssetDrawerProps): JSX.Element => {
         }
       }}
     >
-      <DrawerHeader onClick={toggle} sx={{ cursor: 'pointer' }}>
-        <Typography pl={2} fontWeight={600}>
-          Assets
-        </Typography>
-        <IconButton>{theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}</IconButton>
-      </DrawerHeader>
-      <AssetFooter open={open} />
+      <Box>
+        <DrawerHeader onClick={toggle} sx={{ cursor: 'pointer' }}>
+          <Typography pl={2} fontWeight={600}>
+            Assets
+          </Typography>
+          <IconButton>{theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}</IconButton>
+        </DrawerHeader>
+        <AssetFooter open={open} />
+      </Box>
     </Drawer>
   )
 }
 
-export default memo(AssetDrawer)
+export default memo(Asset)
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',

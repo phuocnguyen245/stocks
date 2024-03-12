@@ -17,7 +17,7 @@ import { memo, useEffect, useMemo, useRef, useState, type ChangeEvent } from 're
 import { useForm } from 'react-hook-form'
 import { FormattedMessage } from 'react-intl'
 import type { Stock, Target } from 'src/models'
-import InfinitySelectCode from 'src/components/InfilitySelectCode'
+import { InfinitySelectCode } from 'src/components'
 import { Button, Select } from 'src/components/MUIComponents'
 import { useAlert } from 'src/hooks'
 import { StockService, useCreateStockMutation } from 'src/services/stocks.services'
