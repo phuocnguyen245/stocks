@@ -1,17 +1,17 @@
 import { Box, Divider, Grid, Typography, useTheme, type Theme } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
-import type { Asset, LabelType } from 'src/Models'
+import type { Asset as IAsset, LabelType } from 'src/models'
 import { Label, Skeleton } from 'src/components/MUIComponents'
 import { PaymentService } from 'src/services/payment.services'
 import { useGetCurrentStocksQuery } from 'src/services/stocks.services'
 import { useAppSelector } from 'src/store'
 import { convertToDecimal, formatVND } from 'src/utils'
-import Charts from './Charts'
+import Charts from 'src/layouts/Sidebar/Main/Appbar/Menu/AssetDrawer/Asset/Charts'
 
-const AssetFooter = ({ open }: { open: boolean }): JSX.Element => {
+const Asset = ({ open }: { open: boolean }): JSX.Element => {
   const theme: Theme = useTheme()
-  const [asset, setAsset] = useState<Asset>({
+  const [asset, setAsset] = useState<IAsset>({
     topUp: 0,
     waiting: 0,
     order: 0,
@@ -241,4 +241,4 @@ const AssetFooter = ({ open }: { open: boolean }): JSX.Element => {
   )
 }
 
-export default AssetFooter
+export default Asset

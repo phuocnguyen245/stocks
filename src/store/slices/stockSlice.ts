@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { type Stock } from 'src/Models'
+import { type Stock } from 'src/models'
 // Define a type for the slice state
 interface StockState {
   rsi: number[]

@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
-import { type Stock } from 'src/Models'
+import { type Stock } from 'src/models'
 import Chart from 'src/components/Chart'
 import { convertToDecimal } from 'src/utils'
 
@@ -92,4 +92,4 @@ const SectorChart = ({ data }: { data: Stock[] }): JSX.Element => {
   )
 }
 
-export default SectorChart
+export default memo(SectorChart)

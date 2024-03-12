@@ -16,7 +16,7 @@ import { FormattedMessage } from 'react-intl'
 import { useLocation, useNavigate } from 'react-router'
 import useClickOutside from 'src/hooks/useClickOutside'
 import { useAppSelector } from 'src/store'
-import { menuWidth } from '../../../..'
+import { menuWidth } from 'src/layouts/Sidebar'
 
 interface MenuDrawerProps {
   open: boolean

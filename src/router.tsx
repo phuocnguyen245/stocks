@@ -35,7 +35,7 @@ const Loader = (Component: any) => (props: any) => (
   </Suspense>
 )
 
-const MainLayout = Loader(lazy(async () => await import('src/Layouts/Sidebar')))
+const MainLayout = Loader(lazy(async () => await import('src/layouts/Sidebar')))
 const AuthLayout = Loader(lazy(async () => await import('src/modules/Auth/Layout')))
 
 const Stocks = Loader(lazy(async () => await import('src/modules/Stocks/HoldingStocks')))

@@ -3,47 +3,14 @@ body {
   overflow-x: hidden;
   margin: 0;
   padding: 0;
+  height: 100%;
 }
-
 * {
   box-sizing: border-box;
   font-size: 14px;
   @media (min-width: 980px) {
     font-size: 16px;
   }
-}
-
-/* This applies to a specific element */
-.watch-list {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(195, 113, 246, 0.7) transparent !important;
-}
-
-/* For Webkit browsers (Chrome, Safari) */
-html::-webkit-scrollbar,
-div::-webkit-scrollbar,
-.watch-list::-webkit-scrollbar {
-  width: 8px;
-}
-
-html::-webkit-scrollbar-track,
-div::-webkit-scrollbar-track .watch-list::-webkit-scrollbar-track {
-  background: transparent;
-  background: #554b4c;
-}
-
-html::-webkit-scrollbar-thumb,
-div::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 20px;
-  border: 3px solid transparent;
-}
-
-.watch-list::-webkit-scrollbar-thumb,
-div::-webkit-scrollbar-thumb {
-  background-color: rgba(146, 59, 227, 0.7);
-  border-radius: 20px;
-  border: 3px solid transparent;
 }
 
 .notistack-Snackbar {
@@ -116,4 +83,45 @@ div::-webkit-scrollbar-thumb {
   .highcharts-background {
     fill: #fff;
   }
+}
+
+#root {
+  height: 100%;
+  overflow-y: scroll;
+  box-sizing: content-box;
+}
+
+#root::-webkit-scrollbar {
+  background-color: transparent;
+  width: 8px;
+}
+
+#root::-webkit-scrollbar-thumb {
+  background: #a020f0;
+  border-radius: 20px;
+}
+
+#root::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+div::-webkit-scrollbar {
+  background-color: transparent;
+  width: 8px;
+  height: 8px;
+}
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track,
+div::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
+div::-webkit-scrollbar-thumb {
+  background: #a020f0;
+  border-radius: 20px;
+  border: 3px solid transparent;
 }

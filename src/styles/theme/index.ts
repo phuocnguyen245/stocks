@@ -134,7 +134,7 @@ const onDarkTheme = (mode: 'dark' | 'light'): Theme => {
           html: {
             width: '100%',
             height: '100%',
-            backgroundColor: mode === 'dark' ? 'rgba(0,0,0)' : 'rgba(255,255,255'
+            backgroundColor: mode === 'dark' ? 'rgba(0,0,0)' : 'rgba(255,255,255)'
           }
         }
       }

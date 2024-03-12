@@ -1,4 +1,4 @@
-import { type LabelType } from './index.d'
+import { type LabelType } from '.'
 const getColor = (type: LabelType): string => {
   const hexColors = {
     success: ' #f8fff9',

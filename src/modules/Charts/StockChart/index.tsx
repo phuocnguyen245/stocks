@@ -11,7 +11,7 @@ import { useParams } from 'react-router-dom'
 import { useGetStockStatisticQuery } from 'src/services/stocks.services'
 import { useAppSelector } from 'src/store'
 import ChartComponent from 'src/modules/Charts/components/ChartComponent'
-import { watchListWidth } from 'src/Layouts/Sidebar'
+import { watchListWidth } from 'src/layouts/Sidebar'
 import Helmet from 'src/components/Helmet'
 
 Indicators(Highcharts)

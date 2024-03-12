@@ -1,11 +1,4 @@
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  type SelectChangeEvent
-} from '@mui/material'
+import { Box, FormControl, MenuItem, Select, type SelectChangeEvent } from '@mui/material'
 import { type SetStateAction } from 'react'
 
 interface LanguageProps {

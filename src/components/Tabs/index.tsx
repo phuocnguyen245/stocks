@@ -1,7 +1,7 @@
 import { AppBar, Box, Paper, Tab, Tabs } from '@mui/material'
 import React, { memo, useMemo, useState, type ReactNode } from 'react'
 import { useLocation, useNavigate } from 'react-router'
-import { watchListWidth } from 'src/Layouts/Sidebar'
+import { watchListWidth } from 'src/layouts/Sidebar'
 import { useAppSelector } from 'src/store'
 
 interface Components {

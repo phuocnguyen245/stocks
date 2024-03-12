@@ -1,7 +1,7 @@
 import { Box, Divider, Typography, useTheme } from '@mui/material'
 import { Fragment, memo, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
-import type { Board } from 'src/Models'
+import type { Board } from 'src/models'
 import { useGetBoardQuery } from 'src/services/stocks.services'
 
 interface SearchResultProps {

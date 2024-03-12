@@ -7,7 +7,7 @@ import { Label } from 'src/components/MUIComponents'
 import Table from 'src/components/Table'
 import type { DefaultPagination, TableHeaderBody } from 'src/components/Table/type'
 import { useAlert } from 'src/hooks'
-import type { Stock } from 'src/Models'
+import type { Stock } from 'src/models'
 import {
   useDeleteStockMutation,
   useGetStocksQuery,
@@ -230,16 +230,16 @@ const HistoryStocksTable = (): JSX.Element => {
       width: '10%',
       render: (row) => {
         const average = row?.averagePrice ?? 0
-        const isPositive = row.sellPrice > average
+        const type =
+          row.sellPrice === average ? 'warning' : row.sellPrice > average ? 'success' : 'error'
         return (
           <>
-            {row.status === 'Sell' ? (
-              <Label type={isPositive ? 'success' : 'error'} fontSize={14}>
-                {convertToDecimal(100 - (average / row.sellPrice) * 100)}%
-              </Label>
-            ) : (
-              <Label type='warning'>0</Label>
-            )}
+            <Label type={type} fontSize={14}>
+              {row.status === 'Sell'
+                ? convertToDecimal(((row.sellPrice - average) / average) * 100)
+                : 0}
+              %
+            </Label>
           </>
         )
       }
@@ -250,17 +250,12 @@ const HistoryStocksTable = (): JSX.Element => {
       width: '10%',
       render: (row) => {
         const average = row?.averagePrice ?? 0
-        const isPositive = row.sellPrice > average
+        const type =
+          row.sellPrice === average ? 'warning' : row.sellPrice > average ? 'success' : 'error'
         return (
-          <>
-            {row.status === 'Sell' ? (
-              <Label type={isPositive ? 'success' : 'error'} fontSize={14}>
-                {formatVND((row.sellPrice - average) * row.volume)}
-              </Label>
-            ) : (
-              <Label type='warning'>0</Label>
-            )}
-          </>
+          <Label type={type} fontSize={14}>
+            {row.status === 'Sell' ? formatVND((row.sellPrice - average) * row.volume * 1000) : 0}
+          </Label>
         )
       }
     },

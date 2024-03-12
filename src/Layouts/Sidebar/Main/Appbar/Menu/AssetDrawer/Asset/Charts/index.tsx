@@ -1,8 +1,7 @@
-import React from 'react'
-import StockCharts from './StockCharts'
-import { type Stock } from 'src/Models'
-import SectorChart from './SectorChart'
 import { Box } from '@mui/material'
+import { type Stock } from 'src/models'
+import SectorChart from 'src/layouts/Sidebar/Main/Appbar/Menu/AssetDrawer/Asset/Charts/SectorChart'
+import StockCharts from 'src/layouts/Sidebar/Main/Appbar/Menu/AssetDrawer/Asset/Charts/StockCharts'
 
 const Charts = ({ data }: { data: Stock[] }): JSX.Element => {
   return (

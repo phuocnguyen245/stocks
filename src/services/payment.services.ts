@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWithReAuth } from './baseQuery'
-import type { ResponseType, ResponsePagination, Payments } from '../Models'
+import type { ResponseType, ResponsePagination, Payments } from '../models'
 
 export const PaymentService = createApi({
   reducerPath: 'PaymentService',

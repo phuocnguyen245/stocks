@@ -6,9 +6,9 @@ import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import SearchBar from 'src/components/SearchBar'
 import { onIsLogin, onMdWindow } from 'src/store/slices/stockSlice'
-import DarkModeSwitch from './components/DarkModeSwitch'
-import Languages from './components/Languages'
-import RefreshTime from './components/RefreshTime'
+import DarkModeSwitch from 'src/layouts/Sidebar/Main/Appbar/Header/components/DarkModeSwitch'
+import Languages from 'src/layouts/Sidebar/Main/Appbar/Header/components/Languages'
+import RefreshTime from 'src/layouts/Sidebar/Main/Appbar/Header/components/RefreshTime'
 
 export interface HeaderProps {
   darkMode: 'dark' | 'light'

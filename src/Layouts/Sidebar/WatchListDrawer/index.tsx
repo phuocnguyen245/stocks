@@ -15,7 +15,7 @@ import {
   useTheme
 } from '@mui/material'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { type Board, type WatchList } from 'src/Models'
+import { type Board, type WatchList } from 'src/models'
 import { useAlert, useModals } from 'src/hooks'
 import { useGetWatchListQuery } from 'src/services/stocks.services'
 import { watchListWidth } from '..'

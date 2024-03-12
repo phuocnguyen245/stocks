@@ -1,6 +1,6 @@
 import { Autocomplete, TextField, type TextFieldVariants, type TextFieldProps } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
-import type { Board } from 'src/Models'
+import type { Board } from 'src/models'
 import { useDebounce } from 'src/hooks'
 import { useGetBoardQuery } from 'src/services/stocks.services'
 

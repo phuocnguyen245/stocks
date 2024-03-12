@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
 import { Drawer, IconButton, Typography, styled, useTheme } from '@mui/material'
-import AssetFooter from 'src/Layouts/Sidebar/Main/Appbar/Menu/AssetFooter'
+import { memo } from 'react'
+import AssetFooter from 'src/layouts/Sidebar/Main/Appbar/Menu/AssetDrawer/Asset'
 import { useAppSelector } from 'src/store'
 
 interface AssetDrawerProps {
@@ -34,7 +35,7 @@ const AssetDrawer = ({ open, toggle }: AssetDrawerProps): JSX.Element => {
   )
 }
 
-export default AssetDrawer
+export default memo(AssetDrawer)
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',

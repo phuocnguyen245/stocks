@@ -16,7 +16,7 @@ import moment, { type MomentInput } from 'moment'
 import { memo, useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react'
 import { useForm } from 'react-hook-form'
 import { FormattedMessage } from 'react-intl'
-import type { Stock, Target } from 'src/Models'
+import type { Stock, Target } from 'src/models'
 import InfinitySelectCode from 'src/components/InfilitySelectCode'
 import { Button, Select } from 'src/components/MUIComponents'
 import { useAlert } from 'src/hooks'
@@ -201,6 +201,8 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
   }
 
   useEffect(() => {
+    console.log(sellStock, sellStock?.availableVol)
+
     watch(({ volume, orderPrice }) => {
       const targetVolume = volume ?? 0
       const targetPrice = orderPrice ?? 0

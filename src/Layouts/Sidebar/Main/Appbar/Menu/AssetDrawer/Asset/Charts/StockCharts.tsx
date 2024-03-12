@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
-import { useEffect, useState } from 'react'
-import type { Stock } from 'src/Models'
+import { memo, useEffect, useState } from 'react'
+import type { Stock } from 'src/models'
 import Chart from 'src/components/Chart'
 import { convertToDecimal } from 'src/utils'
 interface IChartData {
@@ -61,7 +61,6 @@ const StockCharts = ({ data }: { data: Stock[] }): JSX.Element => {
     ]
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any
-  console.log(chartData)
 
   return (
     <Box
@@ -77,4 +76,4 @@ const StockCharts = ({ data }: { data: Stock[] }): JSX.Element => {
   )
 }
 
-export default StockCharts
+export default memo(StockCharts)
