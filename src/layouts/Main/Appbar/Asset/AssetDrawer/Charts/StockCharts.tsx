@@ -36,7 +36,8 @@ const StockCharts = ({ data }: { data: Stock[] }): JSX.Element => {
 
   const options = {
     chart: {
-      type: 'pie'
+      type: 'pie',
+      height: 300
     },
     title: {
       text: 'Stocks',

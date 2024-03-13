@@ -111,7 +111,7 @@ const Select = ({
             ))}
             {isFetching && (
               <Box display='flex' justifyContent='center' marginTop='12px' marginBottom='12px'>
-                <CircularProgress size={32} disableShrink thickness={3} />
+                <CircularProgress size={32} disableShrink thickness={3} color='primary' />
               </Box>
             )}
           </MUISelect>

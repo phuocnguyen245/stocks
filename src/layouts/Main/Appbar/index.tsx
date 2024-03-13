@@ -5,9 +5,9 @@ import {
   styled,
   type AppBarProps as MuiAppBarProps
 } from '@mui/material'
-import Header from 'src/layouts/Sidebar/Main/Appbar/Header'
-import { watchListWidth } from 'src/layouts/Sidebar/'
-import Menu from 'src/layouts/Sidebar/Main/Appbar/Menu'
+import Header from 'src/layouts/Main/Appbar/Header'
+import { watchListWidth } from 'src/layouts'
+import Menu from 'src/layouts/Main/Appbar/Menu'
 
 interface AppBarProps extends MuiAppBarProps {
   widthAndMargin: {

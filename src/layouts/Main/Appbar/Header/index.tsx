@@ -1,14 +1,15 @@
 import { Logout } from '@mui/icons-material'
-import { Box, Grid, IconButton, Paper, styled, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Grid, Paper, styled, useMediaQuery, useTheme } from '@mui/material'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
+import { FormattedMessage } from 'react-intl'
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ConfirmPopup, SearchBar } from 'src/components'
+import DarkModeSwitch from 'src/layouts/Main/Appbar/Header/components/DarkModeSwitch'
+import Languages from 'src/layouts/Main/Appbar/Header/components/Languages'
+import RefreshTime from 'src/layouts/Main/Appbar/Header/components/RefreshTime'
 import { onIsLogin, onMdWindow } from 'src/store/slices/stockSlice'
-import DarkModeSwitch from 'src/layouts/Sidebar/Main/Appbar/Header/components/DarkModeSwitch'
-import Languages from 'src/layouts/Sidebar/Main/Appbar/Header/components/Languages'
-import RefreshTime from 'src/layouts/Sidebar/Main/Appbar/Header/components/RefreshTime'
 
 export interface HeaderProps {
   darkMode: 'dark' | 'light'
@@ -128,7 +129,7 @@ const Header = ({
               <ConfirmPopup
                 onConfirm={onLogout}
                 icon={<Logout color='primary' />}
-                title='Do you want to Logout?'
+                title={<FormattedMessage id='text.are.you.sure.want.to.logout' />}
               />
             </Grid>
           )}

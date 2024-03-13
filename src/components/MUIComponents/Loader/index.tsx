@@ -24,7 +24,7 @@ const Loader = (): JSX.Element => {
       top={0}
       bgcolor={theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.5)'}
     >
-      <CircularProgress disableShrink thickness={3} />
+      <CircularProgress disableShrink thickness={3} color='primary' />
     </Box>
   )
 }

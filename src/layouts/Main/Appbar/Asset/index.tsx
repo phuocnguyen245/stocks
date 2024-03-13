@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
 import { Box, Drawer, IconButton, Typography, styled, useTheme } from '@mui/material'
 import { memo } from 'react'
-import AssetFooter from 'src/layouts/Sidebar/Main/Appbar/Asset/AssetDrawer'
+import AssetContent from 'src/layouts/Main/Appbar/Asset/AssetDrawer'
 import { useAppSelector } from 'src/store'
 
 interface AssetProps {
@@ -31,7 +31,7 @@ const Asset = ({ open, toggle }: AssetProps): JSX.Element => {
           </Typography>
           <IconButton>{theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}</IconButton>
         </DrawerHeader>
-        <AssetFooter open={open} />
+        <AssetContent open={open} />
       </Box>
     </Drawer>
   )

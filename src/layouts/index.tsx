@@ -8,8 +8,8 @@ import vi from 'src/locales/vi.json'
 import { useAppSelector } from 'src/store'
 import { setMode, setOpenSidebar } from 'src/store/slices/stockSlice'
 import themeProvider from 'src/styles/theme'
-import MainComponents from 'src/layouts/Sidebar/Main'
-import WatchListDrawer from 'src/layouts/Sidebar/WatchListDrawer'
+import MainComponents from 'src/layouts/Main'
+import WatchListDrawer from 'src/layouts/WatchListDrawer'
 export const watchListWidth = 280
 export const menuWidth = 240
 

@@ -2,8 +2,9 @@ import { Menu as MenuIcon } from '@mui/icons-material'
 import { Box, IconButton } from '@mui/material'
 import { useModals } from 'src/hooks'
 import { useAppSelector } from 'src/store'
-import AssetDrawer from 'src/layouts/Sidebar/Main/Appbar/Asset'
-import MenuDrawer from 'src/layouts/Sidebar/Main/Appbar/Menu/MenuDrawer'
+import AssetDrawer from 'src/layouts/Main/Appbar/Asset'
+import MenuDrawer from 'src/layouts/Main/Appbar/Menu/MenuDrawer'
+import SearchModal from 'src/layouts/Main/Appbar/SearchModal'
 
 interface MenuProps {
   open: boolean
@@ -22,6 +23,7 @@ const Menu = ({
   const { isMdWindow, isLogin } = useAppSelector((state) => state.Stocks)
 
   const { open: openAsset, toggle: onToggleAsset, hide: onHideAsset } = useModals()
+  const { open: openSearch, toggle: onToggleSearch, hide: onHideSearch } = useModals()
 
   const onOpenDrawer = (): void => {
     return onOpenMenu()
@@ -51,8 +53,12 @@ const Menu = ({
         onHideAsset={onHideAsset}
         openWatchList={openWatchList}
         onOpenWatchList={onOpenWatchList}
+        openSearch={openSearch}
+        onHideSearch={onHideSearch}
+        onToggleSearch={onToggleSearch}
       />
       <AssetDrawer open={openAsset} toggle={onToggleAsset} />
+      <SearchModal open={openSearch} toggle={onToggleSearch} />
     </>
   )
 }

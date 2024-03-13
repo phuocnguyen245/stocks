@@ -16,7 +16,7 @@ const LoadingButton = ({ isLoading, ...props }: ButtonProps): JSX.Element => {
     <Button {...props} style={{ opacity: isLoading ? 0.5 : 1 }} disabled={isLoading}>
       {isLoading && (
         <CircularProgress
-          color='inherit'
+          color='primary'
           sx={{
             width: '26px !important',
             height: '26px !important',

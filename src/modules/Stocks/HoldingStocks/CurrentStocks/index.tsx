@@ -296,7 +296,7 @@ const CurrentStocks = (): JSX.Element => {
     },
     {
       name: '',
-      title: <FormattedMessage id='Delete' />,
+      title: <FormattedMessage id='label.delete' />,
       align: 'center',
       width: '100px',
       render: (row) => {

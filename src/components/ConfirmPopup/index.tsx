@@ -1,10 +1,11 @@
 import { Delete } from '@mui/icons-material'
 import { Box, Button, CircularProgress, IconButton, Tooltip, Typography } from '@mui/material'
 import { type ReactNode, useEffect, useState, type ReactElement } from 'react'
+import { FormattedMessage } from 'react-intl'
 import { useModals } from 'src/hooks'
 interface ConfirmPopupProps {
   row?: unknown
-  title?: string
+  title?: ReactNode
   icon?: ReactNode
   isLoading?: boolean
   isSuccess?: boolean
@@ -54,17 +55,19 @@ const ConfirmPopup = ({
             }}
           >
             <Button variant='outlined' onClick={toggle} sx={{ color: '#fff', borderColor: '#fff' }}>
-              No
+              <FormattedMessage id='label.no' />
             </Button>
             <Button onClick={handleConfirm} variant='contained'>
               <Box display='flex' alignItems='center' gap={1} flexWrap='nowrap'>
                 {isLoadingDelete && (
                   <CircularProgress
-                    color='info'
+                    color='primary'
                     sx={{ height: '28px !important', width: '28px !important' }}
                   />
                 )}
-                <Typography>Yes</Typography>
+                <Typography>
+                  <FormattedMessage id='label.yes' />
+                </Typography>
               </Box>
             </Button>
           </Box>

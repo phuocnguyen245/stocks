@@ -1,7 +1,7 @@
 import { Box, type Theme, useTheme } from '@mui/material'
 import { type Stock } from 'src/models'
-import SectorChart from 'src/layouts/Sidebar/Main/Appbar/Asset/AssetDrawer/Charts/SectorChart'
-import StockCharts from 'src/layouts/Sidebar/Main/Appbar/Asset/AssetDrawer/Charts/StockCharts'
+import SectorChart from 'src/layouts/Main/Appbar/Asset/AssetDrawer/Charts/SectorChart'
+import StockCharts from 'src/layouts/Main/Appbar/Asset/AssetDrawer/Charts/StockCharts'
 
 const Charts = ({ data }: { data: Stock[] }): JSX.Element => {
   const theme: Theme = useTheme()

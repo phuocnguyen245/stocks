@@ -105,7 +105,7 @@ const FilterStocks = (): JSX.Element => {
       <Helmet title='title.filter.stocks' />
       <Container>
         <Box height='100%'>
-          <Grid container pt={13} columnSpacing={1} rowSpacing={1}>
+          <Grid container pt={12} columnSpacing={1} rowSpacing={1}>
             <Grid item xs={6} sm={6} md={6} lg={4}>
               <List
                 sx={{
@@ -130,7 +130,7 @@ const FilterStocks = (): JSX.Element => {
                         }}
                         width='100%'
                         px={3}
-                        py={1}
+                        py={0.5}
                         display='flex'
                         justifyContent='space-between'
                         alignItems='center'
@@ -150,7 +150,10 @@ const FilterStocks = (): JSX.Element => {
                   py: 0,
                   borderRadius: 1,
                   width: '100%',
-                  boxShadow: 2
+                  boxShadow: 2,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center'
                 }}
               >
                 {technicalList.map((item) => {
@@ -160,7 +163,7 @@ const FilterStocks = (): JSX.Element => {
                       key={item}
                       sx={{
                         width: '100%',
-                        height: '40px',
+                        height: '28px',
                         px: 3
                       }}
                     >
@@ -217,7 +220,8 @@ const FilterStocks = (): JSX.Element => {
                           ? theme.palette.mode === 'dark'
                             ? 'grey.500'
                             : '#ebabef'
-                          : 'transparent'
+                          : 'transparent',
+                      py: 0.5
                     }}
                     onClick={() => onFilterLevel(item)}
                   >

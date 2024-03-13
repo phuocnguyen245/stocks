@@ -15,7 +15,7 @@ import {
 } from '@mui/material'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useAlert } from 'src/hooks'
-import { watchListWidth } from 'src/layouts/Sidebar'
+import { watchListWidth } from 'src/layouts'
 import { type Board, type WatchList } from 'src/models'
 import { useGetWatchListQuery } from 'src/services/stocks.services'
 

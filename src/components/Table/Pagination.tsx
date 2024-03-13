@@ -42,6 +42,7 @@ const Pagination = ({ pagination, totalItems, onSetPagination }: PaginationProps
         rowsPerPageOptions={[5, 10, 25, 30]}
         showLastButton={!isMdWindow}
         showFirstButton={!isMdWindow}
+        component={Box}
       />
     </Box>
   )

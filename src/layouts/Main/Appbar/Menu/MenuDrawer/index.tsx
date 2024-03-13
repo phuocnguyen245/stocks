@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   AttachMoney,
   CandlestickChart,
@@ -8,77 +9,44 @@ import {
   Logout,
   Menu,
   Payment,
+  Search,
   ShowChart
 } from '@mui/icons-material'
 import { Box, Divider, Drawer, Grid, Typography, styled } from '@mui/material'
-import { Fragment, useRef } from 'react'
+import { log } from 'console'
+import { Fragment, Key, useCallback, useMemo, useRef } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { useLocation, useNavigate } from 'react-router'
-import useClickOutside from 'src/hooks/useClickOutside'
-import { useAppSelector } from 'src/store'
-import { menuWidth } from 'src/layouts/Sidebar'
 import { ConfirmPopup } from 'src/components'
+import useClickOutside from 'src/hooks/useClickOutside'
+import { menuWidth } from 'src/layouts'
+import { useAppSelector } from 'src/store'
 
 interface MenuDrawerProps {
   open: boolean
   openAsset: boolean
+  openSearch: boolean
   openWatchList: boolean
   toggle: () => void
   onHideMenu: () => void
   onHideAsset: () => void
+  onHideSearch: () => void
   onToggleAsset: () => void
+  onToggleSearch: () => void
   onOpenWatchList: () => void
 }
-
-const routes = [
-  {
-    icons: (color: never) => <ShowChart sx={{ color, width: 28, height: 28 }} />,
-    name: 'title.stocks',
-    url: '/stocks',
-    key: 'stocks'
-  },
-  {
-    icons: (color: never) => <History sx={{ color, width: 28, height: 28 }} />,
-    name: 'title.history.stocks',
-    url: '/history',
-    key: 'history'
-  },
-  {
-    icons: (color: never) => <FilterAlt sx={{ color, width: 28, height: 28 }} />,
-    name: 'title.filter.stocks',
-    url: '/filters',
-    key: 'filters'
-  },
-  {
-    icons: (color: never) => <CandlestickChart sx={{ color, width: 28, height: 28 }} />,
-    name: 'title.charts',
-    url: '/charts/vnindex',
-    key: 'charts'
-  },
-  {
-    icons: (color: never) => <Payment sx={{ color, width: 28, height: 28 }} />,
-    name: 'title.payments',
-    url: '/payments',
-    key: 'payments'
-  },
-  {
-    icons: (color: never) => <Checklist sx={{ color, width: 28, height: 28 }} />,
-    name: 'title.watchlist'
-  },
-  {
-    icons: (color: never) => <AttachMoney sx={{ color, width: 28, height: 28 }} />,
-    name: 'title.asset'
-  }
-]
 
 const MenuDrawer = ({
   open,
   openAsset,
+  openSearch,
   openWatchList,
   toggle,
   onHideMenu,
-  onToggleAsset,
   onHideAsset,
+  onHideSearch,
+  onToggleAsset,
+  onToggleSearch,
   onOpenWatchList
 }: MenuDrawerProps): JSX.Element => {
   const navigate = useNavigate()
@@ -94,21 +62,76 @@ const MenuDrawer = ({
     }
   })
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const routes: any = useMemo(
+    () => [
+      isMdWindow && {
+        icons: (color: never) => <Search sx={{ color, width: 28, height: 28 }} />,
+        name: 'label.search'
+      },
+      {
+        icons: (color: never) => <ShowChart sx={{ color, width: 28, height: 28 }} />,
+        name: 'title.stocks',
+        url: '/stocks',
+        key: 'stocks'
+      },
+      {
+        icons: (color: never) => <History sx={{ color, width: 28, height: 28 }} />,
+        name: 'title.history.stocks',
+        url: '/history',
+        key: 'history'
+      },
+      {
+        icons: (color: never) => <FilterAlt sx={{ color, width: 28, height: 28 }} />,
+        name: 'title.filter.stocks',
+        url: '/filters',
+        key: 'filters'
+      },
+      {
+        icons: (color: never) => <CandlestickChart sx={{ color, width: 28, height: 28 }} />,
+        name: 'title.charts',
+        url: '/charts/vnindex',
+        key: 'charts'
+      },
+      {
+        icons: (color: never) => <Payment sx={{ color, width: 28, height: 28 }} />,
+        name: 'title.payments',
+        url: '/payments',
+        key: 'payments'
+      },
+      {
+        icons: (color: never) => <Checklist sx={{ color, width: 28, height: 28 }} />,
+        name: 'title.watchlist'
+      },
+      {
+        icons: (color: never) => <AttachMoney sx={{ color, width: 28, height: 28 }} />,
+        name: 'title.asset'
+      }
+    ],
+    [isMdWindow]
+  )
+
   const onOpen = (url?: string, name?: string): void => {
     if (url) {
       navigate(url)
     }
-    if (name) {
-      if (name === 'title.watchlist') {
-        onOpenWatchList()
-        if (openAsset) {
-          onHideAsset()
-        }
-      } else if (name === 'title.asset') {
-        onToggleAsset()
-        if (openWatchList) {
-          onOpenWatchList()
-        }
+    if (name === 'title.watchlist') {
+      onOpenWatchList()
+      if (openAsset) {
+        onHideAsset()
+      }
+      if (openSearch) {
+        onHideSearch()
+      }
+    } else if (name === 'title.asset') {
+      onToggleAsset()
+      if (openSearch) {
+        onHideSearch()
+      }
+    } else if (name === 'label.search') {
+      onToggleSearch()
+      if (openAsset) {
+        onHideAsset()
       }
     }
     isMdWindow && toggle()
@@ -120,6 +143,18 @@ const MenuDrawer = ({
     localStorage.removeItem('tokens')
     onHideMenu()
   }
+
+  const renderMenuIcon = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (item: any, isRoute: boolean, isAssetNotRouter: boolean) => {
+      if (routes?.length && item?.icons) {
+        return item?.url
+          ? item?.icons(isRoute ? ('grey.100' as never) : ('primary.main' as never))
+          : item?.icons(isAssetNotRouter ? ('primary.main' as never) : ('grey.100' as never))
+      }
+    },
+    [routes, isMdWindow]
+  )
 
   return (
     <Drawer
@@ -160,16 +195,14 @@ const MenuDrawer = ({
             }}
           >
             <Grid item flex={1}>
-              {routes.map((item) => {
+              {routes.filter(Boolean).map((item: any) => {
                 const isRoute = item?.url && location.pathname.split('/').includes(item.key)
-                const isWatchList = item?.name === 'title.watchlist'
-                const isAsset = item?.name === 'title.asset'
+                const isWatchList = item?.name === 'title.watchlist' && openWatchList
+                const isAsset = item?.name === 'title.asset' && openAsset
                 let styles = {}
                 if (isRoute) {
                   styles = { bgcolor: 'primary.main', color: 'grey.100' }
-                } else if (isWatchList && openWatchList) {
-                  styles = { bgcolor: 'primary.main', color: 'grey.100' }
-                } else if (isAsset && openAsset) {
+                } else if ((isWatchList && openWatchList) || (isAsset && openAsset)) {
                   styles = { bgcolor: 'primary.main', color: 'grey.100' }
                 }
                 return (
@@ -186,22 +219,12 @@ const MenuDrawer = ({
                         transition: 'all .15s ease-in-out',
                         ...styles
                       }}
-                      onClick={() => onOpen(item.url, item.name)}
+                      onClick={() => onOpen(item.url, item?.name)}
                     >
-                      {item?.url &&
-                        !isWatchList &&
-                        item.icons(isRoute ? ('grey.100' as never) : ('primary.main' as never))}
-                      {!item?.url &&
-                        isWatchList &&
-                        item.icons(
-                          openWatchList ? ('grey.100' as never) : ('primary.main' as never)
-                        )}
-                      {!item?.url &&
-                        isAsset &&
-                        item.icons(openAsset ? ('grey.100' as never) : ('primary.main' as never))}
+                      {renderMenuIcon(item, Boolean(isRoute), !isAsset && !isWatchList)}
                       {open && (
                         <Typography variant='h6' fontWeight={600} whiteSpace='nowrap'>
-                          <FormattedMessage id={item.name} />
+                          <FormattedMessage id={item.name ?? ''} />
                         </Typography>
                       )}
                     </Grid>
@@ -213,7 +236,10 @@ const MenuDrawer = ({
 
             <Grid item>
               <Divider />
-              <ConfirmPopup onConfirm={onLogout}>
+              <ConfirmPopup
+                onConfirm={onLogout}
+                title={<FormattedMessage id='text.are.you.sure.want.to.logout' />}
+              >
                 <Box
                   sx={{
                     display: 'flex',

@@ -1,10 +1,9 @@
 import { Box, useTheme } from '@mui/material'
+import type Highcharts from 'highcharts'
 import { memo, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
-import { type Stock } from 'src/models'
 import { Chart } from 'src/components'
-import { convertToDecimal } from 'src/utils'
-import type Highcharts from 'highcharts'
+import { type Stock } from 'src/models'
 
 interface IChartData {
   name: string
@@ -31,13 +30,12 @@ const SectorChart = ({ data }: { data: Stock[] }): JSX.Element => {
         totalAssets += value
       })
       const sectorData: IChartData[] = []
-      Object.values(sectors).forEach((sector) => {
-        sectorData.push(
-          ...sector.map((stock) => ({
-            name: intl.formatMessage({ id: `label.${stock.name}` }),
-            y: convertToDecimal((stock.y / totalAssets) * 100)
-          }))
-        )
+
+      Object.values(sectors).forEach((sector, index) => {
+        sectorData.push({
+          name: intl.formatMessage({ id: `label.${Object.keys(sectors)[index]}` }),
+          y: sector.reduce((sum, sector) => sum + sector.y, 0)
+        })
       })
       return sectorData
     }
@@ -47,13 +45,16 @@ const SectorChart = ({ data }: { data: Stock[] }): JSX.Element => {
 
   const options: Highcharts.Options = {
     chart: {
-      type: 'pie'
+      type: 'pie',
+      height: 300
     },
     title: {
       text: 'Sectors',
       style: {
         fontSize: '20px'
-      }
+      },
+      align: 'center',
+      floating: true
     },
     tooltip: {
       pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>',
@@ -84,7 +85,8 @@ const SectorChart = ({ data }: { data: Stock[] }): JSX.Element => {
     credits: {
       enabled: false
     }
-  }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any
 
   return (
     <Box

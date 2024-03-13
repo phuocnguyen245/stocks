@@ -63,6 +63,9 @@
   "label.delete": "Xoá",
   "label.profit.loss.portfolio": "Rate danh mục",
   "label.profit.loss.asset": "Rate Tài sản",
+  "label.no": "Không",
+  "label.yes": "Có",
+  "label.search": "Tìm kiếm",
 
   "label._TVSPT": "Thép",
   "label._BDS": "BĐS",
@@ -82,5 +85,6 @@
 
   "text.dont.have.an.account": "Chưa có tài khoản",
   "text.have.an.account": "Đã có tài khoản",
-  "text.which.status.do.you.want.to.create": "Bạn muốn tạo trạng thái nào?"
+  "text.which.status.do.you.want.to.create": "Bạn muốn tạo trạng thái nào?",
+  "text.are.you.sure.want.to.logout": "Bạn có muốn đăng xuất không?"
 }
