@@ -1,7 +1,7 @@
 import { AppBar, Box, Paper, Tab, Tabs } from '@mui/material'
 import React, { memo, useMemo, useState, type ReactNode } from 'react'
 import { useLocation, useNavigate } from 'react-router'
-import { watchListWidth } from 'src/layouts'
+import { menuWidth } from 'src/layouts'
 import { useAppSelector } from 'src/store'
 
 interface Components {
@@ -75,7 +75,7 @@ const SwipeableTabs = ({ components }: SwipeableTabsProps): JSX.Element => {
         }}
         position='absolute'
         zIndex={1000}
-        width={`calc(100vw - ${!isMdWindow ? (isOpenSidebar ? watchListWidth : 0) : 0}px)`}
+        width={`calc(100vw - ${!isMdWindow ? (isOpenSidebar ? menuWidth : 60) : 0}px)`}
         top={isMdWindow ? 52 : 64}
         bgcolor='text.primary'
       >

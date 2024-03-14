@@ -105,7 +105,12 @@ const FilterStocks = (): JSX.Element => {
       <Helmet title='title.filter.stocks' />
       <Container>
         <Box height='100%'>
-          <Grid container pt={12} columnSpacing={1} rowSpacing={1}>
+          <Grid
+            container
+            pt={isLg ? 10 : 12}
+            columnSpacing={isLg ? 1 : 2}
+            rowSpacing={isLg ? 2 : 1}
+          >
             <Grid item xs={6} sm={6} md={6} lg={4}>
               <List
                 sx={{
@@ -153,7 +158,8 @@ const FilterStocks = (): JSX.Element => {
                   boxShadow: 2,
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  alignItems: 'center'
                 }}
               >
                 {technicalList.map((item) => {
@@ -168,7 +174,7 @@ const FilterStocks = (): JSX.Element => {
                       }}
                     >
                       {isIncludes ? (
-                        <Grid container justifyContent='space-between'>
+                        <Grid container justifyContent='space-between' alignItems='center'>
                           <Grid item flex={1}>
                             <Slider
                               name={item}

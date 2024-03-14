@@ -47,6 +47,8 @@ const Login = Loader(lazy(async () => await import('src/modules/Auth/Login')))
 const Register = Loader(lazy(async () => await import('src/modules/Auth/Register')))
 const ForgotPassword = Loader(lazy(async () => await import('src/modules/Auth/ForgotPassword')))
 const EnterEmail = Loader(lazy(async () => await import('src/modules/Auth/EnterEmail')))
+const Account = Loader(lazy(async () => await import('src/modules/Account')))
+
 const Status404 = Loader(lazy(async () => await import('src/modules/Status/404')))
 
 const routes: RouteObject[] = [
@@ -97,6 +99,10 @@ const routes: RouteObject[] = [
       {
         path: '/payments',
         element: <PrivateRoute element={Payment} />
+      },
+      {
+        path: '/account',
+        element: <PrivateRoute element={Account} />
       },
       {
         path: '',

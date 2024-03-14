@@ -11,7 +11,7 @@ import { useParams } from 'react-router-dom'
 import { useGetStockStatisticQuery } from 'src/services/stocks.services'
 import { useAppSelector } from 'src/store'
 import ChartComponent from 'src/modules/Charts/components/ChartComponent'
-import { watchListWidth } from 'src/layouts/'
+import { menuWidth } from 'src/layouts/'
 import Helmet from 'src/components/Helmet'
 
 Indicators(Highcharts)
@@ -25,7 +25,7 @@ const StockChart = (): JSX.Element => {
   const { code } = useParams()
   const mode = localStorage.getItem('mode')
 
-  const { isOpenSidebar } = useAppSelector((state) => state.Stocks)
+  const { isOpenSidebar, isMdWindow } = useAppSelector((state) => state.Stocks)
 
   const { data: stockStatistic } = useGetStockStatisticQuery({ code }, { skip: !code })
 
@@ -39,25 +39,14 @@ const StockChart = (): JSX.Element => {
   }, [stockStatistic])
 
   useEffect(() => {
-    const width = (isOpenSidebar as boolean)
-      ? window.innerWidth - watchListWidth
-      : window.innerWidth
-    const height = window.innerHeight - 112
-    if (width && height) {
-      setWindowSize({ width, height })
-    }
-  }, [isOpenSidebar])
-
-  useEffect(() => {
     const onResize = (): void => {
-      const width = (isOpenSidebar as boolean)
-        ? window.innerWidth - watchListWidth
-        : window.innerWidth
+      const width = window.innerWidth
       const height = window.innerHeight - 112
       if (width && height) {
         setWindowSize({ width, height })
       }
     }
+    onResize()
     window.addEventListener('resize', onResize)
 
     return (): void => {
@@ -74,6 +63,7 @@ const StockChart = (): JSX.Element => {
       })),
     [data]
   )
+  console.log(!isMdWindow ? (isOpenSidebar ? menuWidth : 60) : 0)
 
   const options: Highcharts.Options = {
     title: {
@@ -104,21 +94,18 @@ const StockChart = (): JSX.Element => {
       headerShape: 'callout',
       borderWidth: 0,
       shadow: false,
+
       positioner: function (width, height, point) {
-        const chart = this.chart
         let position
 
         if (point.isHeader) {
           position = {
-            x: Math.max(
-              chart.plotLeft,
-              Math.min(point.plotX + chart.plotLeft - width / 2, chart.chartWidth - width - 50)
-            ),
+            x: Math.max(60),
             y: point.plotY
           }
         } else {
           position = {
-            x: point.series.chart.plotLeft - 100,
+            x: 60,
             y: 0
           }
         }
@@ -221,22 +208,9 @@ const StockChart = (): JSX.Element => {
         index: 20
       }
     ],
-    responsive: {
-      rules: [
-        {
-          condition: {
-            maxWidth: 800
-          },
-          chartOptions: {
-            rangeSelector: {
-              inputEnabled: false
-            }
-          }
-        }
-      ]
-    },
+
     chart: {
-      width: windowSize.width,
+      width: windowSize.width - (!isMdWindow ? (isOpenSidebar ? menuWidth : 60) : 0),
       height: windowSize.height
     },
     plotOptions: {
@@ -250,6 +224,9 @@ const StockChart = (): JSX.Element => {
           }
         }
       }
+    },
+    credits: {
+      enabled: false
     }
   }
 

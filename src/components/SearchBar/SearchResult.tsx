@@ -88,9 +88,9 @@ const SearchResult = ({ setValue, isTextField, search, isMd }: SearchResultProps
     <Box
       bgcolor={theme.palette.mode === 'dark' ? '#3c3c3c' : '#f9f3fe'}
       borderRadius={2}
-      width={isMd ? '100%' : '414px'}
+      width={isMd ? '100%' : '400px'}
       maxWidth={isMd ? '100%' : '400px'}
-      maxHeight={isMd ? '414px' : '414px'}
+      maxHeight={'70vh'}
       sx={{
         overflowY: 'auto',
         overflowX: 'hidden'

@@ -116,21 +116,21 @@ const MenuDrawer = ({
     }
     if (name === 'title.watchlist') {
       onOpenWatchList()
-      if (openAsset) {
-        onHideAsset()
-      }
-      if (openSearch) {
-        onHideSearch()
-      }
+      onHideAsset()
+      onHideSearch()
     } else if (name === 'title.asset') {
       onToggleAsset()
-      if (openSearch) {
-        onHideSearch()
+      onHideSearch()
+      if (openWatchList) {
+        onOpenWatchList()
       }
     } else if (name === 'label.search') {
       onToggleSearch()
       if (openAsset) {
         onHideAsset()
+        if (openWatchList) {
+          onOpenWatchList()
+        }
       }
     }
     isMdWindow && toggle()
@@ -182,7 +182,7 @@ const MenuDrawer = ({
           {open ? <ChevronLeft /> : <Menu />}
         </DrawerHeader>
         <Divider />
-        <Box height='calc(100% - 65px)'>
+        <Box sx={{ height: '100%', overflowY: 'auto', scrollBehavior: 'smooth' }}>
           <Grid
             container
             sx={{

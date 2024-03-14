@@ -18,19 +18,25 @@ const Asset = ({ open, toggle }: AssetProps): JSX.Element => {
       anchor='right'
       variant='persistent'
       sx={{
+        transition: 'all 0.25s ease',
+        height: '100%',
         '& .MuiPaper-root': {
           transition: 'all 0.25s ease',
           width: 340
+        },
+        '& .MuiDrawer-paper': {
+          boxShadow: 3,
+          height: '100%'
         }
       }}
     >
-      <Box>
-        <DrawerHeader onClick={toggle} sx={{ cursor: 'pointer' }}>
-          <Typography pl={2} fontWeight={600}>
-            Assets
-          </Typography>
-          <IconButton>{theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}</IconButton>
-        </DrawerHeader>
+      <DrawerHeader onClick={toggle} sx={{ cursor: 'pointer' }}>
+        <Typography pl={2} fontWeight={600}>
+          Assets
+        </Typography>
+        <IconButton>{theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}</IconButton>
+      </DrawerHeader>
+      <Box sx={{ height: '100%', overflowY: 'auto', scrollBehavior: 'smooth' }}>
         <AssetContent open={open} />
       </Box>
     </Drawer>

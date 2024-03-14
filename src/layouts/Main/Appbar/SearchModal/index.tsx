@@ -16,10 +16,10 @@ const SearchModal = ({ open, toggle }: SearchModalProps): JSX.Element => {
       sx={{
         '& .MuiDialog-container': {
           alignItems: 'flex-start',
-          mt: 10,
           '& .MuiPaper-root': {
             width: '90%',
-            mx: '0',
+            m: '0',
+            top: '10vh',
             '&. .MuiInputBase-root': {
               height: '40px'
             }
@@ -27,9 +27,9 @@ const SearchModal = ({ open, toggle }: SearchModalProps): JSX.Element => {
         }
       }}
     >
-      <Box px={6} py={3.25} position='relative'>
+      <Box px={4.5} py={2} position='relative'>
         <SearchBar />
-        <Box position='absolute' top={3} right={3}>
+        <Box position='absolute' top={0} right={0}>
           <IconButton onClick={toggle}>
             <Close />
           </IconButton>

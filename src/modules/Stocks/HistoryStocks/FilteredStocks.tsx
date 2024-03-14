@@ -120,11 +120,11 @@ const FilteredStocks = ({ onSetPagination }: FilteredStocksProps): JSX.Element =
         maxWidth: '100%',
         mb: 1
       }}
-      rowSpacing={1}
+      rowSpacing={isMdWindow ? 1.5 : 1}
       flexDirection={isMdWindow ? 'column' : 'row'}
     >
       <Grid item>
-        <Grid container columnSpacing={1}>
+        <Grid container columnSpacing={isMdWindow ? 1.5 : 1}>
           <Grid item xs={6}>
             <FormControl
               sx={{ width: isMdWindow ? '100%' : '136px' }}
@@ -171,7 +171,7 @@ const FilteredStocks = ({ onSetPagination }: FilteredStocksProps): JSX.Element =
           width='100%'
         >
           <Grid item xs={isMdWindow ? 12 : 'auto'}>
-            <Grid container columnSpacing={1}>
+            <Grid container columnSpacing={isMdWindow ? 1.5 : 1}>
               <Grid item xs={6}>
                 <DatePicker
                   slotProps={{ textField: { size: 'small', fullWidth: true } }}

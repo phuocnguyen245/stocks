@@ -114,11 +114,7 @@ const WatchListDrawer = ({ open, isLogin, toggle }: WatchListDrawerProps): JSX.E
         </IconButton>
       </DrawerHeader>
       <Divider />
-      <Box
-        sx={{ height: '100%', overflowY: 'auto', scrollBehavior: 'smooth' }}
-        ref={watchListRef}
-        className='watch-list'
-      >
+      <Box sx={{ height: '100%', overflowY: 'auto', scrollBehavior: 'smooth' }} ref={watchListRef}>
         {data.map((item) => (
           <Accordion
             key={item.displayIndex}

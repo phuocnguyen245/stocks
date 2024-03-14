@@ -10,6 +10,7 @@ import DarkModeSwitch from 'src/layouts/Main/Appbar/Header/components/DarkModeSw
 import Languages from 'src/layouts/Main/Appbar/Header/components/Languages'
 import RefreshTime from 'src/layouts/Main/Appbar/Header/components/RefreshTime'
 import { onIsLogin, onMdWindow } from 'src/store/slices/stockSlice'
+import Account from 'src/layouts/Main/Appbar/Header/components/Account'
 
 export interface HeaderProps {
   darkMode: 'dark' | 'light'
@@ -77,6 +78,7 @@ const Header = ({
           width='auto'
           columnSpacing={0.5}
           height='100%'
+          mr={1}
         >
           {isLogin && !isMd && (
             <Grid item>
@@ -107,18 +109,18 @@ const Header = ({
               <RefreshTime />
             </Grid>
           )}
-
           <Grid item>
             <Languages languages={languages} onSetLanguages={onSetLanguages} />
           </Grid>
           <Grid item>
             <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
           </Grid>
-
+          <Grid item>
+            <Account />
+          </Grid>
           {isLogin && !isMd && (
             <Grid
               item
-              mr={1}
               sx={{
                 [theme.breakpoints.down('md')]: {
                   display:
