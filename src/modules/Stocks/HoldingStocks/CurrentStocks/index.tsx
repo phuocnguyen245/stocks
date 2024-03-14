@@ -3,12 +3,12 @@ import { Box, IconButton, TextField, Tooltip, Typography } from '@mui/material'
 import React, { useCallback, useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { useNavigate, type ErrorResponse } from 'react-router-dom'
-import type { LabelType, Stock } from 'src/models'
-import { getBgColor } from 'src/models/constants'
 import { ConfirmPopup, Table } from 'src/components'
 import { Label } from 'src/components/MUIComponents'
 import type { DefaultPagination, TableHeaderBody } from 'src/components/Table/type'
 import { useAlert } from 'src/hooks'
+import type { LabelType, Stock } from 'src/models'
+import { getBgColor } from 'src/models/constants'
 import {
   useDeleteCurrentStockMutation,
   useDeleteStockMutation,
@@ -17,7 +17,6 @@ import {
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { onSellStock, refetchStocks } from 'src/store/slices/stockSlice'
 import { countDays, formatVND, ratio } from 'src/utils'
-import FilteredStocks from '../../HistoryStocks/FilteredStocks'
 
 const CurrentStocks = (): JSX.Element => {
   const navigate = useNavigate()

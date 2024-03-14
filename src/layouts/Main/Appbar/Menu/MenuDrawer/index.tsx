@@ -13,8 +13,7 @@ import {
   ShowChart
 } from '@mui/icons-material'
 import { Box, Divider, Drawer, Grid, Typography, styled } from '@mui/material'
-import { log } from 'console'
-import { Fragment, Key, useCallback, useMemo, useRef } from 'react'
+import { Fragment, useCallback, useMemo, useRef } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { useLocation, useNavigate } from 'react-router'
 import { ConfirmPopup } from 'src/components'
