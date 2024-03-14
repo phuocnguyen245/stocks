@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi } from '@reduxjs/toolkit/query/react'
-import type { ResponseType, User, UserWithToken } from '../models'
+import type { ResponseType, User, UserWithToken } from 'src/models'
 import { baseQueryWithReAuth } from './baseQuery'
 
 export const UserService = createApi({

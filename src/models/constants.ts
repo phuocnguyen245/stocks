@@ -1,4 +1,4 @@
-import { type LabelType } from '.'
+import { type LabelType } from 'src/models'
 const getColor = (type: LabelType): string => {
   const hexColors = {
     success: ' #f8fff9',

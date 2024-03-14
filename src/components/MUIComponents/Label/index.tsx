@@ -1,6 +1,6 @@
 import { Typography, type TypographyProps } from '@mui/material'
-import { type LabelType } from '../../../models'
-import { getBgColor, getColor } from '../../../models/constants'
+import { type LabelType } from 'src/models'
+import { getBgColor, getColor } from 'src/models/constants'
 interface LabelProps extends TypographyProps {
   type?: LabelType
 }

@@ -9,7 +9,7 @@ import type {
   Indicator,
   Board,
   RecommendedStocks
-} from '../models'
+} from 'src/models'
 
 export const StockService = createApi({
   reducerPath: 'StockService',
