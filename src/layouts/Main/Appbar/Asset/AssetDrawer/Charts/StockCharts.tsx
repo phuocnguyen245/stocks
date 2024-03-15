@@ -1,40 +1,23 @@
-import { Box, useTheme } from '@mui/material'
-import { memo, useEffect, useState } from 'react'
-import type { Stock } from 'src/models'
+import { Box } from '@mui/material'
+import type Highcharts from 'highcharts'
+import { memo, useMemo } from 'react'
 import Chart from 'src/components/Chart'
-import { convertToDecimal } from 'src/utils'
+
 interface IChartData {
   name: string
   y: number
 }
 
-const StockCharts = ({ data }: { data: Stock[] }): JSX.Element => {
-  const theme = useTheme()
-  const [chartData, setChartData] = useState<IChartData[]>([])
-
-  useEffect(() => {
-    const totalAsset = data.reduce((acc, cur) => acc + (cur.averagePrice ?? 0) * cur.volume, 0)
-
-    const stocks: IChartData[] = []
-    if (data.length) {
-      data.forEach((stock: Stock) => {
-        stocks.push({
-          name: stock.code,
-          y: convertToDecimal((((stock.averagePrice ?? 0) * stock.volume) / totalAsset) * 100)
-        })
-      })
-      setChartData(stocks)
-    } else {
-      setChartData([
-        {
-          name: 'Cash',
-          y: 100
-        }
-      ])
+const StockCharts = ({ data }: { data: IChartData[] }): JSX.Element => {
+  const convertData = useMemo(() => {
+    if (data.length > 0) {
+      return data.map((item) => ({
+        ...item
+      }))
     }
   }, [data])
 
-  const options = {
+  const options: Highcharts.Options = {
     chart: {
       type: 'pie',
       height: 300
@@ -65,21 +48,21 @@ const StockCharts = ({ data }: { data: Stock[] }): JSX.Element => {
       {
         name: 'Percentage',
         colorByPoint: true,
-        data: chartData
+        data: convertData,
+        type: 'pie' as never
       }
     ],
     credits: {
       enabled: false
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any
+  }
 
   return (
     <Box
       className='asset-chart'
       sx={{
         '.highcharts-background': {
-          fill: theme.palette.mode === 'dark' ? theme.palette.grey[500] : '#f9f3fe'
+          fill: (t) => (t.palette.mode === 'dark' ? t.palette.grey[500] : '#f9f3fe')
         }
       }}
     >

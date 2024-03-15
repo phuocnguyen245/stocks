@@ -22,7 +22,7 @@ const Asset = ({ open, toggle }: AssetProps): JSX.Element => {
         height: '100%',
         '& .MuiPaper-root': {
           transition: 'all 0.25s ease',
-          width: 340
+          width: 320
         },
         '& .MuiDrawer-paper': {
           boxShadow: 3,

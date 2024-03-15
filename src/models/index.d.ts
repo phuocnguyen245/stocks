@@ -71,10 +71,15 @@ interface Payments {
   _id?: string
 }
 
+interface Chart {
+  name: string
+  y: number
+}
 interface Asset {
   topUp: number
+  cash: number
   waiting: number
-  selling: number
+  sell: number
   order: number
   available: number
   net: number
@@ -82,6 +87,8 @@ interface Asset {
   investedValue: number
   marketValue: number
   ratePortfolio: number
+  sectorsPercentage: Chart[]
+  stocksPercentage: Chart[]
 }
 
 interface WatchList {
@@ -192,6 +199,25 @@ interface Board {
 interface ErrorResponse1 {
   message: string
   subMessage: string
+}
+
+interface Error {
+  error?: FetchBaseQueryError | SerializedError | undefined
+}
+
+declare module '@mui/material/styles' {
+  interface BreakpointOverrides {
+    xs: true // removes the `xs` breakpoint
+    sm: true
+    md: true
+    lg: true
+    xl: true
+  }
+}
+declare module 'react' {
+  interface ImgHTMLAttributes<T> extends HTMLAttributes<T> {
+    fetchPriority?: 'high' | 'low' | 'auto'
+  }
 }
 
 export type {

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { Label, Skeleton } from 'src/components/MUIComponents'
 import Charts from 'src/layouts/Main/Appbar/Asset/AssetDrawer/Charts'
-import type { Asset as IAsset, LabelType } from 'src/models'
+import type { Asset, Asset as IAsset, LabelType } from 'src/models'
 import { PaymentService } from 'src/services/payment.services'
 import { useGetCurrentStocksQuery } from 'src/services/stocks.services'
 import { useAppSelector } from 'src/store'
@@ -15,14 +15,17 @@ const AssetDrawer = ({ open }: { open: boolean }): JSX.Element => {
   const [asset, setAsset] = useState<IAsset>({
     topUp: 0,
     waiting: 0,
+    cash: 0,
     order: 0,
-    selling: 0,
+    sell: 0,
     available: 0,
     net: 0,
     profitOrLost: 0,
     investedValue: 0,
     marketValue: 0,
-    ratePortfolio: 0
+    ratePortfolio: 0,
+    sectorsPercentage: [{ name: intl.formatMessage({ id: 'label.cash' }), y: 100 }],
+    stocksPercentage: [{ name: intl.formatMessage({ id: 'label.cash' }), y: 100 }]
   })
   const { isRefetchStock } = useAppSelector((state) => state.Stocks)
 
@@ -32,11 +35,6 @@ const AssetDrawer = ({ open }: { open: boolean }): JSX.Element => {
     refetch
   } = PaymentService.useGetAssetQuery({}, { skip: !open, refetchOnMountOrArgChange: true })
 
-  const { data: currentData, isLoading: isLoadingCurrent } = useGetCurrentStocksQuery(
-    {},
-    { skip: !open, refetchOnMountOrArgChange: true }
-  )
-
   useEffect(() => {
     if (isRefetchStock && open) {
       void refetch()
@@ -44,51 +42,21 @@ const AssetDrawer = ({ open }: { open: boolean }): JSX.Element => {
   }, [isRefetchStock, open])
 
   useEffect(() => {
-    if (assetData?.data) {
-      const responseAsset = assetData.data
-      const topUp = responseAsset?.payment ?? 0
-      const waiting = responseAsset?.stock.waiting * 1000
-      const order = responseAsset?.stock.order * 1000
-      const selling = responseAsset?.stock.sell * 1000
-
-      setAsset((prev) => ({
-        ...prev,
-        topUp,
-        waiting,
-        order,
-        selling,
-        available: topUp + selling - order - waiting
+    const data = assetData?.data as IAsset
+    if (data) {
+      setAsset(() => ({
+        ...data,
+        topUp: data.topUp * 1000,
+        cash: data.cash * 1000,
+        investedValue: data.investedValue * 1000,
+        marketValue: data.marketValue * 1000,
+        net: data.net * 1000,
+        order: data.order * 1000,
+        sell: data.sell * 1000,
+        waiting: data.waiting * 1000
       }))
     }
   }, [assetData])
-
-  useEffect(() => {
-    if (currentData?.data?.data) {
-      let investedValue = 0
-      let marketValue = 0
-      currentData.data.data?.forEach((stock) => {
-        marketValue += (stock?.marketPrice ?? 0) * stock?.volume * 1000
-        investedValue += (stock?.averagePrice ?? 0) * (stock?.volume ?? 0) * 1000
-      })
-
-      setAsset((prev) => {
-        return {
-          ...prev,
-          marketValue: convertToDecimal(marketValue),
-          investedValue: convertToDecimal(investedValue),
-          profitOrLost: convertToDecimal(
-            ((prev.selling - prev.order + marketValue) / (prev.topUp ?? 1)) * 100
-          ),
-          net: prev.topUp + prev.selling - prev.order + marketValue,
-          ratePortfolio: ((marketValue - investedValue) / investedValue) * 100
-        }
-      })
-    }
-  }, [assetData, currentData])
-
-  const isLoading = useMemo(() => {
-    return isLoadingAsset && isLoadingCurrent
-  }, [isLoadingAsset, isLoadingCurrent])
 
   const SkeletonRender = (): JSX.Element => {
     return <Skeleton width='100px' height='40px' animation='wave' />
@@ -131,7 +99,7 @@ const AssetDrawer = ({ open }: { open: boolean }): JSX.Element => {
       },
       {
         name: 'label.available.cash',
-        value: renderLabel(formatVND(asset.available))
+        value: renderLabel(formatVND(asset.cash))
       },
       {
         name: 'label.market.value',
@@ -147,7 +115,7 @@ const AssetDrawer = ({ open }: { open: boolean }): JSX.Element => {
       },
       {
         name: 'label.profit.loss.asset',
-        value: renderLabel(`${asset.profitOrLost || 0}%`, asset.profitOrLost)
+        value: renderLabel(`${convertToDecimal(asset.profitOrLost || 0)}%`, asset.profitOrLost)
       }
     ]
     return content.map((item, index) => (
@@ -156,7 +124,7 @@ const AssetDrawer = ({ open }: { open: boolean }): JSX.Element => {
           <Grid item>
             <Typography fontWeight={600}>{intl.formatMessage({ id: item.name })}:&nbsp;</Typography>
           </Grid>
-          <Grid item>{isLoading ? <SkeletonRender /> : item.value}</Grid>
+          <Grid item>{isLoadingAsset ? <SkeletonRender /> : item.value}</Grid>
         </Grid>
       </Box>
     ))
@@ -179,7 +147,7 @@ const AssetDrawer = ({ open }: { open: boolean }): JSX.Element => {
       >
         {renderAsset}
       </Box>
-      <Charts data={currentData?.data?.data ?? []} />
+      <Charts data={asset} />
     </Box>
   )
 }

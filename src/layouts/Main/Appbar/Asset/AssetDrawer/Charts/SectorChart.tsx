@@ -1,46 +1,24 @@
-import { Box, useTheme } from '@mui/material'
+import { Box } from '@mui/material'
 import type Highcharts from 'highcharts'
-import { memo, useEffect, useState } from 'react'
+import { memo, useMemo } from 'react'
 import { useIntl } from 'react-intl'
 import { Chart } from 'src/components'
-import { type Stock } from 'src/models'
 
 interface IChartData {
   name: string
   y: number
 }
-type SectorsMap = Record<string, IChartData[]>
 
-const SectorChart = ({ data }: { data: Stock[] }): JSX.Element => {
+const SectorChart = ({ data }: { data: IChartData[] }): JSX.Element => {
   const intl = useIntl()
-  const theme = useTheme()
-  const [chartData, setChartData] = useState<IChartData[]>([])
 
-  useEffect(() => {
-    const getSectorsData = (data: Stock[]): IChartData[] => {
-      const sectors: SectorsMap = {}
-      let totalAssets = 0
-      data.forEach((currentStocks) => {
-        const sector = currentStocks.sector
-        const value = (currentStocks.averagePrice ?? 0) * currentStocks.volume
-        if (!sectors[sector]) {
-          sectors[sector] = []
-        }
-        sectors[sector].push({ name: sector, y: value })
-        totalAssets += value
-      })
-      const sectorData: IChartData[] = []
-
-      Object.values(sectors).forEach((sector, index) => {
-        sectorData.push({
-          name: intl.formatMessage({ id: `label.${Object.keys(sectors)[index]}` }),
-          y: sector.reduce((sum, sector) => sum + sector.y, 0)
-        })
-      })
-      return sectorData
+  const convertData = useMemo(() => {
+    if (data.length > 0) {
+      return data.map((item) => ({
+        ...item,
+        name: intl.formatMessage({ id: `label.${item.name}` })
+      }))
     }
-    const sectorData = getSectorsData(data)
-    setChartData(data.length > 0 ? sectorData : [{ name: 'Cash', y: 100 }])
   }, [data])
 
   const options: Highcharts.Options = {
@@ -77,7 +55,7 @@ const SectorChart = ({ data }: { data: Stock[] }): JSX.Element => {
       {
         name: 'Percentage',
         colorByPoint: true,
-        data: chartData,
+        data: convertData,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         type: 'pie' as any
       }
@@ -93,7 +71,7 @@ const SectorChart = ({ data }: { data: Stock[] }): JSX.Element => {
       className='asset-chart'
       sx={{
         '.highcharts-background': {
-          fill: theme.palette.mode === 'dark' ? theme.palette.grey[500] : '#f9f3fe'
+          fill: (t) => (t.palette.mode === 'dark' ? t.palette.grey[500] : '#f9f3fe')
         }
       }}
     >
