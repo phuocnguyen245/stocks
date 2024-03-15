@@ -1,4 +1,5 @@
 import { styled } from '@mui/material'
+import { memo } from 'react'
 import { Outlet as OutletRouter } from 'react-router'
 
 const OutletWrapper = styled('main', {
@@ -27,4 +28,4 @@ const Outlet = (props: any): JSX.Element => {
   )
 }
 
-export default Outlet
+export default memo(Outlet)

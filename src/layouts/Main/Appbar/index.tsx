@@ -8,6 +8,7 @@ import {
 import Header from 'src/layouts/Main/Appbar/Header'
 import { watchListWidth } from 'src/layouts'
 import Menu from 'src/layouts/Main/Appbar/Menu'
+import { memo } from 'react'
 
 interface AppBarProps extends MuiAppBarProps {
   widthAndMargin: {
@@ -74,4 +75,4 @@ const AppBarComponent = ({
   )
 }
 
-export default AppBarComponent
+export default memo(AppBarComponent)

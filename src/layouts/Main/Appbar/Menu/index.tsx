@@ -5,6 +5,7 @@ import { useAppSelector } from 'src/store'
 import AssetDrawer from 'src/layouts/Main/Appbar/Asset'
 import MenuDrawer from 'src/layouts/Main/Appbar/Menu/MenuDrawer'
 import SearchModal from 'src/layouts/Main/Appbar/SearchModal'
+import { memo } from 'react'
 
 interface MenuProps {
   open: boolean
@@ -63,4 +64,4 @@ const Menu = ({
   )
 }
 
-export default Menu
+export default memo(Menu)

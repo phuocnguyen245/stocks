@@ -53,10 +53,6 @@ const SwipeableTabs = ({ components }: SwipeableTabsProps): JSX.Element => {
     setValue(newValue)
   }
 
-  const handleChangeIndex = (index: number): void => {
-    setValue(index)
-  }
-
   const renderTabs = useMemo(() => {
     const children = components.map((component, index) => (
       <CustomTabPanel value={value} index={index} key={index}>

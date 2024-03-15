@@ -163,6 +163,7 @@ const MenuDrawer = ({
       onClose={toggle}
       ref={drawerRef}
       sx={{
+        transition: 'all 0.25s ease',
         '& .MuiPaper-root': {
           transition: 'all 0.25s ease',
           width: open ? menuWidth : 60
@@ -215,7 +216,8 @@ const MenuDrawer = ({
                         height: 48,
                         alignItems: 'center',
                         px: 2,
-                        transition: 'all .15s ease-in-out',
+                        transition: 'all 0.25s ease-in-out',
+                        width: '100%',
                         ...styles
                       }}
                       onClick={() => onOpen(item.url, item?.name)}

@@ -10,7 +10,7 @@ interface ConfirmPopupProps {
   isLoading?: boolean
   isSuccess?: boolean
   children?: ReactElement
-  onConfirm: (row: unknown) => void
+  onConfirm: (row?: unknown) => void
 }
 const ConfirmPopup = ({
   row,
@@ -25,7 +25,7 @@ const ConfirmPopup = ({
   const [isLoadingDelete, setIsLoadingDelete] = useState(false)
 
   const handleConfirm = (): void => {
-    row && onConfirm(row)
+    onConfirm(row)
   }
 
   useEffect(() => {

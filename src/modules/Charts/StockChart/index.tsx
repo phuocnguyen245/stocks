@@ -63,7 +63,6 @@ const StockChart = (): JSX.Element => {
       })),
     [data]
   )
-  console.log(!isMdWindow ? (isOpenSidebar ? menuWidth : 60) : 0)
 
   const options: Highcharts.Options = {
     title: {

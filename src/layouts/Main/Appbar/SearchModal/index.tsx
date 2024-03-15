@@ -1,6 +1,6 @@
 import { Close } from '@mui/icons-material'
 import { Box, Dialog, IconButton } from '@mui/material'
-import React from 'react'
+import React, { memo } from 'react'
 import { SearchBar } from 'src/components'
 
 interface SearchModalProps {
@@ -39,4 +39,4 @@ const SearchModal = ({ open, toggle }: SearchModalProps): JSX.Element => {
   )
 }
 
-export default SearchModal
+export default memo(SearchModal)

@@ -6,7 +6,7 @@ import { Outlet } from 'react-router'
 
 const AuthLayout = ({ children }: { children: ReactNode }): JSX.Element => {
   return (
-    <Grid container position='relative'>
+    <Grid container position='relative' height='100vh'>
       <Grid
         item
         xs={false}

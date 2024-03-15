@@ -2,22 +2,23 @@ import { Box, CssBaseline, ThemeProvider } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
 import { IntlProvider } from 'react-intl'
 import { useDispatch } from 'react-redux'
-import { useIsLogin } from 'src/hooks'
+import { useLocation } from 'react-router'
+import MainComponents from 'src/layouts/Main'
+import WatchListDrawer from 'src/layouts/WatchListDrawer'
 import en from 'src/locales/en.json'
 import vi from 'src/locales/vi.json'
 import { useAppSelector } from 'src/store'
 import { setMode, setOpenSidebar } from 'src/store/slices/stockSlice'
 import themeProvider from 'src/styles/theme'
-import MainComponents from 'src/layouts/Main'
-import WatchListDrawer from 'src/layouts/WatchListDrawer'
 export const watchListWidth = 280
 export const menuWidth = 240
 
-const PersistentDrawerLeft = (): JSX.Element => {
+const Layouts = (): JSX.Element => {
   const dispatch = useDispatch()
-  const isLogin = useIsLogin()
+  const { pathname } = useLocation()
   const { isMdWindow } = useAppSelector((state) => state.Stocks)
 
+  const [isLogin, setIsLogin] = useState(false)
   const [openMenu, setOpenMenu] = useState(() => {
     const openLocal = localStorage.getItem('isOpenMenu')
     if (typeof openLocal === 'string' && (openLocal === 'true' || openLocal === 'false')) {
@@ -61,6 +62,11 @@ const PersistentDrawerLeft = (): JSX.Element => {
   useEffect(() => {
     localStorage.setItem('isOpenWatchList', JSON.stringify(openWatchList))
   }, [openWatchList])
+
+  useEffect(() => {
+    const tokens = localStorage.getItem('tokens')
+    setIsLogin(tokens && JSON.parse(tokens))
+  }, [pathname])
 
   const toggleMenu = (): void => {
     setOpenMenu(!openMenu)
@@ -151,4 +157,4 @@ const PersistentDrawerLeft = (): JSX.Element => {
     </ThemeProvider>
   )
 }
-export default PersistentDrawerLeft
+export default Layouts

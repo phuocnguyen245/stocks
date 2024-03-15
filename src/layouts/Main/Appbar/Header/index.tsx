@@ -1,16 +1,16 @@
 import { Logout } from '@mui/icons-material'
 import { Box, Grid, Paper, styled, useMediaQuery, useTheme } from '@mui/material'
 import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ConfirmPopup, SearchBar } from 'src/components'
+import Account from 'src/layouts/Main/Appbar/Header/components/Account'
 import DarkModeSwitch from 'src/layouts/Main/Appbar/Header/components/DarkModeSwitch'
 import Languages from 'src/layouts/Main/Appbar/Header/components/Languages'
 import RefreshTime from 'src/layouts/Main/Appbar/Header/components/RefreshTime'
 import { onIsLogin, onMdWindow } from 'src/store/slices/stockSlice'
-import Account from 'src/layouts/Main/Appbar/Header/components/Account'
 
 export interface HeaderProps {
   darkMode: 'dark' | 'light'
@@ -115,9 +115,11 @@ const Header = ({
           <Grid item>
             <DarkModeSwitch darkMode={darkMode} onSetDarkMode={onSetDarkMode} />
           </Grid>
-          <Grid item>
-            <Account />
-          </Grid>
+          {isLogin && (
+            <Grid item>
+              <Account />
+            </Grid>
+          )}
           {isLogin && !isMd && (
             <Grid
               item
@@ -147,4 +149,4 @@ const HeaderSetting = styled(Box)<{ route: string }>(({ theme, route }) => ({
   display: 'block'
 }))
 
-export default Header
+export default memo(Header)

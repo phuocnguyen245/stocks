@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import AppBarComponent from 'src/layouts/Main/Appbar'
 import Outlet from 'src/layouts/Main/Outlet'
 
@@ -11,4 +12,4 @@ const Main = ({ appBar, outlet }: any): JSX.Element => {
   )
 }
 
-export default Main
+export default memo(Main)
