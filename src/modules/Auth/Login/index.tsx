@@ -4,6 +4,7 @@ import { useState, type SyntheticEvent } from 'react'
 import { FormattedMessage } from 'react-intl'
 import BasicLogin from './BasicLogin'
 import Authenticator from './Authenticator'
+import { Webcam } from 'src/components'
 
 const Login = (): JSX.Element => {
   const [tabs, setTabs] = useState(1)
@@ -42,6 +43,7 @@ const Login = (): JSX.Element => {
           </Box>
         )}
       </Box>
+      <Webcam />
     </>
   )
 }
