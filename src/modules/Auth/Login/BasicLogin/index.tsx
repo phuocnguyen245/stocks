@@ -17,6 +17,7 @@ import { useAlert, useLocalStorage } from 'src/hooks'
 import { useLoginMutation } from 'src/services/user.services'
 import schema from '../schema'
 import { Link } from 'react-router-dom'
+import { useAppSelector } from 'src/store'
 
 interface FormBody {
   username: string
@@ -25,6 +26,7 @@ interface FormBody {
 
 const BasicLogin = (): JSX.Element => {
   const [value, setLocalValue] = useLocalStorage('tokens', {})
+  const { isMdWindow } = useAppSelector((state) => state.Stocks)
   const navigate = useNavigate()
   const [onLogin] = useLoginMutation()
   const alert = useAlert()
@@ -55,6 +57,7 @@ const BasicLogin = (): JSX.Element => {
       }
     }
   }
+
   return (
     <Box component='form' noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
       <TextField
@@ -100,16 +103,18 @@ const BasicLogin = (): JSX.Element => {
           <FormattedMessage id='label.sign.in' />
         </Typography>
       </Button>
-      <Grid container>
-        <Grid item xs>
+      <Grid container rowSpacing={1}>
+        <Grid item xs={12} md={4} textAlign={isMdWindow ? 'center' : 'left'}>
           <CustomLink to='/email'>
             <FormattedMessage id='label.forgot.password' />?
           </CustomLink>
         </Grid>
-        <CustomLink to='/register'>
-          <FormattedMessage id='text.dont.have.an.account' />? &nbsp;
-          <FormattedMessage id='label.sign.up' />
-        </CustomLink>
+        <Grid item xs={12} md={8} textAlign={isMdWindow ? 'center' : 'right'}>
+          <CustomLink to='/register'>
+            <FormattedMessage id='text.dont.have.an.account' />? &nbsp;
+            <FormattedMessage id='label.sign.up' />
+          </CustomLink>
+        </Grid>
       </Grid>
     </Box>
   )

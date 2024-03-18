@@ -3,21 +3,20 @@ import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import { useEffect, type ReactNode } from 'react'
 import { Outlet } from 'react-router'
+import { useAppSelector } from 'src/store'
 
-const AuthLayout = ({ children }: { children: ReactNode }): JSX.Element => {
-  useEffect(() => {
-    const largeImage = new Image()
-    largeImage.src = 'https://source.unsplash.com/random?wallpapers'
-  }, []) // Preload image on component mount
-
+const AuthLayout = (): JSX.Element => {
+  const { isMdWindow } = useAppSelector((state) => state.Stocks)
   return (
-    <Grid container position='relative' height='100vh'>
+    <Grid container position='relative' height='calc(100vh)' overflow='hidden'>
       <Grid
         item
         xs={false}
         sm={4}
         md={7}
         sx={{
+          pl: '-16px',
+          width: isMdWindow ? '0' : '100%',
           backgroundColor: (t) =>
             t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900]
         }}
@@ -39,9 +38,6 @@ const AuthLayout = ({ children }: { children: ReactNode }): JSX.Element => {
         xs={12}
         sm={8}
         md={5}
-        component={Paper}
-        elevation={6}
-        square
         display={'flex'}
         flexDirection='column'
         alignItems='center'

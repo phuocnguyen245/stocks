@@ -94,6 +94,9 @@ body {
   height: 100%;
   overflow-y: scroll;
   box-sizing: content-box;
+  @media only screen and (max-width: 600px) {
+    padding-left: 8px;
+  }
 }
 
 #root::-webkit-scrollbar {
