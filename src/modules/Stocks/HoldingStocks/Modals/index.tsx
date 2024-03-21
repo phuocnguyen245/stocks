@@ -28,9 +28,9 @@ import { v4 as uuidV4 } from 'uuid'
 import schema from './schema'
 interface FormBody {
   code: string
-  volume: number | null
-  orderPrice?: number | null
-  sellPrice?: number | null
+  volume: string | number | null
+  orderPrice?: string | number | null
+  sellPrice?: string | number | null
   date: string
   sector: string
 }
@@ -74,9 +74,10 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
     reset,
     watch,
     setError,
+    clearErrors,
     control,
     formState: { errors }
-  } = useForm<FormBody>({
+  } = useForm({
     resolver: yupResolver(schema)
   })
 
@@ -88,21 +89,66 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
   }, [open])
 
   useEffect(() => {
-    open && setOpenModal(true)
-    sellStock && setOpenModal(true)
+    ;(open || sellStock) && setOpenModal(true)
   }, [open, sellStock])
 
   useEffect(() => {
-    if (!sellStock) {
-      setValue('sellPrice', null)
+    if (openModal) {
+      watch(({ volume, orderPrice }) => {
+        const targetVolume = Number(volume) ?? 0
+        const targetPrice = Number(orderPrice) ?? 0
+        setTarget({
+          stop: [
+            {
+              id: uuidV4(),
+              name: '',
+              price: convertToDecimal(((targetPrice ?? 0) * 96) / 100),
+              volume: targetVolume / 2
+            },
+            {
+              id: uuidV4(),
+              name: '',
+              price: convertToDecimal(((targetPrice ?? 0) * 92) / 100),
+              volume: targetVolume
+            }
+          ],
+          take: [
+            {
+              id: uuidV4(),
+              name: '',
+              price: convertToDecimal(((targetPrice ?? 0) * 104) / 100),
+              volume: targetVolume
+            }
+          ]
+        })
+        if (sellStock) {
+          if (targetVolume > (sellStock?.availableVol ?? 0)) {
+            return setError('volume', {
+              message: `Volume must be less than available volume: ${sellStock?.availableVol ?? 0}`
+            })
+          } else {
+            clearErrors('volume')
+          }
+        }
+      })
     } else {
-      setValue('orderPrice', null)
-      setValue('code', sellStock.code)
-      setValue('volume', 0)
-      setValue('orderPrice', null)
-      setValue('sector', sellStock.sector)
+      clearErrors()
     }
-  }, [sellStock])
+  }, [watch, sellStock, openModal])
+
+  useEffect(() => {
+    if (openModal) {
+      if (!sellStock) {
+        setValue('sellPrice', null)
+      } else {
+        setValue('orderPrice', null)
+        setValue('code', sellStock.code)
+        setValue('volume', 0)
+        setValue('orderPrice', null)
+        setValue('sector', sellStock.sector)
+      }
+    }
+  }, [sellStock, openModal])
 
   useEffect(() => {
     setValue('date', moment(Date.now()).toISOString())
@@ -113,9 +159,11 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
   }
 
   const onCloseModal = (): void => {
-    setOpenModal(false)
     handleClose()
     sellStock && setTimeout(() => dispatch(onSellStock(null)), 200)
+    reset()
+    clearErrors()
+    setOpenModal(!openModal)
   }
 
   const handleSave = async (value: FormBody): Promise<void> => {
@@ -142,15 +190,17 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
         ...(!sellStock && { stop: target.stop })
       }).unwrap()
       if (response) {
-        reset()
         dispatch(refetchStocks(true))
-        dispatch(onSellStock(undefined))
         alert({ message: response.message, variant: 'success' })
         setTarget({
           take: [{ id: uuidV4(), name: '', price: 0, volume: 0 }],
           stop: [{ id: uuidV4(), name: '', price: 0, volume: 0 }]
         })
-        onCloseModal()
+        handleClose()
+        sellStock && setTimeout(() => dispatch(onSellStock(null)), 200)
+        reset()
+        clearErrors()
+        setOpenModal(!openModal)
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -199,46 +249,6 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
       })
     }))
   }
-
-  useEffect(() => {
-    console.log(sellStock, sellStock?.availableVol)
-
-    watch(({ volume, orderPrice }) => {
-      const targetVolume = volume ?? 0
-      const targetPrice = orderPrice ?? 0
-      setTarget({
-        stop: [
-          {
-            id: uuidV4(),
-            name: '',
-            price: convertToDecimal(((targetPrice ?? 0) * 96) / 100),
-            volume: targetVolume / 2
-          },
-          {
-            id: uuidV4(),
-            name: '',
-            price: convertToDecimal(((targetPrice ?? 0) * 92) / 100),
-            volume: targetVolume
-          }
-        ],
-        take: [
-          {
-            id: uuidV4(),
-            name: '',
-            price: convertToDecimal(((targetPrice ?? 0) * 104) / 100),
-            volume: targetVolume
-          }
-        ]
-      })
-      if (sellStock) {
-        if (targetVolume > (sellStock?.availableVol ?? 0)) {
-          setError('volume', {
-            message: `Volume must be less than available volume: ${sellStock?.availableVol ?? 0}`
-          })
-        }
-      }
-    })
-  }, [watch, sellStock])
 
   return (
     <Dialog
@@ -298,6 +308,7 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
                   label={<FormattedMessage id='label.volume' />}
                   type='number'
                   {...register('volume')}
+                  InputProps={{ inputProps: { min: 0, max: 10 } }}
                   required
                   sx={{ margin: '8px 0' }}
                   error={!!errors.volume}

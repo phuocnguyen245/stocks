@@ -3,9 +3,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { Label, Skeleton } from 'src/components/MUIComponents'
 import Charts from 'src/layouts/Main/Appbar/Asset/AssetDrawer/Charts'
-import type { Asset, Asset as IAsset, LabelType } from 'src/models'
+import type { Asset as IAsset, LabelType } from 'src/models'
 import { PaymentService } from 'src/services/payment.services'
-import { useGetCurrentStocksQuery } from 'src/services/stocks.services'
 import { useAppSelector } from 'src/store'
 import { convertToDecimal, formatVND } from 'src/utils'
 
@@ -23,9 +22,11 @@ const AssetDrawer = ({ open }: { open: boolean }): JSX.Element => {
     profitOrLost: 0,
     investedValue: 0,
     marketValue: 0,
+    rateAsset: 0,
     ratePortfolio: 0,
-    sectorsPercentage: [{ name: intl.formatMessage({ id: 'label.cash' }), y: 100 }],
-    stocksPercentage: [{ name: intl.formatMessage({ id: 'label.cash' }), y: 100 }]
+    profitOrLoss: 0,
+    sectorsPercentage: [{ name: 'cash', y: 100 }],
+    stocksPercentage: [{ name: 'cash', y: 100 }]
   })
   const { isRefetchStock } = useAppSelector((state) => state.Stocks)
 
@@ -53,10 +54,15 @@ const AssetDrawer = ({ open }: { open: boolean }): JSX.Element => {
         net: data.net * 1000,
         order: data.order * 1000,
         sell: data.sell * 1000,
-        waiting: data.waiting * 1000
+        waiting: data.waiting * 1000,
+        profitOrLoss: data.profitOrLoss * 1000,
+        ratePortfolio: data.ratePortfolio * 100,
+        rateAsset: data.rateAsset * 100
       }))
     }
   }, [assetData])
+
+  console.log(asset)
 
   const SkeletonRender = (): JSX.Element => {
     return <Skeleton width='100px' height='40px' animation='wave' />
@@ -103,11 +109,15 @@ const AssetDrawer = ({ open }: { open: boolean }): JSX.Element => {
       },
       {
         name: 'label.market.value',
-        value: renderLabel(formatVND(asset.marketValue), asset.profitOrLost)
+        value: renderLabel(formatVND(asset.marketValue), asset.ratePortfolio)
       },
       {
         name: 'label.invested.value',
-        value: renderLabel(formatVND(asset.investedValue), asset.ratePortfolio)
+        value: renderLabel(formatVND(asset.investedValue), asset.rateAsset)
+      },
+      {
+        name: 'label.profit.loss',
+        value: renderLabel(formatVND(asset.profitOrLoss), asset.ratePortfolio)
       },
       {
         name: 'label.profit.loss.portfolio',
@@ -115,7 +125,7 @@ const AssetDrawer = ({ open }: { open: boolean }): JSX.Element => {
       },
       {
         name: 'label.profit.loss.asset',
-        value: renderLabel(`${convertToDecimal(asset.profitOrLost || 0)}%`, asset.profitOrLost)
+        value: renderLabel(`${convertToDecimal(asset.rateAsset || 0)}%`, asset.rateAsset)
       }
     ]
     return content.map((item, index) => (

@@ -5,7 +5,7 @@ interface LabelProps extends TypographyProps {
   type?: LabelType
 }
 
-const Label = ({ type = 'primary', children, ...props }: LabelProps): JSX.Element => {
+const Label = ({ type = 'default', children, ...props }: LabelProps): JSX.Element => {
   return (
     <Typography
       color={getColor(type)}

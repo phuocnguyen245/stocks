@@ -66,8 +66,7 @@ const Header = ({
         display: 'flex',
         justifyContent: 'flex-end',
         height: isMd ? 44 : 52,
-        pr: isMd ? 1 : 0,
-        gap: '4px'
+        gap: isMd ? '0px' : '4px'
       }}
     >
       <HeaderSetting route={location.pathname}>
@@ -76,9 +75,9 @@ const Header = ({
           alignItems='center'
           flexWrap='nowrap'
           width='auto'
-          columnSpacing={0.5}
+          columnSpacing={isMd ? 0 : 0.5}
           height='100%'
-          mr={1}
+          mr={isMd ? 0 : 1}
         >
           {isLogin && !isMd && (
             <Grid item>

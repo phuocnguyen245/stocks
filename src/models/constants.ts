@@ -6,7 +6,8 @@ const getColor = (type: LabelType): string => {
     warning: '#9e5718',
     primary: '#f5ecfb',
     secondary: '#D3D3D3',
-    info: '#07595a'
+    info: '#07595a',
+    default: 'text.primary'
   }
   return hexColors[type]
 }
@@ -18,7 +19,8 @@ const getBgColor = (type: LabelType): string => {
     warning: '#FFDAB9',
     primary: '#a41bfa',
     secondary: '#D3D3D3',
-    info: '#1fecf0'
+    info: '#1fecf0',
+    default: 'text.secondary'
   }
   return hexColors[type]
 }

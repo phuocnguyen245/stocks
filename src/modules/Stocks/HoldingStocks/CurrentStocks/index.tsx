@@ -17,6 +17,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { onSellStock, refetchStocks } from 'src/store/slices/stockSlice'
 import { countDays, formatVND, ratio } from 'src/utils'
+import StockLabel from '../components/StockLabel'
 
 const CurrentStocks = (): JSX.Element => {
   const navigate = useNavigate()
@@ -134,24 +135,6 @@ const CurrentStocks = (): JSX.Element => {
     navigate(`/charts/${row.code}`)
   }
 
-  const renderLabel = useCallback(
-    (number: number, type?: string) => {
-      const labelType: LabelType = number === 0 ? 'warning' : number > 0 ? 'success' : 'error'
-      const symbol = number > 0 ? '+' : ''
-      return type ? (
-        <Typography color={getBgColor(labelType)} fontWeight={600} fontSize={14}>
-          {symbol}
-          {formatVND(number * 1000)}
-        </Typography>
-      ) : (
-        <Label type={labelType} fontSize={14}>
-          {number.toFixed(2)}%
-        </Label>
-      )
-    },
-    [data, subData]
-  )
-
   const table: Array<TableHeaderBody<Stock>> = [
     {
       name: 'code',
@@ -177,41 +160,31 @@ const CurrentStocks = (): JSX.Element => {
       name: 'marketPrice',
       title: <FormattedMessage id='label.market.price' />,
       render: (row) => (
-        <>
-          {editData?.code?.toUpperCase() === row?.code?.toUpperCase() ? (
-            <TextField
-              sx={[
-                {
-                  '& .MuiInputBase-root': {
-                    height: '36px'
-                  }
-                }
-              ]}
-              name='marketPrice'
-              value={editData?.marketPrice ?? 0}
-              onChange={(e) => onChangeRow(e)}
-              type='number'
-              autoFocus
-              inputProps={{
-                step: 1
-              }}
-            />
-          ) : (
-            row?.marketPrice
-          )}
-        </>
+        <StockLabel number={row.marketPrice ?? 0} compareNumber={row.averagePrice}>
+          {Number(row.marketPrice?.toFixed(2))}
+        </StockLabel>
       )
     },
     {
       name: 'ratio',
       title: <FormattedMessage id='label.profit.loss' />,
-      render: (row) => <Box width={80}>{renderLabel(Number(row?.ratio) * 100)}</Box>
+      render: (row) => (
+        <Box width={80}>
+          <StockLabel number={Number(row?.ratio)}>
+            {(Number(row?.ratio) * 100).toFixed(2)}%
+          </StockLabel>
+        </Box>
+      )
     },
     {
       name: 'investedValue',
       title: <FormattedMessage id='label.profit.loss.value' />,
       align: 'left',
-      render: (row) => <> {renderLabel(Number(row.investedValue?.toFixed(2)), 'gain')}</>
+      render: (row) => (
+        <StockLabel number={Number(row?.investedValue)}>
+          {formatVND(Number(row.investedValue?.toFixed(2)) * 1000)}
+        </StockLabel>
+      )
     },
     {
       name: '',
@@ -316,19 +289,17 @@ const CurrentStocks = (): JSX.Element => {
   }
 
   return (
-    <>
-      <Table
-        data={data}
-        table={table}
-        isLoading={isFetching}
-        totalItems={currentStockData?.data?.totalItems ?? 0}
-        onSort={onSort}
-        pagination={pagination}
-        onSetPagination={setPagination}
-        subTable={subTable}
-        subData={subData}
-      />
-    </>
+    <Table
+      data={data}
+      table={table}
+      isLoading={isFetching}
+      totalItems={currentStockData?.data?.totalItems ?? 0}
+      onSort={onSort}
+      pagination={pagination}
+      onSetPagination={setPagination}
+      subTable={subTable}
+      subData={subData}
+    />
   )
 }
 

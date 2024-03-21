@@ -1,33 +1,40 @@
 import { Box, Container, Divider, Grid, Tab, Tabs, TextField } from '@mui/material'
 import React, { useState } from 'react'
+import UserAccount from './UserAccount'
+import Password from './Password'
+import { useSelector } from 'react-redux'
+import { useAppSelector } from 'src/store'
 
 const Account = (): JSX.Element => {
+  const { isMdWindow } = useAppSelector((state) => state.Stocks)
   const [tabsValue, setTabsValue] = useState(0)
   const onChangeTabs = (event: React.SyntheticEvent, newValue: number): void => {
     setTabsValue(newValue)
   }
-  console.log(tabsValue)
 
   return (
     <Container sx={{ pt: 10, height: '100%' }}>
-      <Box height='calc(100vh - 112px)' position='relative' width='100%'>
+      <Box position='relative' width='100%' height='calc(100vh - 112px)'>
         <Grid
           container
           position='absolute'
-          top='10%'
-          sx={{ transform: 'translateY(-10%)', width: '100%' }}
+          top={isMdWindow ? '8px' : '10%'}
+          display={isMdWindow ? 'block' : 'flex'}
         >
-          <Grid item xl={3}>
+          <Grid item xl={3} pb={2}>
             <Tabs
-              orientation='vertical'
+              orientation={isMdWindow ? 'horizontal' : 'vertical'}
               value={tabsValue}
               onChange={onChangeTabs}
-              aria-label='Vertical tabs example'
+              centered
               sx={{
-                borderRight: 1,
+                borderRight: isMdWindow ? 0 : 1,
                 borderColor: 'divider',
                 '& button': {
-                  color: 'text.primary'
+                  color: 'text.primary',
+                  '&.Mui-selected': {
+                    fontWeight: 600
+                  }
                 }
               }}
             >
@@ -36,26 +43,8 @@ const Account = (): JSX.Element => {
             </Tabs>
           </Grid>
           <Grid item xl={9} flex={1} justifyContent='center' display='flex'>
-            {tabsValue === 0 && (
-              <Grid container width='80%' rowSpacing={2}>
-                <Grid item xs={12}>
-                  <TextField label='Name' fullWidth />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField label='Email' fullWidth />
-                </Grid>
-                <Grid item xs={12}>
-                  <Divider />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField label='Password' fullWidth />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField label='Confirm Password' fullWidth />
-                </Grid>
-              </Grid>
-            )}
-            {tabsValue === 1 && <Box width='80%'>1213</Box>}
+            {tabsValue === 0 && <UserAccount />}
+            {tabsValue === 1 && <Password />}
           </Grid>
         </Grid>
       </Box>

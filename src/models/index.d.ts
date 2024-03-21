@@ -1,5 +1,5 @@
 type Status = 'Buy' | 'Sell'
-type LabelType = 'success' | 'error' | 'warning' | 'primary' | 'secondary' | 'info'
+type LabelType = 'success' | 'error' | 'warning' | 'primary' | 'secondary' | 'info' | 'default'
 
 interface User {
   _id?: string
@@ -87,6 +87,8 @@ interface Asset {
   investedValue: number
   marketValue: number
   ratePortfolio: number
+  profitOrLoss: number
+  rateAsset: number
   sectorsPercentage: Chart[]
   stocksPercentage: Chart[]
 }

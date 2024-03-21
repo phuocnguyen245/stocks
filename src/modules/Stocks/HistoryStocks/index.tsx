@@ -258,7 +258,7 @@ const HistoryStocksTable = (): JSX.Element => {
           <>
             {row.status === 'Sell' && (
               <Label type={type} fontSize={14}>
-                {formatVND((row.sellPrice - average) * row.volume * 1000)}
+                {formatVND((row.sellPrice - average) * row.volume * 1000 * 1.00825)}
               </Label>
             )}
           </>

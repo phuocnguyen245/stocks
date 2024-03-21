@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { Helmet } from 'src/components'
 import { useModals } from 'src/hooks'
 import CurrentStocks from 'src/modules/Stocks/HoldingStocks/CurrentStocks'
-import StockHeader from 'src/modules/Stocks/HoldingStocks/Partials/StockHeader'
+import StockHeader from 'src/modules/Stocks/HoldingStocks/components/StockHeader'
 import { useAppSelector } from 'src/store'
 
 const HoldingStocks = (): JSX.Element => {
