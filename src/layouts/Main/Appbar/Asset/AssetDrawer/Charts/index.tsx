@@ -2,6 +2,7 @@ import { Box, type Theme, useTheme } from '@mui/material'
 import { type Asset, type Stock } from 'src/models'
 import SectorChart from 'src/layouts/Main/Appbar/Asset/AssetDrawer/Charts/SectorChart'
 import StockCharts from 'src/layouts/Main/Appbar/Asset/AssetDrawer/Charts/StockCharts'
+import { memo } from 'react'
 
 const Charts = ({ data }: { data: Asset }): JSX.Element => {
   const theme: Theme = useTheme()
@@ -19,4 +20,4 @@ const Charts = ({ data }: { data: Asset }): JSX.Element => {
   )
 }
 
-export default Charts
+export default memo(Charts)

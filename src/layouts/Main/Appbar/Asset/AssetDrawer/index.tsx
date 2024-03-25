@@ -1,5 +1,5 @@
 import { Box, Grid, Typography, useTheme, type Theme } from '@mui/material'
-import { useEffect, useMemo, useState } from 'react'
+import { memo, useEffect, useMemo, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { Label, Skeleton } from 'src/components/MUIComponents'
 import Charts from 'src/layouts/Main/Appbar/Asset/AssetDrawer/Charts'
@@ -61,8 +61,6 @@ const AssetDrawer = ({ open }: { open: boolean }): JSX.Element => {
       }))
     }
   }, [assetData])
-
-  console.log(asset)
 
   const SkeletonRender = (): JSX.Element => {
     return <Skeleton width='100px' height='40px' animation='wave' />
@@ -162,4 +160,4 @@ const AssetDrawer = ({ open }: { open: boolean }): JSX.Element => {
   )
 }
 
-export default AssetDrawer
+export default memo(AssetDrawer)

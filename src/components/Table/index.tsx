@@ -15,7 +15,7 @@ import {
   Typography,
   useTheme
 } from '@mui/material'
-import { Fragment, memo, useState } from 'react'
+import { Fragment, type MouseEvent, MouseEventHandler, memo, useState } from 'react'
 import EmptyResult from 'src/asset/imgs/empty-result.jpg'
 import { Loader } from 'src/components/MUIComponents'
 import Pagination from './Pagination'
@@ -42,7 +42,10 @@ const Table = ({
   const theme = useTheme()
 
   const { sx, ...restProps } = props
-  const onOpen = (id: string): void => {
+  const onOpen = (event: MouseEvent<HTMLElement>, id: string): void => {
+    event.stopPropagation()
+    event.preventDefault()
+
     setOpen(() => {
       if (open.includes(id)) {
         return open.filter((openId) => openId !== id)
@@ -83,30 +86,26 @@ const Table = ({
           <TableHead>
             <TableRow>
               {[...(subTable ? [{ name: '', title: '' }] : []), ...table].map(
-                ({ title, name, render, ...rest }: TableHeaderBody<unknown>, index) => {
-                  return (
-                    <HeaderTableCell
-                      key={`header-${name as string}-${index}`}
-                      index={index}
-                      name={name}
-                      {...rest}
-                    >
-                      {name ? (
-                        <TableSortLabel
-                          active={pagination?.sortBy === name}
-                          direction={
-                            pagination?.sortBy === name ? pagination?.sortDirection : 'asc'
-                          }
-                          onClick={createSortHandler(name)}
-                        >
-                          {title}
-                        </TableSortLabel>
-                      ) : (
-                        title
-                      )}
-                    </HeaderTableCell>
-                  )
-                }
+                ({ title, name, render, ...rest }: TableHeaderBody<unknown>, index) => (
+                  <HeaderTableCell
+                    key={`header-${name as string}-${index}`}
+                    index={index}
+                    name={name}
+                    {...rest}
+                  >
+                    {name ? (
+                      <TableSortLabel
+                        active={pagination?.sortBy === name}
+                        direction={pagination?.sortBy === name ? pagination?.sortDirection : 'asc'}
+                        onClick={createSortHandler(name)}
+                      >
+                        {title}
+                      </TableSortLabel>
+                    ) : (
+                      title
+                    )}
+                  </HeaderTableCell>
+                )
               )}
             </TableRow>
           </TableHead>
@@ -117,7 +116,7 @@ const Table = ({
                 return (
                   <Fragment key={dataIndex}>
                     <TableRow
-                      onClick={() => onOpen(row?._id)}
+                      onClick={(e) => onOpen(e, row._id)}
                       sx={{
                         cursor: subTable ? 'pointer' : 'default',
                         transition: 'background 0.3s ease',
@@ -128,7 +127,7 @@ const Table = ({
                     >
                       {subTable && (
                         <TableCell>
-                          <IconButton size='small' onClick={() => onOpen(row._id)}>
+                          <IconButton size='small' onClick={(e) => onOpen(e, row._id)}>
                             {isOpen ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                           </IconButton>
                         </TableCell>

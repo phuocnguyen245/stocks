@@ -1,14 +1,16 @@
 import { type TypographyProps } from '@mui/material'
 import { useMemo } from 'react'
 import { Label } from 'src/components/MUIComponents'
+import { type LabelType } from 'src/models'
 
 interface LabelProps extends TypographyProps {
-  number: number
+  type?: LabelType
+  number?: number
   compareNumber?: number
 }
 const StockLabel = (props: LabelProps): JSX.Element => {
-  const { number, compareNumber = 0, children, ...rest } = props
-  const type = useMemo(() => {
+  const { number = 0, compareNumber = 0, children, type, ...rest } = props
+  const labelType = useMemo(() => {
     if (number === compareNumber) {
       return 'warning'
     }
@@ -19,7 +21,7 @@ const StockLabel = (props: LabelProps): JSX.Element => {
   }, [number, compareNumber])
 
   return (
-    <Label type={type} {...rest} fontSize={14} fontWeight={600}>
+    <Label type={type ?? labelType} {...rest} fontSize={14} fontWeight={600}>
       {children}
     </Label>
   )

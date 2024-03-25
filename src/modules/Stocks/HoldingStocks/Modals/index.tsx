@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Add, Remove } from '@mui/icons-material'
 import {
@@ -48,6 +47,10 @@ interface TargetState {
   take: TargetItem[]
   stop: TargetItem[]
 }
+interface OpenModal {
+  isOpen: boolean
+  sellStock: Stock | null
+}
 
 const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
   const init = { id: uuidV4(), name: '', price: 0, volume: 0 }
@@ -62,7 +65,10 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
     take: [{ id: uuidV4(), name: '', price: 0, volume: 0 }],
     stop: [{ id: uuidV4(), name: '', price: 0, volume: 0 }]
   })
-  const [openModal, setOpenModal] = useState<boolean>(false)
+  const [openModal, setOpenModal] = useState<OpenModal>({
+    isOpen: false,
+    sellStock: null
+  })
 
   const { data: stockData } = StockService.useGetCurrentStocksQuery({}, { skip: !sellStock })
 
@@ -82,76 +88,67 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
   })
 
   useEffect(() => {
-    if (open && textFieldRef.current) {
-      const textField = textFieldRef.current as HTMLInputElement
-      textField.focus()
-    }
-  }, [open])
-
-  useEffect(() => {
-    ;(open || sellStock) && setOpenModal(true)
+    setOpenModal(() => ({
+      isOpen: Boolean(sellStock) || open,
+      sellStock: sellStock ?? null
+    }))
   }, [open, sellStock])
 
   useEffect(() => {
-    if (openModal) {
-      watch(({ volume, orderPrice }) => {
-        const targetVolume = Number(volume) ?? 0
-        const targetPrice = Number(orderPrice) ?? 0
-        setTarget({
-          stop: [
-            {
-              id: uuidV4(),
-              name: '',
-              price: convertToDecimal(((targetPrice ?? 0) * 96) / 100),
-              volume: targetVolume / 2
-            },
-            {
-              id: uuidV4(),
-              name: '',
-              price: convertToDecimal(((targetPrice ?? 0) * 92) / 100),
-              volume: targetVolume
-            }
-          ],
-          take: [
-            {
-              id: uuidV4(),
-              name: '',
-              price: convertToDecimal(((targetPrice ?? 0) * 104) / 100),
-              volume: targetVolume
-            }
-          ]
-        })
-        if (sellStock) {
-          if (targetVolume > (sellStock?.availableVol ?? 0)) {
-            return setError('volume', {
-              message: `Volume must be less than available volume: ${sellStock?.availableVol ?? 0}`
-            })
-          } else {
-            clearErrors('volume')
+    watch(({ volume, orderPrice }) => {
+      const targetVolume = Number(volume) ?? 0
+      const targetPrice = Number(orderPrice) ?? 0
+      setTarget({
+        stop: [
+          {
+            id: uuidV4(),
+            name: '',
+            price: convertToDecimal(((targetPrice ?? 0) * 96) / 100),
+            volume: targetVolume / 2
+          },
+          {
+            id: uuidV4(),
+            name: '',
+            price: convertToDecimal(((targetPrice ?? 0) * 92) / 100),
+            volume: targetVolume
           }
-        }
+        ],
+        take: [
+          {
+            id: uuidV4(),
+            name: '',
+            price: convertToDecimal(((targetPrice ?? 0) * 104) / 100),
+            volume: targetVolume
+          }
+        ]
       })
-    } else {
-      clearErrors()
-    }
-  }, [watch, sellStock, openModal])
+    })
+  }, [watch])
 
   useEffect(() => {
-    if (openModal) {
-      if (!sellStock) {
+    const volume = getValues('volume')
+    if (volume && openModal.sellStock && Number(volume) > (sellStock?.availableVol ?? 0)) {
+      return setError('volume', {
+        message: `Volume must be less than available volume: ${sellStock?.availableVol ?? 0}`
+      })
+    } else {
+      clearErrors('volume')
+    }
+  }, [getValues('volume'), openModal])
+
+  useEffect(() => {
+    if (openModal.isOpen) {
+      setValue('date', moment(Date.now()).toISOString())
+      if (!openModal.sellStock) {
         setValue('sellPrice', null)
       } else {
         setValue('orderPrice', null)
-        setValue('code', sellStock.code)
+        setValue('code', openModal.sellStock.code)
         setValue('volume', 0)
         setValue('orderPrice', null)
-        setValue('sector', sellStock.sector)
+        setValue('sector', openModal.sellStock.sector)
       }
     }
-  }, [sellStock, openModal])
-
-  useEffect(() => {
-    setValue('date', moment(Date.now()).toISOString())
   }, [openModal])
 
   const onChangeDate = (date: MomentInput): void => {
@@ -159,22 +156,25 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
   }
 
   const onCloseModal = (): void => {
-    handleClose()
-    sellStock && setTimeout(() => dispatch(onSellStock(null)), 200)
     reset()
+    setOpenModal({ isOpen: false, sellStock: null })
     clearErrors()
-    setOpenModal(!openModal)
+    setTimeout(() => {
+      setOpenModal({ isOpen: false, sellStock: null })
+      openModal.sellStock && dispatch(onSellStock(null))
+    }, 200)
+    handleClose()
   }
 
   const handleSave = async (value: FormBody): Promise<void> => {
     try {
       const { code, volume, orderPrice, sellPrice } = value
-      if (sellStock && !sellPrice) {
+      if (openModal.sellStock && !sellPrice) {
         return setError('sellPrice', {
           message: 'Sell price must be greater than 0'
         })
       }
-      if (!sellStock && !orderPrice) {
+      if (!openModal.sellStock && !orderPrice) {
         return setError('orderPrice', {
           message: 'Order Price must be greater than 0'
         })
@@ -183,11 +183,11 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
         code: code.toUpperCase(),
         volume,
         date: getValues('date'),
-        ...(!sellStock ? { orderPrice } : { sellPrice }),
+        ...(!openModal.sellStock ? { orderPrice } : { sellPrice }),
         sector: getValues('sector'),
-        status: !sellStock ? 'Buy' : 'Sell',
-        ...(!sellStock && { take: target.take }),
-        ...(!sellStock && { stop: target.stop })
+        status: !openModal.sellStock ? 'Buy' : 'Sell',
+        ...(!openModal.sellStock && { take: target.take }),
+        ...(!openModal.sellStock && { stop: target.stop })
       }).unwrap()
       if (response) {
         dispatch(refetchStocks(true))
@@ -197,10 +197,10 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
           stop: [{ id: uuidV4(), name: '', price: 0, volume: 0 }]
         })
         handleClose()
-        sellStock && setTimeout(() => dispatch(onSellStock(null)), 200)
+        openModal.sellStock && setTimeout(() => dispatch(onSellStock(null)), 200)
         reset()
         clearErrors()
-        setOpenModal(!openModal)
+        setOpenModal({ isOpen: false, sellStock: null })
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -209,7 +209,7 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
   }
 
   const option = useMemo(() => {
-    if (sellStock) {
+    if (openModal.isOpen) {
       if (stockData?.data?.data?.length) {
         return stockData?.data?.data?.map((stock: Stock) => ({
           id: stock._id,
@@ -221,7 +221,7 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
       return []
     }
     return []
-  }, [sellStock, stockData, sellStock])
+  }, [stockData, openModal])
 
   const onAddTakeOrStop = (type: keyof TargetState): void => {
     return setTarget((prev) => ({ ...prev, [type]: [...prev[type], init] }))
@@ -252,7 +252,7 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
 
   return (
     <Dialog
-      open={openModal}
+      open={openModal.isOpen}
       onClose={onCloseModal}
       onKeyUp={(e) => {
         if (e.key === 'Enter') {
@@ -264,14 +264,14 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
         <Box py={3} px={0} onSubmit={handleSubmit(handleSave)} id='stock-form' component='form'>
           <Box paddingBottom={2} paddingX={4}>
             <Typography>
-              <FormattedMessage id={`${sellStock ? 'label.selling' : 'label.buying'}`} />
+              <FormattedMessage id={`${openModal.sellStock ? 'label.selling' : 'label.buying'}`} />
               &nbsp;
               <FormattedMessage id='label.stock' />
             </Typography>
           </Box>
           <Divider />
           <Box paddingX={4} paddingY={2} component='form'>
-            {!sellStock ? (
+            {!openModal.sellStock ? (
               <InfinitySelectCode
                 onSetData={setValue}
                 error={!!errors.code}
@@ -316,7 +316,7 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
                 />
               </Grid>
               <Grid item xs={12} md={6}>
-                {sellStock ? (
+                {openModal.sellStock ? (
                   <TextField
                     fullWidth
                     label={<FormattedMessage id='label.selling.price' />}
@@ -343,104 +343,100 @@ const StockModal = ({ open, handleClose }: StockModalProps): JSX.Element => {
               </Grid>
             </Grid>
 
-            {!sellStock && (
-              <Box mt={0.5}>
-                <Typography mb={0.75}>Takes</Typography>
-                {target.take.map((item, index) => (
-                  <Grid
-                    container
-                    key={item.id}
-                    pb={1.5}
-                    alignItems='center'
-                    justifyContent='space-between'
-                    columnSpacing={0.75}
-                    rowSpacing={2}
-                  >
-                    <Grid item xs={12} md={5.5}>
-                      <TextField
-                        fullWidth
-                        label='Volume'
-                        name='volume'
-                        value={item.volume}
-                        onChange={(e) => onChange(e, 'take', item.id)}
-                        type='number'
-                        inputProps={{ step: '0.1' }}
-                      />
-                    </Grid>
-                    <Grid item xs={10} md={5.5}>
-                      <TextField
-                        fullWidth
-                        label='Price'
-                        name='price'
-                        value={item.price}
-                        onChange={(e) => onChange(e, 'take', item.id)}
-                        type='number'
-                        inputProps={{ step: '0.0' }}
-                      />
-                    </Grid>
-                    <Grid item xs={2} md={1}>
-                      {index === 0 ? (
-                        <IconButton
-                          sx={{ bgcolor: index === 0 ? 'primary.main' : 'error.main', p: 0 }}
-                          onClick={() => onAddTakeOrStop('take' as keyof TargetState)}
-                        >
-                          <Add color='inherit' sx={{ width: '32px', height: '32px' }} />
-                        </IconButton>
-                      ) : (
-                        <IconButton
-                          sx={{ bgcolor: index === 0 ? 'primary.main' : 'error.main', p: 0 }}
-                          onClick={() => onRemoveTakeOrStop('take', item.id)}
-                        >
-                          <Remove sx={{ width: '32px', height: '32px' }} />
-                        </IconButton>
-                      )}
-                    </Grid>
+            <Box mt={0.5} display={!sellStock ? 'block' : 'none'}>
+              <Typography mb={0.75}>Takes</Typography>
+              {target.take.map((item, index) => (
+                <Grid
+                  container
+                  key={item.id}
+                  pb={1.5}
+                  alignItems='center'
+                  justifyContent='space-between'
+                  columnSpacing={0.75}
+                  rowSpacing={2}
+                >
+                  <Grid item xs={12} md={5.5}>
+                    <TextField
+                      fullWidth
+                      label='Volume'
+                      name='volume'
+                      value={item.volume}
+                      onChange={(e) => onChange(e, 'take', item.id)}
+                      type='number'
+                      inputProps={{ step: '0.1' }}
+                    />
                   </Grid>
-                ))}
-              </Box>
-            )}
+                  <Grid item xs={10} md={5.5}>
+                    <TextField
+                      fullWidth
+                      label='Price'
+                      name='price'
+                      value={item.price}
+                      onChange={(e) => onChange(e, 'take', item.id)}
+                      type='number'
+                      inputProps={{ step: '0.0' }}
+                    />
+                  </Grid>
+                  <Grid item xs={2} md={1}>
+                    {index === 0 ? (
+                      <IconButton
+                        sx={{ bgcolor: index === 0 ? 'primary.main' : 'error.main', p: 0 }}
+                        onClick={() => onAddTakeOrStop('take' as keyof TargetState)}
+                      >
+                        <Add color='inherit' sx={{ width: '32px', height: '32px' }} />
+                      </IconButton>
+                    ) : (
+                      <IconButton
+                        sx={{ bgcolor: index === 0 ? 'primary.main' : 'error.main', p: 0 }}
+                        onClick={() => onRemoveTakeOrStop('take', item.id)}
+                      >
+                        <Remove sx={{ width: '32px', height: '32px' }} />
+                      </IconButton>
+                    )}
+                  </Grid>
+                </Grid>
+              ))}
+            </Box>
 
-            {!sellStock && (
-              <Box mt={0.5}>
-                <Typography mb={0.75}>Stops</Typography>
-                {target.stop.map((item) => (
-                  <Grid
-                    container
-                    key={item.id}
-                    pb={1.5}
-                    alignItems='center'
-                    justifyContent='space-between'
-                    columnSpacing={0.75}
-                    rowSpacing={1}
-                  >
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        label='Volume'
-                        name='volume'
-                        value={parseInt(String(item.volume))}
-                        onChange={(e) => onChange(e, 'stop', item.id)}
-                        type='number'
-                        inputProps={{ step: '1' }}
-                        disabled
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        label='Price'
-                        name='price'
-                        value={item.price}
-                        onChange={(e) => onChange(e, 'stop', item.id)}
-                        type='number'
-                        inputProps={{ step: '0.1' }}
-                        disabled
-                      />
-                    </Grid>
+            <Box mt={0.5} display={!sellStock ? 'block' : 'none'}>
+              <Typography mb={0.75}>Stops</Typography>
+              {target.stop.map((item) => (
+                <Grid
+                  container
+                  key={item.id}
+                  pb={1.5}
+                  alignItems='center'
+                  justifyContent='space-between'
+                  columnSpacing={0.75}
+                  rowSpacing={1}
+                >
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      label='Volume'
+                      name='volume'
+                      value={parseInt(String(item.volume))}
+                      onChange={(e) => onChange(e, 'stop', item.id)}
+                      type='number'
+                      inputProps={{ step: '1' }}
+                      disabled
+                    />
                   </Grid>
-                ))}
-              </Box>
-            )}
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      label='Price'
+                      name='price'
+                      value={item.price}
+                      onChange={(e) => onChange(e, 'stop', item.id)}
+                      type='number'
+                      inputProps={{ step: '0.1' }}
+                      disabled
+                    />
+                  </Grid>
+                </Grid>
+              ))}
+            </Box>
           </Box>
           <Divider />
           <Box textAlign='end' paddingX={4} paddingTop={3}>

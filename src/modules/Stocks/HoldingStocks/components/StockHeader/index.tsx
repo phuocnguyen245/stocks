@@ -2,6 +2,7 @@ import { Box, Button, Container } from '@mui/material'
 import { FormattedMessage } from 'react-intl'
 import { useAppSelector } from 'src/store'
 import StockModal from '../../Modals'
+import { memo, useMemo } from 'react'
 
 interface StockHeaderProps {
   open: boolean
@@ -12,14 +13,16 @@ interface StockHeaderProps {
 const StockHeader = ({ open, show, hide }: StockHeaderProps): JSX.Element => {
   const { isMdWindow } = useAppSelector((state) => state.Stocks)
 
-  const children = (
-    <>
-      <Button variant='contained' onClick={show}>
-        <FormattedMessage id='label.create' />
-      </Button>
-      <StockModal open={open} handleClose={hide} />
-    </>
-  )
+  const children = useMemo(() => {
+    return (
+      <>
+        <Button variant='contained' onClick={show}>
+          <FormattedMessage id='label.create' />
+        </Button>
+        <StockModal open={open} handleClose={hide} />
+      </>
+    )
+  }, [open, show, hide])
 
   return (
     <>
@@ -32,4 +35,4 @@ const StockHeader = ({ open, show, hide }: StockHeaderProps): JSX.Element => {
   )
 }
 
-export default StockHeader
+export default memo(StockHeader)

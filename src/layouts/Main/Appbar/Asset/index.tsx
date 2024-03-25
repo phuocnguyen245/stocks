@@ -30,15 +30,21 @@ const Asset = ({ open, toggle }: AssetProps): JSX.Element => {
         }
       }}
     >
-      <DrawerHeader onClick={toggle} sx={{ cursor: 'pointer' }}>
-        <Typography pl={2} fontWeight={600}>
-          Assets
-        </Typography>
-        <IconButton>{theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}</IconButton>
-      </DrawerHeader>
-      <Box sx={{ height: '100%', overflowY: 'auto', scrollBehavior: 'smooth' }}>
-        <AssetContent open={open} />
-      </Box>
+      {open && (
+        <>
+          <DrawerHeader onClick={toggle} sx={{ cursor: 'pointer' }}>
+            <Typography pl={2} fontWeight={600}>
+              Assets
+            </Typography>
+            <IconButton>
+              {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
+            </IconButton>
+          </DrawerHeader>
+          <Box sx={{ height: '100%', overflowY: 'auto', scrollBehavior: 'smooth' }}>
+            <AssetContent open={open} />
+          </Box>
+        </>
+      )}
     </Drawer>
   )
 }

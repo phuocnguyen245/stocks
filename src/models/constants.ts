@@ -20,7 +20,7 @@ const getBgColor = (type: LabelType): string => {
     primary: '#a41bfa',
     secondary: '#D3D3D3',
     info: '#1fecf0',
-    default: 'text.secondary'
+    default: 'transparent'
   }
   return hexColors[type]
 }
